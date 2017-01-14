@@ -84,29 +84,16 @@ update msg model =
 view : Model -> Html Msg
 view model =
     div []
-        [ h2 [] [ text "Cellar inventory" ]
+        [ viewTitle
         , viewErrors model
-        , input [ onInput Filter, value model.filter, placeholder "Filter" ] []
-        , br [] []
-        , table [] <| viewBeerTableRows model
+        , viewFilter model
+        , viewBeerTable model
         ]
 
 
-viewBeerTableRows : Model -> List (Html Msg)
-viewBeerTableRows model =
-    let
-        heading =
-            viewTableHeadings [ "#", "Beer", "Style" ]
-
-        rows =
-            viewBeerList <| filteredBeers model
-    in
-        heading :: rows
-
-
-viewTableHeadings : List String -> Html Msg
-viewTableHeadings headings =
-    tr [] <| List.map (\name -> th [] [ text name ]) headings
+viewTitle : Html Msg
+viewTitle =
+    h2 [] [ text "Cellar inventory" ]
 
 
 viewErrors : Model -> Html Msg
@@ -120,9 +107,21 @@ viewErrors model =
                 [ text error ]
 
 
-viewBeerList : List Beer -> List (Html Msg)
-viewBeerList beers =
-    List.map viewBeerRow beers
+viewFilter : Model -> Html Msg
+viewFilter model =
+    input [ onInput Filter, value model.filter, placeholder "Filter" ] []
+
+
+viewBeerTable : Model -> Html Msg
+viewBeerTable model =
+    let
+        heading =
+            tr [] <| List.map (\name -> th [] [ text name ]) [ "#", "Beer", "Style" ]
+
+        rows =
+            List.map viewBeerRow <| filteredBeers model
+    in
+        table [] <| heading :: rows
 
 
 viewBeerRow : Beer -> Html Msg
