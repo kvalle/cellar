@@ -1,19 +1,35 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
 <head>
-    <meta charset="UTF-8">
+
+    <meta charset="utf-8">
     <title>Cellar</title>
-    <link href="main.css" rel="stylesheet" />
-    <link href="https://fonts.googleapis.com/css?family=Roboto+Slab:100,300,400,700" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css?family=Megrim" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link href="//fonts.googleapis.com/css?family=Raleway:400,300,600" rel="stylesheet" type="text/css">
+    <link href="https://fonts.googleapis.com/css?family=Arima+Madurai:800|Roboto+Condensed" rel="stylesheet"> 
+
+    <link rel="stylesheet" href="css/normalize.css">
+    <link rel="stylesheet" href="css/skeleton.css">
+    <link rel="stylesheet" href="css/main.css"  />
+    
 </head>
 
 <body>
-    <div class='app'></div>
+    
+    <div class="container">
+        <div class="row">
+            <div class="twelve columns">
+                <div id='app'></div>
+            </div>
+        </div>
+    </div>
+    
     <script src='app.js'></script>
     <script>
-        Elm.Main.fullscreen();
+        var node = document.getElementById('app');
+        var app = Elm.Main.embed(node);
     </script>
 </body>
 

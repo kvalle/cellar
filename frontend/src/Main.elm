@@ -93,7 +93,7 @@ view model =
 
 viewTitle : Html Msg
 viewTitle =
-    h2 [] [ text "Cellar inventory" ]
+    h2 [] [ text "Beer Cellar Index" ]
 
 
 viewErrors : Model -> Html Msg
