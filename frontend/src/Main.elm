@@ -26,6 +26,8 @@ main =
 type alias Beer =
     { name : String
     , style : String
+    , year : Int
+    , count : Int
     }
 
 
@@ -100,7 +102,9 @@ viewBeerList beers =
 viewBeerItem : Beer -> Html Msg
 viewBeerItem beer =
     div []
-        [ span [] [ text beer.name ]
+        [ span [ style [ ( "color", "gray" ) ] ] [ text <| toString beer.count ]
+        , span [] [ text beer.name ]
+        , span [ style [ ( "padding-left", "10px" ) ] ] [ text <| "(" ++ (toString beer.year) ++ ")" ]
         , span [ style [ ( "color", "gray" ), ( "padding-left", "10px" ) ] ] [ text beer.style ]
         ]
 
@@ -141,7 +145,11 @@ getBeers =
 
 beerDecoder : Decode.Decoder Beer
 beerDecoder =
-    Decode.map2 Beer (Decode.field "name" Decode.string) (Decode.field "style" Decode.string)
+    Decode.map4 Beer
+        (Decode.field "name" Decode.string)
+        (Decode.field "style" Decode.string)
+        (Decode.field "year" Decode.int)
+        (Decode.field "count" Decode.int)
 
 
 beerListDecoder : Decode.Decoder (List Beer)

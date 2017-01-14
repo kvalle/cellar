@@ -9,13 +9,34 @@ dummy_response = """
 
 [{
 	"name": "Nøgne IPA",
-	"style": "IPA" }, 
-{
+	"style": "IPA" ,
+	"year": 2017,
+	"count": 3
+}, {
 	"name": "Nøgne Imperial Stout",
-	"style": "Imperial Stout" }, 
-{
+	"style": "Imperial Stout" ,
+	"year": 2016,
+	"count": 1
+}, {
+	"name": "Oscar Blues Ten FIDY",
+	"style": "Imperial Stout" ,
+	"year": 2012,
+	"count": 2
+}, {
+	"name": "AleSmith Speedway",
+	"style": "Imperial Stout" ,
+	"year": 2012,
+	"count": 1
+}, {
+	"name": "AleSmith Speedway",
+	"style": "Imperial Stout" ,
+	"year": 2013,
+	"count": 1
+}, {
 	"name": "Cervisiam Jungle Juice",
-	"style": "IPA" 
+	"style": "IPA",
+	"year": 2017,
+	"count": 1
 }]
 
 """
