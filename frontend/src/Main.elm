@@ -7,22 +7,15 @@ import Html.Events exposing (..)
 import Http
 import Json.Decode as Decode
 import Maybe exposing (withDefault)
-
-
-beers = [ Beer "Nøgne IPA" "IPA"
-        , Beer "Nøgne Imperial Stout" "Imperial Stout"
-        , Beer "Cervisiam Jungle Juice" "IPA"
-        ]
+import Debug
 
 main =
     Html.program
-        { init = init beers
+        { init = init []
         , view = view
         , update = update
         , subscriptions = subscriptions
         }
-
-
 
 -- MODEL
 
@@ -34,11 +27,12 @@ type alias Beer =
 type alias Model = 
     { beers : List Beer 
     , filter : String
+    , error : Maybe Http.Error
     }
 
 init : List Beer -> ( Model, Cmd Msg )
 init beers =
-    ( Model beers "", Cmd.none )
+    ( Model beers "" Nothing, getBeers )
 
 
 
@@ -47,6 +41,7 @@ init beers =
 
 type Msg
     = Filter String
+    | BeerList (Result Http.Error (List Beer))
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -54,7 +49,8 @@ update msg model =
     case msg of
         Filter filter ->
             ( { model | filter = filter }, Cmd.none )
-
+        BeerList (Err err) -> ( {model | error = Just err}, Cmd.none)
+        BeerList (Ok beers) -> ({model | beers = beers}, Cmd.none)
 
 
 -- VIEW
@@ -101,3 +97,18 @@ subscriptions model =
     Sub.none
 
 
+
+-- HTTP
+
+getBeers : Cmd Msg
+getBeers =
+    let
+        url = "http://localhost:9000/api/beers"
+    in
+        Http.send BeerList (Http.get url beerListDecoder)
+
+beerDecoder : Decode.Decoder Beer
+beerDecoder = Decode.map2 Beer (Decode.field "name" Decode.string) (Decode.field "style" Decode.string)
+
+beerListDecoder : Decode.Decoder (List Beer)
+beerListDecoder = Decode.list beerDecoder

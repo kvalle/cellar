@@ -3,7 +3,7 @@
 
 from BaseHTTPServer import BaseHTTPRequestHandler,HTTPServer
 
-PORT_NUMBER = 8080
+PORT_NUMBER = 9000
 
 dummy_response = """
 
@@ -22,9 +22,18 @@ dummy_response = """
 
 class dummyHandler(BaseHTTPRequestHandler):
 	
+	def do_OPTIONS(self):
+		self.send_response(200)
+		self.send_header('Access-Control-Allow-Methods','*')
+		self.send_header('Access-Control-Allow-Origin', '*')
+		self.end_headers()
+		self.wfile.write("")
+		return
+
 	def do_GET(self):
 		self.send_response(200)
 		self.send_header('Content-type','application/json; charset=utf-8')
+		self.send_header('Access-Control-Allow-Origin', '*')
 		self.end_headers()
 		self.wfile.write(dummy_response)
 		return
