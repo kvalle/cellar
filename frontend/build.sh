@@ -26,7 +26,7 @@ function watch_build() {
 
   if command -v fswatch >/dev/null; then
     log_test_run
-    fswatch ./src | (while read; do build; done)
+    fswatch ./src ./static | (while read; do build; done)
   fi
 }
 
