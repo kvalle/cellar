@@ -77,11 +77,17 @@ view model =
         , viewBeerList <| filteredBeers model
         ]
 
+
 viewErrors : Model -> Html Msg
 viewErrors model =
-    div [ style [("color", "red")] ] <| case model.error of
-            Nothing -> []
-            Just error -> [ text error ]
+    div [ style [ ( "color", "red" ) ] ] <|
+        case model.error of
+            Nothing ->
+                []
+
+            Just error ->
+                [ text error ]
+
 
 viewBeerList : List Beer -> Html Msg
 viewBeerList beers =
