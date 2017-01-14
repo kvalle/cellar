@@ -76,8 +76,25 @@ view model =
         , viewErrors model
         , input [ onInput Filter, value model.filter, placeholder "Filter" ] []
         , br [] []
-        , viewBeerList <| filteredBeers model
+        , table [] <| viewBeerTableRows model
         ]
+
+
+viewBeerTableRows : Model -> List (Html Msg)
+viewBeerTableRows model =
+    let
+        heading =
+            viewTableHeadings [ "#", "Beer", "Style" ]
+
+        rows =
+            viewBeerList <| filteredBeers model
+    in
+        heading :: rows
+
+
+viewTableHeadings : List String -> Html Msg
+viewTableHeadings headings =
+    tr [] <| List.map (\name -> th [] [ text name ]) headings
 
 
 viewErrors : Model -> Html Msg
@@ -91,21 +108,20 @@ viewErrors model =
                 [ text error ]
 
 
-viewBeerList : List Beer -> Html Msg
+viewBeerList : List Beer -> List (Html Msg)
 viewBeerList beers =
-    div []
-        [ h3 [] [ text "Beers:" ]
-        , div [] <| List.map viewBeerItem beers
-        ]
+    List.map viewBeerRow beers
 
 
-viewBeerItem : Beer -> Html Msg
-viewBeerItem beer =
-    div []
-        [ span [ style [ ( "color", "gray" ) ] ] [ text <| toString beer.count ]
-        , span [] [ text beer.name ]
-        , span [ style [ ( "padding-left", "10px" ) ] ] [ text <| "(" ++ (toString beer.year) ++ ")" ]
-        , span [ style [ ( "color", "gray" ), ( "padding-left", "10px" ) ] ] [ text beer.style ]
+viewBeerRow : Beer -> Html Msg
+viewBeerRow beer =
+    tr []
+        [ td [ style [ ( "color", "gray" ) ] ] [ text <| toString beer.count ]
+        , td []
+            [ text beer.name
+            , span [ style [ ( "padding-left", "10px" ) ] ] [ text <| "(" ++ (toString beer.year) ++ ")" ]
+            ]
+        , td [ style [ ( "color", "gray" ), ( "padding-left", "10px" ) ] ] [ text beer.style ]
         ]
 
 
