@@ -43,6 +43,18 @@ init beers =
     ( Model beers "" Nothing, getBeers )
 
 
+filteredBeers : Model -> List Beer
+filteredBeers model =
+    let
+        isMatch string =
+            String.contains (String.toLower model.filter) (String.toLower string)
+
+        beerMatches beer =
+            isMatch beer.name || isMatch beer.style
+    in
+        List.filter beerMatches model.beers
+
+
 
 -- UPDATE
 
@@ -123,18 +135,6 @@ viewBeerRow beer =
             ]
         , td [ style [ ( "color", "gray" ), ( "padding-left", "10px" ) ] ] [ text beer.style ]
         ]
-
-
-filteredBeers : Model -> List Beer
-filteredBeers model =
-    let
-        isMatch string =
-            String.contains (String.toLower model.filter) (String.toLower string)
-
-        beerMatches beer =
-            isMatch beer.name || isMatch beer.style
-    in
-        List.filter beerMatches model.beers
 
 
 
