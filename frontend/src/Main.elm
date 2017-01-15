@@ -98,7 +98,10 @@ view model =
 
 viewTitle : Html Msg
 viewTitle =
-    h2 [] [ text "Cellar Index" ]
+    h1 []
+        [ i [ onClick ClearFilter, class "icon-beer" ] []
+        , text "Cellar Index"
+        ]
 
 
 viewErrors : Model -> Html Msg
