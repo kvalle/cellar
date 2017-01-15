@@ -1,0 +1,20 @@
+<?xml version="1.0" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg xmlns="http://www.w3.org/2000/svg">
+<metadata>Copyright (C) 2017 by original authors @ fontello.com</metadata>
+<defs>
+<font id="fontello" horiz-adv-x="1000" >
+<font-face font-family="fontello" font-weight="400" font-stretch="normal" units-per-em="1000" ascent="850" descent="-150" />
+<missing-glyph horiz-adv-x="1000" />
+<glyph glyph-name="cancel-circled" unicode="&#xe800;" d="M0 350q0 207 147 354t353 146 354-146 146-354-146-354-354-146-353 146-147 354z m219-156l125-125 156 156 156-156 125 125-156 156 156 156-125 125-156-156-156 156-125-125 156-156z" horiz-adv-x="1000" />
+
+<glyph glyph-name="beer" unicode="&#xe801;" d="M260 115q0-10-7-17t-18-8-18 8-8 17l0 313q0 10 8 18t18 8 18-8 7-18l0-313z m105 0q0-10-8-17t-18-8-18 8-8 17l0 313q0 10 8 18t18 8 18-8 8-18l0-313z m104 0q0-10-8-17t-18-8-19 8-8 17l0 313q0 10 8 18t19 8 18-8 8-18l0-313z m234 548q75 0 128-54t54-129l0-260q0-75-54-128t-128-54l-25 0q0-65-46-111t-111-46l-365 0q-65 0-110 46t-46 111l0 677q0 43 30 73t74 31l469 0q43 0 74-31t31-73l0-52 25 0z m-599 52l0-78q0-32 23-55t56-23q45 0 67 40l9 16 19-3q17-3 34 6t23 27l6 18 232 0 0 52-469 0z m469-677l0 572-197 0q-31-51-90-51-40-52-103-52-45 0-79 26l0-495q0-21 15-37t37-16l365 0q22 0 37 16t15 37z m208 182l0 260q0 33-23 56t-55 23l-78 0 0-417 78 0q32 0 55 23t23 55z" horiz-adv-x="885" />
+
+<glyph glyph-name="cancel" unicode="&#xe802;" d="M0 71l279 279-279 279 221 221 279-279 279 279 221-221-279-279 279-279-221-221-279 279-279-279z" horiz-adv-x="1000" />
+
+<glyph glyph-name="plus-circled" unicode="&#xe804;" d="M0 350q0 207 147 354t353 146 354-146 146-354-146-354-354-146-353 146-147 354z m219-80l201 0 0-201 160 0 0 201 201 0 0 160-201 0 0 201-160 0 0-201-201 0 0-160z" horiz-adv-x="1000" />
+
+<glyph glyph-name="plus" unicode="&#xe805;" d="M0 209l0 282 359 0 0 359 282 0 0-359 359 0 0-282-359 0 0-359-282 0 0 359-359 0z" horiz-adv-x="1000" />
+</font>
+</defs>
+</svg>
