@@ -121,8 +121,8 @@ view model =
                 ]
             ]
         , div [ class "row" ]
-            [ div [ class "eight columns" ] [ viewBeerTable model ]
-            , div [ class "four columns" ]
+            [ div [ class "main seven columns" ] [ viewBeerTable model ]
+            , div [ class "sidebar five columns" ]
                 [ viewFilter model
                 , viewAddBeerForm
                 ]
@@ -152,8 +152,23 @@ viewErrors model =
 viewFilter : Model -> Html Msg
 viewFilter model =
     div []
-        [ input [ type_ "search", onInput Filter, value model.filter, placeholder "Filter" ] []
+        [ h2 [] [ text "Filter beers" ]
+        , input [ type_ "search", onInput Filter, value model.filter, placeholder "Filter" ] []
         , i [ onClick ClearFilter, class "icon-cancel action" ] []
+        ]
+
+
+viewAddBeerForm : Html Msg
+viewAddBeerForm =
+    div []
+        [ h2 [] [ text "Add beer" ]
+        , input [ type_ "text", placeholder "brewery" ] []
+        , input [ type_ "text", placeholder "name" ] []
+        , input [ type_ "text", placeholder "style" ] []
+        , button []
+            [ i [ class "icon-beer" ] []
+            , text "Add "
+            ]
         ]
 
 
@@ -167,17 +182,6 @@ viewBeerTable model =
             List.indexedMap viewBeerRow <| filteredBeers model
     in
         table [] <| heading :: rows
-
-
-viewAddBeerForm : Html Msg
-viewAddBeerForm =
-    div
-        []
-        [ input [ type_ "text", placeholder "brewery" ] []
-        , input [ type_ "text", placeholder "name" ] []
-        , input [ type_ "text", placeholder "style" ] []
-        , button [] [ text "Add ", i [ class "action icon-beer" ] [] ]
-        ]
 
 
 viewBeerRow : Int -> Beer -> Html Msg

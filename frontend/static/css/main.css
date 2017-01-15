@@ -11,6 +11,10 @@ h1 i {
 	color: #ffd000;
 }
 
+.sidebar h2 {
+	font-size: 1.7em;
+}
+
 tr.beer-count, tr.beer-style {
 	color: gray;
 }
