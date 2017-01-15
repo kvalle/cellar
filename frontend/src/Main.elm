@@ -61,6 +61,7 @@ filteredBeers model =
 
 type Msg
     = Filter String
+    | ClearFilter
     | BeerList (Result Http.Error (List Beer))
 
 
@@ -69,6 +70,9 @@ update msg model =
     case msg of
         Filter filter ->
             ( { model | filter = filter }, Cmd.none )
+
+        ClearFilter ->
+            ( { model | filter = "" }, Cmd.none )
 
         BeerList (Err _) ->
             ( { model | error = Just "Unable to load beer list" }, Cmd.none )
@@ -109,7 +113,10 @@ viewErrors model =
 
 viewFilter : Model -> Html Msg
 viewFilter model =
-    input [ onInput Filter, value model.filter, placeholder "Filter" ] []
+    div []
+        [ input [ onInput Filter, value model.filter, placeholder "Filter" ] []
+        , i [ onClick ClearFilter, class "demo-icon icon-cancel-circled" ] []
+        ]
 
 
 viewBeerTable : Model -> Html Msg
