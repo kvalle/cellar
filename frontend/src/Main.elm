@@ -57,24 +57,24 @@ filteredBeers model =
         List.filter beerMatches model.beers
 
 
-decrementBeer : Int -> List Beer -> List Beer
-decrementBeer index beers =
+updateBeer : (Beer -> Beer) -> Int -> List Beer -> List Beer
+updateBeer fn index beers =
     case (Array.get index <| Array.fromList beers) of
         Nothing ->
             beers
 
         Just beer ->
-            Array.toList <| Array.set index { beer | count = beer.count - 1 } <| Array.fromList beers
+            Array.toList <| Array.set index (fn beer) <| Array.fromList beers
 
 
-incrementBeer : Int -> List Beer -> List Beer
-incrementBeer index beers =
-    case (Array.get index <| Array.fromList beers) of
-        Nothing ->
-            beers
+decrementBeerCount : Int -> List Beer -> List Beer
+decrementBeerCount =
+    updateBeer (\beer -> { beer | count = beer.count - 1 })
 
-        Just beer ->
-            Array.toList <| Array.set index { beer | count = beer.count + 1 } <| Array.fromList beers
+
+incrementBeerCount : Int -> List Beer -> List Beer
+incrementBeerCount =
+    updateBeer (\beer -> { beer | count = beer.count + 1 })
 
 
 
@@ -85,8 +85,8 @@ type Msg
     = Filter String
     | ClearFilter
     | BeerList (Result Http.Error (List Beer))
-    | DecrementBeer Int
-    | IncrementBeer Int
+    | DecrementBeerCount Int
+    | IncrementBeerCount Int
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -104,11 +104,11 @@ update msg model =
         BeerList (Ok beers) ->
             ( { model | beers = beers }, Cmd.none )
 
-        DecrementBeer index ->
-            ( { model | beers = decrementBeer index model.beers }, Cmd.none )
+        DecrementBeerCount index ->
+            ( { model | beers = decrementBeerCount index model.beers }, Cmd.none )
 
-        IncrementBeer index ->
-            ( { model | beers = incrementBeer index model.beers }, Cmd.none )
+        IncrementBeerCount index ->
+            ( { model | beers = incrementBeerCount index model.beers }, Cmd.none )
 
 
 
@@ -175,8 +175,8 @@ viewBeerRow index beer =
             ]
         , td [ style [ ( "color", "gray" ) ] ] [ text beer.style ]
         , td []
-            [ i [ onClick (IncrementBeer index), class "action icon-plus" ] []
-            , i [ onClick (DecrementBeer index), class <| disabledClass (beer.count < 1) "action icon-minus" ] []
+            [ i [ onClick (IncrementBeerCount index), class "action icon-plus" ] []
+            , i [ onClick (DecrementBeerCount index), class <| disabledClass (beer.count < 1) "action icon-minus" ] []
             ]
         ]
 
