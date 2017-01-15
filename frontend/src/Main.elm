@@ -148,7 +148,7 @@ viewFilter : Model -> Html Msg
 viewFilter model =
     div []
         [ input [ type_ "search", onInput Filter, value model.filter, placeholder "Filter" ] []
-        , i [ onClick ClearFilter, class <| disabledClass (String.isEmpty model.filter) "icon-cancel action" ] []
+        , i [ onClick ClearFilter, class "icon-cancel action" ] []
         ]
 
 
@@ -175,18 +175,23 @@ viewBeerRow index beer =
             ]
         , td [ style [ ( "color", "gray" ) ] ] [ text beer.style ]
         , td []
-            [ i [ onClick (IncrementBeerCount index), class "action icon-plus" ] []
-            , i [ onClick (DecrementBeerCount index), class <| disabledClass (beer.count < 1) "action icon-minus" ] []
+            [ viewIncrementCountAction index beer
+            , viewDecrementCountAction index beer
             ]
         ]
 
 
-disabledClass : Bool -> String -> String
-disabledClass pred classes =
-    if pred then
-        classes ++ " disabled"
+viewIncrementCountAction : Int -> Beer -> Html Msg
+viewIncrementCountAction index beer =
+    i [ onClick (IncrementBeerCount index), class "action icon-plus" ] []
+
+
+viewDecrementCountAction : Int -> Beer -> Html Msg
+viewDecrementCountAction index beer =
+    if beer.count < 1 then
+        i [ class "action icon-minus disabled" ] []
     else
-        classes
+        i [ onClick (DecrementBeerCount index), class "action icon-minus" ] []
 
 
 
