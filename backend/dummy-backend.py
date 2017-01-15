@@ -8,32 +8,38 @@ PORT_NUMBER = 9000
 dummy_response = """
 
 [{
-	"name": "Nøgne IPA",
+	"brewery": "Nøgne Ø",
+	"name": "IPA",
 	"style": "IPA" ,
 	"year": 2017,
 	"count": 3
 }, {
-	"name": "Nøgne Imperial Stout",
+	"brewery": "Nøgne Ø",
+	"name": "Imperial Stout",
 	"style": "Imperial Stout" ,
 	"year": 2016,
 	"count": 1
 }, {
-	"name": "Oscar Blues Ten FIDY",
+	"brewery": "Oscar Blues",
+	"name": "Ten FIDY",
 	"style": "Imperial Stout" ,
 	"year": 2012,
 	"count": 2
 }, {
-	"name": "AleSmith Speedway",
+	"brewery": "AleSmith",
+	"name": "Speedway Stout",
 	"style": "Imperial Stout" ,
 	"year": 2012,
 	"count": 1
 }, {
-	"name": "AleSmith Speedway",
+	"brewery": "AleSmith",
+	"name": "Speedway Stout",
 	"style": "Imperial Stout" ,
 	"year": 2013,
 	"count": 1
 }, {
-	"name": "Cervisiam Jungle Juice",
+	"brewery": "Cervisiam",
+	"name": "Jungle Juice",
 	"style": "IPA",
 	"year": 2017,
 	"count": 1

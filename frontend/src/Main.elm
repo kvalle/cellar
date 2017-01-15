@@ -24,7 +24,8 @@ main =
 
 
 type alias Beer =
-    { name : String
+    { brewery : String
+    , name : String
     , style : String
     , year : Int
     , count : Int
@@ -50,7 +51,7 @@ filteredBeers model =
             String.contains (String.toLower model.filter) (String.toLower string)
 
         beerMatches beer =
-            isMatch beer.name || isMatch beer.style || isMatch (toString beer.year)
+            isMatch beer.name || isMatch beer.brewery || isMatch beer.style || isMatch (toString beer.year)
     in
         List.filter beerMatches model.beers
 
@@ -114,7 +115,7 @@ viewErrors model =
 viewFilter : Model -> Html Msg
 viewFilter model =
     div []
-        [ input [ onInput Filter, value model.filter, placeholder "Filter" ] []
+        [ input [ type_ "search", onInput Filter, value model.filter, placeholder "Filter" ] []
         , i [ onClick ClearFilter, class "demo-icon icon-cancel-circled" ] []
         ]
 
@@ -123,7 +124,7 @@ viewBeerTable : Model -> Html Msg
 viewBeerTable model =
     let
         heading =
-            tr [] <| List.map (\name -> th [] [ text name ]) [ "#", "Beer", "Style" ]
+            tr [] <| List.map (\name -> th [] [ text name ]) [ "#", "Brewery", "Beer", "Style" ]
 
         rows =
             List.map viewBeerRow <| filteredBeers model
@@ -135,11 +136,12 @@ viewBeerRow : Beer -> Html Msg
 viewBeerRow beer =
     tr []
         [ td [ style [ ( "color", "gray" ) ] ] [ text <| toString beer.count ]
+        , td [] [ text beer.brewery ]
         , td []
             [ text beer.name
             , span [ style [ ( "padding-left", "10px" ) ] ] [ text <| "(" ++ (toString beer.year) ++ ")" ]
             ]
-        , td [ style [ ( "color", "gray" ), ( "padding-left", "10px" ) ] ] [ text beer.style ]
+        , td [ style [ ( "color", "gray" ) ] ] [ text beer.style ]
         ]
 
 
@@ -167,7 +169,8 @@ getBeers =
 
 beerDecoder : Decode.Decoder Beer
 beerDecoder =
-    Decode.map4 Beer
+    Decode.map5 Beer
+        (Decode.field "brewery" Decode.string)
         (Decode.field "name" Decode.string)
         (Decode.field "style" Decode.string)
         (Decode.field "year" Decode.int)
