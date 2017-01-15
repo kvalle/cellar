@@ -1,13 +1,11 @@
 module Main exposing (..)
 
-import List exposing (head, map)
+import List
 import Html exposing (..)
-import Html.Attributes exposing (..)
-import Html.Events exposing (..)
+import Html.Attributes exposing (class, placeholder, type_, value)
+import Html.Events exposing (onClick, onInput)
 import Http
 import Json.Decode as Decode
-import Maybe exposing (withDefault)
-import Debug
 
 
 main =
@@ -142,7 +140,7 @@ viewTitle =
 
 viewErrors : Model -> Html Msg
 viewErrors model =
-    div [ style [ ( "color", "red" ) ] ] <|
+    div [ class "errors" ] <|
         case model.error of
             Nothing ->
                 []
