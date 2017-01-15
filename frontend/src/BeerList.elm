@@ -25,8 +25,8 @@ type alias Beer =
     }
 
 
-emptyBeerList : Model
-emptyBeerList =
+empty : Model
+empty =
     Model [] "" Nothing
 
 
@@ -75,18 +75,18 @@ nextAvailableId beers =
 
 
 updateFilter : Model -> String -> Model
-updateFilter beerList filter =
-    { beerList | filter = filter }
+updateFilter model filter =
+    { model | filter = filter }
 
 
-updateBeerList : Model -> List Beer -> Model
-updateBeerList beerList beers =
-    { beerList | beers = beers }
+updateBeers : Model -> List Beer -> Model
+updateBeers model beers =
+    { model | beers = beers }
 
 
 updateBeerListError : Model -> Maybe String -> Model
-updateBeerListError beerList error =
-    { beerList | error = error }
+updateBeerListError model error =
+    { model | error = error }
 
 
 
@@ -103,13 +103,13 @@ update : Msg -> Model -> Model
 update msg model =
     case msg of
         UpdateFilter filter ->
-            updateFilter model filter
+            { model | filter = filter }
 
         DecrementBeerCount beer ->
-            updateBeerList model <| decrementBeerCount beer model.beers
+            updateBeers model <| decrementBeerCount beer model.beers
 
         IncrementBeerCount beer ->
-            updateBeerList model <| incrementBeerCount beer model.beers
+            updateBeers model <| incrementBeerCount beer model.beers
 
 
 

@@ -17,8 +17,8 @@ type alias Model =
     }
 
 
-emptyNewBeerInput : Model
-emptyNewBeerInput =
+empty : Model
+empty =
     Model "" "" "" "" Nothing
 
 

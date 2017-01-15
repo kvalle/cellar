@@ -1,7 +1,7 @@
 module Main exposing (..)
 
-import BeerList exposing (Beer, emptyBeerList, nextAvailableId, updateBeerList, updateBeerListError, viewErrors)
-import NewBeerInput exposing (emptyNewBeerInput, updateNewBeerError)
+import BeerList exposing (Beer, nextAvailableId, updateBeers, updateBeerListError, viewErrors)
+import NewBeerInput exposing (updateNewBeerError)
 import List
 import Html exposing (..)
 import Html.Attributes exposing (class, placeholder, type_, value)
@@ -31,7 +31,7 @@ type alias Model =
 
 init : ( Model, Cmd Msg )
 init =
-    ( Model emptyBeerList emptyNewBeerInput, getBeers )
+    ( Model BeerList.empty NewBeerInput.empty, getBeers )
 
 
 newBeerInputToBeer : Model -> Result String Beer
@@ -69,8 +69,8 @@ addNewBeer model =
         case result of
             Ok beer ->
                 { model
-                    | beerList = updateBeerList model.beerList (beer :: model.beerList.beers)
-                    , newBeerInput = emptyNewBeerInput
+                    | beerList = updateBeers model.beerList (beer :: model.beerList.beers)
+                    , newBeerInput = NewBeerInput.empty
                 }
 
             Err err ->
@@ -103,7 +103,7 @@ update msg model =
             ( { model | beerList = updateBeerListError model.beerList <| Just "Unable to load beer list" }, Cmd.none )
 
         RetrievedBeerList (Ok beers) ->
-            ( { model | beerList = updateBeerList model.beerList beers }, Cmd.none )
+            ( { model | beerList = updateBeers model.beerList beers }, Cmd.none )
 
 
 
