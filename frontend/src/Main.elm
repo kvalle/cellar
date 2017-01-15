@@ -31,16 +31,25 @@ type alias Beer =
     }
 
 
+type alias NewBeerInput =
+    { brewery : String
+    , name : String
+    , style : String
+    , year : String
+    }
+
+
 type alias Model =
     { beers : List Beer
     , filter : String
     , error : Maybe String
+    , newBeerInput : NewBeerInput
     }
 
 
 init : ( Model, Cmd Msg )
 init =
-    ( Model [] "" Nothing, getBeers )
+    ( Model [] "" Nothing (NewBeerInput "" "" "" ""), getBeers )
 
 
 filteredBeers : Model -> List Beer
@@ -77,6 +86,72 @@ incrementBeerCount =
     updateBeer (\beer -> { beer | count = beer.count + 1 })
 
 
+nextAvailableId : List Beer -> Int
+nextAvailableId beers =
+    case List.map .id beers |> List.maximum of
+        Nothing ->
+            1
+
+        Just n ->
+            n + 1
+
+
+updateBrewery newBeerInput brewery =
+    { newBeerInput | brewery = brewery }
+
+
+updateName newBeerInput name =
+    { newBeerInput | name = name }
+
+
+updateStyle newBeerInput style =
+    { newBeerInput | style = style }
+
+
+updateYear newBeerInput year =
+    { newBeerInput | year = year }
+
+
+newBeerInputToBeer : Model -> Result String Beer
+newBeerInputToBeer model =
+    let
+        input =
+            model.newBeerInput
+
+        yearResult =
+            String.toInt input.year
+
+        allFilledOut =
+            not <| List.any String.isEmpty [ input.name, input.year, input.style, input.brewery ]
+
+        id =
+            nextAvailableId model.beers
+    in
+        case ( allFilledOut, yearResult ) of
+            ( False, _ ) ->
+                Err "All fields must be filled out"
+
+            ( True, Err err ) ->
+                Err err
+
+            ( True, Ok year ) ->
+                Ok <| Beer id input.brewery input.name input.style year 1
+
+
+addNewBeer : Model -> Model
+addNewBeer model =
+    let
+        result =
+            newBeerInputToBeer model
+    in
+        case result of
+            Ok beer ->
+                { model | beers = beer :: model.beers, newBeerInput = NewBeerInput "" "" "" "" }
+
+            Err err ->
+                { model | error = Just err }
+
+
 
 -- UPDATE
 
@@ -87,6 +162,11 @@ type Msg
     | BeerList (Result Http.Error (List Beer))
     | DecrementBeerCount Beer
     | IncrementBeerCount Beer
+    | AddNewBeer
+    | UpdateInputBrewery String
+    | UpdateInputName String
+    | UpdateInputYear String
+    | UpdateInputStyle String
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -110,6 +190,32 @@ update msg model =
         IncrementBeerCount beer ->
             ( { model | beers = incrementBeerCount beer model.beers }, Cmd.none )
 
+        AddNewBeer ->
+            ( addNewBeer model, Cmd.none )
+
+        UpdateInputBrewery brewery ->
+            ( { model | newBeerInput = updateBrewery model.newBeerInput brewery }, Cmd.none )
+
+        UpdateInputName name ->
+            ( { model | newBeerInput = updateName model.newBeerInput name }, Cmd.none )
+
+        UpdateInputYear year ->
+            ( { model | newBeerInput = updateYear model.newBeerInput year }, Cmd.none )
+
+        UpdateInputStyle style ->
+            ( { model | newBeerInput = updateStyle model.newBeerInput style }, Cmd.none )
+
+
+
+--UpdateInputBrewery brewery ->
+--    ( {model | newBeerInput = {model.newBeerInput | brewery = brewery}}, Cmd.none )
+--            UpdateInputName name ->
+--    ( {model | newBeerInput = {model.newBeerInput | name = name}}, Cmd.none )
+--            UpdateInputYear year ->
+--    ( {model | newBeerInput = {model.newBeerInput | year = year}}, Cmd.none )
+--            UpdateInputStyle style ->
+--    ( {model | newBeerInput = {model.newBeerInput | style = style}}, Cmd.none )
+
 
 view : Model -> Html Msg
 view model =
@@ -124,7 +230,7 @@ view model =
             [ div [ class "main seven columns" ] [ viewBeerTable model ]
             , div [ class "sidebar five columns" ]
                 [ viewFilter model
-                , viewAddBeerForm
+                , viewAddBeerForm model
                 ]
             ]
         ]
@@ -158,16 +264,17 @@ viewFilter model =
         ]
 
 
-viewAddBeerForm : Html Msg
-viewAddBeerForm =
+viewAddBeerForm : Model -> Html Msg
+viewAddBeerForm model =
     div []
         [ h2 [] [ text "Add beer" ]
-        , input [ type_ "text", placeholder "brewery" ] []
-        , input [ type_ "text", placeholder "name" ] []
-        , input [ type_ "text", placeholder "style" ] []
-        , button []
+        , input [ type_ "text", placeholder "brewery", onInput UpdateInputBrewery, value model.newBeerInput.brewery ] []
+        , input [ type_ "text", placeholder "name", onInput UpdateInputName, value model.newBeerInput.name ] []
+        , input [ type_ "text", placeholder "year", onInput UpdateInputYear, value model.newBeerInput.year ] []
+        , input [ type_ "text", placeholder "style", onInput UpdateInputStyle, value model.newBeerInput.style ] []
+        , button [ onClick AddNewBeer ]
             [ i [ class "icon-beer" ] []
-            , text "Add "
+            , text "Add"
             ]
         ]
 
