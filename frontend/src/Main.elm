@@ -13,7 +13,7 @@ import Debug
 
 main =
     Html.program
-        { init = init []
+        { init = init
         , view = view
         , update = update
         , subscriptions = subscriptions
@@ -40,9 +40,9 @@ type alias Model =
     }
 
 
-init : List Beer -> ( Model, Cmd Msg )
-init beers =
-    ( Model beers "" Nothing, getBeers )
+init : ( Model, Cmd Msg )
+init =
+    ( Model [] "" Nothing, getBeers )
 
 
 filteredBeers : Model -> List Beer
