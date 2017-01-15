@@ -50,7 +50,7 @@ filteredBeers model =
             String.contains (String.toLower model.filter) (String.toLower string)
 
         beerMatches beer =
-            isMatch beer.name || isMatch beer.style
+            isMatch beer.name || isMatch beer.style || isMatch (toString beer.year)
     in
         List.filter beerMatches model.beers
 
