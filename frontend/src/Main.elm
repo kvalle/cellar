@@ -1,6 +1,5 @@
 module Main exposing (..)
 
-import Array exposing (Array)
 import List exposing (head, map)
 import Html exposing (..)
 import Html.Attributes exposing (..)
@@ -25,7 +24,8 @@ main =
 
 
 type alias Beer =
-    { brewery : String
+    { id : Int
+    , brewery : String
     , name : String
     , style : String
     , year : Int
@@ -57,22 +57,24 @@ filteredBeers model =
         List.filter beerMatches model.beers
 
 
-updateBeer : (Beer -> Beer) -> Int -> List Beer -> List Beer
-updateBeer fn index beers =
-    case (Array.get index <| Array.fromList beers) of
-        Nothing ->
-            beers
+updateBeer : (Beer -> Beer) -> Beer -> List Beer -> List Beer
+updateBeer fn original beers =
+    let
+        update beer =
+            if beer.id == original.id then
+                fn beer
+            else
+                beer
+    in
+        List.map update beers
 
-        Just beer ->
-            Array.toList <| Array.set index (fn beer) <| Array.fromList beers
 
-
-decrementBeerCount : Int -> List Beer -> List Beer
+decrementBeerCount : Beer -> List Beer -> List Beer
 decrementBeerCount =
     updateBeer (\beer -> { beer | count = beer.count - 1 })
 
 
-incrementBeerCount : Int -> List Beer -> List Beer
+incrementBeerCount : Beer -> List Beer -> List Beer
 incrementBeerCount =
     updateBeer (\beer -> { beer | count = beer.count + 1 })
 
@@ -85,8 +87,8 @@ type Msg
     = Filter String
     | ClearFilter
     | BeerList (Result Http.Error (List Beer))
-    | DecrementBeerCount Int
-    | IncrementBeerCount Int
+    | DecrementBeerCount Beer
+    | IncrementBeerCount Beer
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -104,11 +106,11 @@ update msg model =
         BeerList (Ok beers) ->
             ( { model | beers = beers }, Cmd.none )
 
-        DecrementBeerCount index ->
-            ( { model | beers = decrementBeerCount index model.beers }, Cmd.none )
+        DecrementBeerCount beer ->
+            ( { model | beers = decrementBeerCount beer model.beers }, Cmd.none )
 
-        IncrementBeerCount index ->
-            ( { model | beers = incrementBeerCount index model.beers }, Cmd.none )
+        IncrementBeerCount beer ->
+            ( { model | beers = incrementBeerCount beer model.beers }, Cmd.none )
 
 
 view : Model -> Html Msg
@@ -179,13 +181,13 @@ viewBeerTable model =
             tr [] <| List.map (\name -> th [] [ text name ]) [ "#", "Brewery", "Beer", "Style", "" ]
 
         rows =
-            List.indexedMap viewBeerRow <| filteredBeers model
+            List.map viewBeerRow <| filteredBeers model
     in
         table [] <| heading :: rows
 
 
-viewBeerRow : Int -> Beer -> Html Msg
-viewBeerRow index beer =
+viewBeerRow : Beer -> Html Msg
+viewBeerRow beer =
     let
         trClass =
             if beer.count < 1 then
@@ -203,23 +205,23 @@ viewBeerRow index beer =
                 ]
             , td [ class "beer-style" ] [ text beer.style ]
             , td []
-                [ viewIncrementCountAction index beer
-                , viewDecrementCountAction index beer
+                [ viewIncrementCountAction beer
+                , viewDecrementCountAction beer
                 ]
             ]
 
 
-viewIncrementCountAction : Int -> Beer -> Html Msg
-viewIncrementCountAction index beer =
-    i [ onClick (IncrementBeerCount index), class "action icon-plus" ] []
+viewIncrementCountAction : Beer -> Html Msg
+viewIncrementCountAction beer =
+    i [ onClick (IncrementBeerCount beer), class "action icon-plus" ] []
 
 
-viewDecrementCountAction : Int -> Beer -> Html Msg
-viewDecrementCountAction index beer =
+viewDecrementCountAction : Beer -> Html Msg
+viewDecrementCountAction beer =
     if beer.count < 1 then
         i [ class "action icon-minus disabled" ] []
     else
-        i [ onClick (DecrementBeerCount index), class "action icon-minus" ] []
+        i [ onClick (DecrementBeerCount beer), class "action icon-minus" ] []
 
 
 
@@ -246,7 +248,8 @@ getBeers =
 
 beerDecoder : Decode.Decoder Beer
 beerDecoder =
-    Decode.map5 Beer
+    Decode.map6 Beer
+        (Decode.field "id" Decode.int)
         (Decode.field "brewery" Decode.string)
         (Decode.field "name" Decode.string)
         (Decode.field "style" Decode.string)
