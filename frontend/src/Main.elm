@@ -1,5 +1,7 @@
 module Main exposing (..)
 
+import BeerList exposing (Beer, emptyBeerList, nextAvailableId, updateBeerList, updateBeerListError, viewErrors)
+import NewBeerInput exposing (emptyNewBeerInput, updateNewBeerError)
 import List
 import Html exposing (..)
 import Html.Attributes exposing (class, placeholder, type_, value)
@@ -21,100 +23,15 @@ main =
 -- MODEL
 
 
-type alias Beer =
-    { id : Int
-    , brewery : String
-    , name : String
-    , style : String
-    , year : Int
-    , count : Int
-    }
-
-
-type alias NewBeerInput =
-    { brewery : String
-    , name : String
-    , style : String
-    , year : String
-    , error : Maybe String
-    }
-
-
 type alias Model =
-    { beers : List Beer
-    , filter : String
-    , error : Maybe String
-    , newBeerInput : NewBeerInput
+    { beerList : BeerList.Model
+    , newBeerInput : NewBeerInput.Model
     }
 
 
 init : ( Model, Cmd Msg )
 init =
-    ( Model [] "" Nothing (NewBeerInput "" "" "" "" Nothing), getBeers )
-
-
-filteredBeers : Model -> List Beer
-filteredBeers model =
-    let
-        isMatch string =
-            String.contains (String.toLower model.filter) (String.toLower string)
-
-        beerMatches beer =
-            isMatch beer.name || isMatch beer.brewery || isMatch beer.style || isMatch (toString beer.year)
-    in
-        List.filter beerMatches model.beers
-
-
-updateBeer : (Beer -> Beer) -> Beer -> List Beer -> List Beer
-updateBeer fn original beers =
-    let
-        update beer =
-            if beer.id == original.id then
-                fn beer
-            else
-                beer
-    in
-        List.map update beers
-
-
-decrementBeerCount : Beer -> List Beer -> List Beer
-decrementBeerCount =
-    updateBeer (\beer -> { beer | count = beer.count - 1 })
-
-
-incrementBeerCount : Beer -> List Beer -> List Beer
-incrementBeerCount =
-    updateBeer (\beer -> { beer | count = beer.count + 1 })
-
-
-nextAvailableId : List Beer -> Int
-nextAvailableId beers =
-    case List.map .id beers |> List.maximum of
-        Nothing ->
-            1
-
-        Just n ->
-            n + 1
-
-
-updateBrewery newBeerInput brewery =
-    { newBeerInput | brewery = brewery }
-
-
-updateName newBeerInput name =
-    { newBeerInput | name = name }
-
-
-updateStyle newBeerInput style =
-    { newBeerInput | style = style }
-
-
-updateYear newBeerInput year =
-    { newBeerInput | year = year }
-
-
-updateError newBeerInput error =
-    { newBeerInput | error = error }
+    ( Model emptyBeerList emptyNewBeerInput, getBeers )
 
 
 newBeerInputToBeer : Model -> Result String Beer
@@ -130,7 +47,7 @@ newBeerInputToBeer model =
             not <| List.any String.isEmpty [ input.name, input.year, input.style, input.brewery ]
 
         id =
-            nextAvailableId model.beers
+            nextAvailableId model.beerList.beers
     in
         case ( allFilledOut, yearResult ) of
             ( False, _ ) ->
@@ -151,10 +68,13 @@ addNewBeer model =
     in
         case result of
             Ok beer ->
-                { model | beers = beer :: model.beers, newBeerInput = NewBeerInput "" "" "" "" Nothing }
+                { model
+                    | beerList = updateBeerList model.beerList (beer :: model.beerList.beers)
+                    , newBeerInput = emptyNewBeerInput
+                }
 
             Err err ->
-                { model | newBeerInput = updateError model.newBeerInput (Just err) }
+                { model | newBeerInput = updateNewBeerError model.newBeerInput (Just err) }
 
 
 
@@ -162,53 +82,32 @@ addNewBeer model =
 
 
 type Msg
-    = Filter String
-    | ClearFilter
-    | BeerList (Result Http.Error (List Beer))
-    | DecrementBeerCount Beer
-    | IncrementBeerCount Beer
-    | AddNewBeer
-    | UpdateInputBrewery String
-    | UpdateInputName String
-    | UpdateInputYear String
-    | UpdateInputStyle String
+    = RetrievedBeerList (Result Http.Error (List Beer))
+    | BeerListMsg BeerList.Msg
+    | NewBeerInputMsg NewBeerInput.Msg
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
-        Filter filter ->
-            ( { model | filter = filter }, Cmd.none )
+        BeerListMsg msg ->
+            ( { model | beerList = BeerList.update msg model.beerList }, Cmd.none )
 
-        ClearFilter ->
-            ( { model | filter = "" }, Cmd.none )
-
-        BeerList (Err _) ->
-            ( { model | error = Just "Unable to load beer list" }, Cmd.none )
-
-        BeerList (Ok beers) ->
-            ( { model | beers = beers }, Cmd.none )
-
-        DecrementBeerCount beer ->
-            ( { model | beers = decrementBeerCount beer model.beers }, Cmd.none )
-
-        IncrementBeerCount beer ->
-            ( { model | beers = incrementBeerCount beer model.beers }, Cmd.none )
-
-        AddNewBeer ->
+        NewBeerInputMsg (NewBeerInput.AddNewBeer) ->
             ( addNewBeer model, Cmd.none )
 
-        UpdateInputBrewery brewery ->
-            ( { model | newBeerInput = updateBrewery model.newBeerInput brewery }, Cmd.none )
+        NewBeerInputMsg msg ->
+            ( { model | newBeerInput = NewBeerInput.update msg model.newBeerInput }, Cmd.none )
 
-        UpdateInputName name ->
-            ( { model | newBeerInput = updateName model.newBeerInput name }, Cmd.none )
+        RetrievedBeerList (Err _) ->
+            ( { model | beerList = updateBeerListError model.beerList <| Just "Unable to load beer list" }, Cmd.none )
 
-        UpdateInputYear year ->
-            ( { model | newBeerInput = updateYear model.newBeerInput year }, Cmd.none )
+        RetrievedBeerList (Ok beers) ->
+            ( { model | beerList = updateBeerList model.beerList beers }, Cmd.none )
 
-        UpdateInputStyle style ->
-            ( { model | newBeerInput = updateStyle model.newBeerInput style }, Cmd.none )
+
+
+-- VIEW
 
 
 view : Model -> Html Msg
@@ -220,12 +119,12 @@ view model =
             ]
         , div [ class "row" ]
             [ div [ class "main seven columns" ]
-                [ viewBeerTable model
-                , viewErrors model
+                [ Html.map BeerListMsg <| BeerList.viewBeerTable model.beerList
+                , viewErrors model.beerList
                 ]
             , div [ class "sidebar five columns" ]
-                [ viewFilter model
-                , viewAddBeerForm model
+                [ Html.map BeerListMsg <| BeerList.viewFilter model.beerList
+                , Html.map NewBeerInputMsg <| NewBeerInput.viewAddBeerForm model.newBeerInput
                 ]
             ]
         ]
@@ -234,101 +133,9 @@ view model =
 viewTitle : Html Msg
 viewTitle =
     h1 []
-        [ i [ onClick ClearFilter, class "icon-beer" ] []
+        [ i [ class "icon-beer" ] []
         , text "Cellar Index"
         ]
-
-
-viewErrors : Model -> Html Msg
-viewErrors model =
-    div [ class "errors" ] <|
-        case model.error of
-            Nothing ->
-                []
-
-            Just error ->
-                [ text error ]
-
-
-viewFilter : Model -> Html Msg
-viewFilter model =
-    div []
-        [ h2 [] [ text "Filter beers" ]
-        , input [ type_ "search", onInput Filter, value model.filter, placeholder "Filter" ] []
-        , i [ onClick ClearFilter, class "icon-cancel action" ] []
-        ]
-
-
-viewAddBeerForm : Model -> Html Msg
-viewAddBeerForm model =
-    div []
-        [ h2 [] [ text "Add beer" ]
-        , input [ type_ "text", placeholder "brewery", onInput UpdateInputBrewery, value model.newBeerInput.brewery ] []
-        , input [ type_ "text", placeholder "name", onInput UpdateInputName, value model.newBeerInput.name ] []
-        , input [ type_ "text", placeholder "year", onInput UpdateInputYear, value model.newBeerInput.year ] []
-        , input [ type_ "text", placeholder "style", onInput UpdateInputStyle, value model.newBeerInput.style ] []
-        , button [ onClick AddNewBeer ]
-            [ i [ class "icon-beer" ] []
-            , text "Add"
-            ]
-        , span [ class "errors" ] <|
-            case model.newBeerInput.error of
-                Nothing ->
-                    []
-
-                Just error ->
-                    [ text error ]
-        ]
-
-
-viewBeerTable : Model -> Html Msg
-viewBeerTable model =
-    let
-        heading =
-            tr [] <| List.map (\name -> th [] [ text name ]) [ "#", "Brewery", "Beer", "Style", "" ]
-
-        rows =
-            List.map viewBeerRow <| filteredBeers model
-    in
-        table [] <| heading :: rows
-
-
-viewBeerRow : Beer -> Html Msg
-viewBeerRow beer =
-    let
-        trClass =
-            if beer.count < 1 then
-                "zero-row"
-            else
-                ""
-    in
-        tr
-            [ class trClass ]
-            [ td [ class "beer-count" ] [ text <| toString beer.count ]
-            , td [] [ text beer.brewery ]
-            , td []
-                [ text beer.name
-                , span [ class "beer-year" ] [ text <| "(" ++ (toString beer.year) ++ ")" ]
-                ]
-            , td [ class "beer-style" ] [ text beer.style ]
-            , td []
-                [ viewIncrementCountAction beer
-                , viewDecrementCountAction beer
-                ]
-            ]
-
-
-viewIncrementCountAction : Beer -> Html Msg
-viewIncrementCountAction beer =
-    i [ onClick (IncrementBeerCount beer), class "action icon-plus" ] []
-
-
-viewDecrementCountAction : Beer -> Html Msg
-viewDecrementCountAction beer =
-    if beer.count < 1 then
-        i [ class "action icon-minus disabled" ] []
-    else
-        i [ onClick (DecrementBeerCount beer), class "action icon-minus" ] []
 
 
 
@@ -350,7 +157,7 @@ getBeers =
         url =
             "http://localhost:9000/api/beers"
     in
-        Http.send BeerList (Http.get url beerListDecoder)
+        Http.send RetrievedBeerList (Http.get url beerListDecoder)
 
 
 beerDecoder : Decode.Decoder Beer
