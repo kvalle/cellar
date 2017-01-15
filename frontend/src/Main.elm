@@ -166,19 +166,27 @@ viewBeerTable model =
 
 viewBeerRow : Int -> Beer -> Html Msg
 viewBeerRow index beer =
-    tr []
-        [ td [ style [ ( "color", "gray" ) ] ] [ text <| toString beer.count ]
-        , td [] [ text beer.brewery ]
-        , td []
-            [ text beer.name
-            , span [ style [ ( "padding-left", "10px" ) ] ] [ text <| "(" ++ (toString beer.year) ++ ")" ]
+    let
+        trClass =
+            if beer.count < 1 then
+                "zero-row"
+            else
+                ""
+    in
+        tr
+            [ class trClass ]
+            [ td [ class "beer-count" ] [ text <| toString beer.count ]
+            , td [] [ text beer.brewery ]
+            , td []
+                [ text beer.name
+                , span [ class "beer-year" ] [ text <| "(" ++ (toString beer.year) ++ ")" ]
+                ]
+            , td [ class "beer-style" ] [ text beer.style ]
+            , td []
+                [ viewIncrementCountAction index beer
+                , viewDecrementCountAction index beer
+                ]
             ]
-        , td [ style [ ( "color", "gray" ) ] ] [ text beer.style ]
-        , td []
-            [ viewIncrementCountAction index beer
-            , viewDecrementCountAction index beer
-            ]
-        ]
 
 
 viewIncrementCountAction : Int -> Beer -> Html Msg

@@ -11,6 +11,18 @@ h1 i {
 	color: #ffd000;
 }
 
+tr.beer-count, tr.beer-style {
+	color: gray;
+}
+
+tr .beer-year {
+	padding-left: 5px;
+}
+
+tr.zero-row {
+	color: #ccc;
+}
+
 .action {
 	color: gray;
 	cursor: pointer;
