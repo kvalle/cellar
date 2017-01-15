@@ -111,17 +111,22 @@ update msg model =
             ( { model | beers = incrementBeerCount index model.beers }, Cmd.none )
 
 
-
--- VIEW
-
-
 view : Model -> Html Msg
 view model =
-    div []
-        [ viewTitle
-        , viewErrors model
-        , viewFilter model
-        , viewBeerTable model
+    div [ class "container" ]
+        [ div [ class "row" ]
+            [ div [ class "twelve columns" ]
+                [ viewTitle
+                , viewErrors model
+                ]
+            ]
+        , div [ class "row" ]
+            [ div [ class "eight columns" ] [ viewBeerTable model ]
+            , div [ class "four columns" ]
+                [ viewFilter model
+                , viewAddBeerForm
+                ]
+            ]
         ]
 
 
@@ -162,6 +167,17 @@ viewBeerTable model =
             List.indexedMap viewBeerRow <| filteredBeers model
     in
         table [] <| heading :: rows
+
+
+viewAddBeerForm : Html Msg
+viewAddBeerForm =
+    div
+        []
+        [ input [ type_ "text", placeholder "brewery" ] []
+        , input [ type_ "text", placeholder "name" ] []
+        , input [ type_ "text", placeholder "style" ] []
+        , button [] [ text "Add ", i [ class "action icon-beer" ] [] ]
+        ]
 
 
 viewBeerRow : Int -> Beer -> Html Msg
