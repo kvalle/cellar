@@ -7,6 +7,10 @@ h1 {
 	font-family: 'Arima Madurai', cursive;
 }
 
+h1 i {
+	color: #ffd000;
+}
+
 .action {
 	color: gray;
 	cursor: pointer;
