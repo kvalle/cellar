@@ -43,3 +43,7 @@ tr.zero-row {
 .action.disabled:hover {
 	color: gray;
 }
+
+.errors {
+	color: red;
+}

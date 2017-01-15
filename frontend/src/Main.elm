@@ -36,6 +36,7 @@ type alias NewBeerInput =
     , name : String
     , style : String
     , year : String
+    , error : Maybe String
     }
 
 
@@ -49,7 +50,7 @@ type alias Model =
 
 init : ( Model, Cmd Msg )
 init =
-    ( Model [] "" Nothing (NewBeerInput "" "" "" ""), getBeers )
+    ( Model [] "" Nothing (NewBeerInput "" "" "" "" Nothing), getBeers )
 
 
 filteredBeers : Model -> List Beer
@@ -112,6 +113,10 @@ updateYear newBeerInput year =
     { newBeerInput | year = year }
 
 
+updateError newBeerInput error =
+    { newBeerInput | error = error }
+
+
 newBeerInputToBeer : Model -> Result String Beer
 newBeerInputToBeer model =
     let
@@ -146,10 +151,10 @@ addNewBeer model =
     in
         case result of
             Ok beer ->
-                { model | beers = beer :: model.beers, newBeerInput = NewBeerInput "" "" "" "" }
+                { model | beers = beer :: model.beers, newBeerInput = NewBeerInput "" "" "" "" Nothing }
 
             Err err ->
-                { model | error = Just err }
+                { model | newBeerInput = updateError model.newBeerInput (Just err) }
 
 
 
@@ -206,28 +211,18 @@ update msg model =
             ( { model | newBeerInput = updateStyle model.newBeerInput style }, Cmd.none )
 
 
-
---UpdateInputBrewery brewery ->
---    ( {model | newBeerInput = {model.newBeerInput | brewery = brewery}}, Cmd.none )
---            UpdateInputName name ->
---    ( {model | newBeerInput = {model.newBeerInput | name = name}}, Cmd.none )
---            UpdateInputYear year ->
---    ( {model | newBeerInput = {model.newBeerInput | year = year}}, Cmd.none )
---            UpdateInputStyle style ->
---    ( {model | newBeerInput = {model.newBeerInput | style = style}}, Cmd.none )
-
-
 view : Model -> Html Msg
 view model =
     div [ class "container" ]
         [ div [ class "row" ]
             [ div [ class "twelve columns" ]
-                [ viewTitle
-                , viewErrors model
-                ]
+                [ viewTitle ]
             ]
         , div [ class "row" ]
-            [ div [ class "main seven columns" ] [ viewBeerTable model ]
+            [ div [ class "main seven columns" ]
+                [ viewBeerTable model
+                , viewErrors model
+                ]
             , div [ class "sidebar five columns" ]
                 [ viewFilter model
                 , viewAddBeerForm model
@@ -276,6 +271,13 @@ viewAddBeerForm model =
             [ i [ class "icon-beer" ] []
             , text "Add"
             ]
+        , span [ class "errors" ] <|
+            case model.newBeerInput.error of
+                Nothing ->
+                    []
+
+                Just error ->
+                    [ text error ]
         ]
 
 
