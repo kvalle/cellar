@@ -117,17 +117,24 @@ viewErrors model =
 
 viewFilter : Model -> Html Msg
 viewFilter model =
-    div []
-        [ input [ type_ "search", onInput Filter, value model.filter, placeholder "Filter" ] []
-        , i [ onClick ClearFilter, class "demo-icon icon-cancel-circled" ] []
-        ]
+    let
+        classes =
+            if String.isEmpty model.filter then
+                "icon-cancel action disabled"
+            else
+                "icon-cancel action"
+    in
+        div []
+            [ input [ type_ "search", onInput Filter, value model.filter, placeholder "Filter" ] []
+            , i [ onClick ClearFilter, class classes ] []
+            ]
 
 
 viewBeerTable : Model -> Html Msg
 viewBeerTable model =
     let
         heading =
-            tr [] <| List.map (\name -> th [] [ text name ]) [ "#", "Brewery", "Beer", "Style" ]
+            tr [] <| List.map (\name -> th [] [ text name ]) [ "#", "Brewery", "Beer", "Style", "" ]
 
         rows =
             List.map viewBeerRow <| filteredBeers model
@@ -145,6 +152,10 @@ viewBeerRow beer =
             , span [ style [ ( "padding-left", "10px" ) ] ] [ text <| "(" ++ (toString beer.year) ++ ")" ]
             ]
         , td [ style [ ( "color", "gray" ) ] ] [ text beer.style ]
+        , td []
+            [ i [ onClick ClearFilter, class "action icon-plus" ] []
+            , i [ onClick ClearFilter, class "action icon-minus" ] []
+            ]
         ]
 
 

@@ -7,3 +7,19 @@ h1 {
 	font-family: 'Arima Madurai', cursive;
 }
 
+.action {
+	color: gray;
+	cursor: pointer;
+}
+
+.action.disabled {
+	cursor: default;
+}
+
+.action:hover {
+	color: black;
+}
+
+.action.disabled:hover {
+	color: gray;
+}

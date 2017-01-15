@@ -35,6 +35,12 @@
       "css": "plus",
       "code": 59397,
       "src": "elusive"
+    },
+    {
+      "uid": "0fb1948386f4581c72424a69587e6471",
+      "css": "minus",
+      "code": 59398,
+      "src": "elusive"
     }
   ]
 }
