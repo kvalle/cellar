@@ -1,5 +1,6 @@
 module Main exposing (..)
 
+import Array exposing (Array)
 import List exposing (head, map)
 import Html exposing (..)
 import Html.Attributes exposing (..)
@@ -56,6 +57,26 @@ filteredBeers model =
         List.filter beerMatches model.beers
 
 
+decrementBeer : Int -> List Beer -> List Beer
+decrementBeer index beers =
+    case (Array.get index <| Array.fromList beers) of
+        Nothing ->
+            beers
+
+        Just beer ->
+            Array.toList <| Array.set index { beer | count = beer.count - 1 } <| Array.fromList beers
+
+
+incrementBeer : Int -> List Beer -> List Beer
+incrementBeer index beers =
+    case (Array.get index <| Array.fromList beers) of
+        Nothing ->
+            beers
+
+        Just beer ->
+            Array.toList <| Array.set index { beer | count = beer.count + 1 } <| Array.fromList beers
+
+
 
 -- UPDATE
 
@@ -64,6 +85,8 @@ type Msg
     = Filter String
     | ClearFilter
     | BeerList (Result Http.Error (List Beer))
+    | DecrementBeer Int
+    | IncrementBeer Int
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -80,6 +103,12 @@ update msg model =
 
         BeerList (Ok beers) ->
             ( { model | beers = beers }, Cmd.none )
+
+        DecrementBeer index ->
+            ( { model | beers = decrementBeer index model.beers }, Cmd.none )
+
+        IncrementBeer index ->
+            ( { model | beers = incrementBeer index model.beers }, Cmd.none )
 
 
 
@@ -117,17 +146,10 @@ viewErrors model =
 
 viewFilter : Model -> Html Msg
 viewFilter model =
-    let
-        classes =
-            if String.isEmpty model.filter then
-                "icon-cancel action disabled"
-            else
-                "icon-cancel action"
-    in
-        div []
-            [ input [ type_ "search", onInput Filter, value model.filter, placeholder "Filter" ] []
-            , i [ onClick ClearFilter, class classes ] []
-            ]
+    div []
+        [ input [ type_ "search", onInput Filter, value model.filter, placeholder "Filter" ] []
+        , i [ onClick ClearFilter, class <| disabledClass (String.isEmpty model.filter) "icon-cancel action" ] []
+        ]
 
 
 viewBeerTable : Model -> Html Msg
@@ -137,13 +159,13 @@ viewBeerTable model =
             tr [] <| List.map (\name -> th [] [ text name ]) [ "#", "Brewery", "Beer", "Style", "" ]
 
         rows =
-            List.map viewBeerRow <| filteredBeers model
+            List.indexedMap viewBeerRow <| filteredBeers model
     in
         table [] <| heading :: rows
 
 
-viewBeerRow : Beer -> Html Msg
-viewBeerRow beer =
+viewBeerRow : Int -> Beer -> Html Msg
+viewBeerRow index beer =
     tr []
         [ td [ style [ ( "color", "gray" ) ] ] [ text <| toString beer.count ]
         , td [] [ text beer.brewery ]
@@ -153,10 +175,18 @@ viewBeerRow beer =
             ]
         , td [ style [ ( "color", "gray" ) ] ] [ text beer.style ]
         , td []
-            [ i [ onClick ClearFilter, class "action icon-plus" ] []
-            , i [ onClick ClearFilter, class "action icon-minus" ] []
+            [ i [ onClick (IncrementBeer index), class "action icon-plus" ] []
+            , i [ onClick (DecrementBeer index), class <| disabledClass (beer.count < 1) "action icon-minus" ] []
             ]
         ]
+
+
+disabledClass : Bool -> String -> String
+disabledClass pred classes =
+    if pred then
+        classes ++ " disabled"
+    else
+        classes
 
 
 
