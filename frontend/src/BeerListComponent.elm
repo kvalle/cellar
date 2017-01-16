@@ -12,23 +12,17 @@ import Html.Events exposing (onClick, onInput)
 
 type alias Model =
     { beers : List Beer
-    , error : Maybe String
     }
 
 
 empty : Model
 empty =
-    Model [] Nothing
+    Model []
 
 
 updateBeers : Model -> List Beer -> Model
 updateBeers model beers =
     { model | beers = beers }
-
-
-updateError : Model -> Maybe String -> Model
-updateError model error =
-    { model | error = error }
 
 
 
@@ -50,17 +44,6 @@ update msg model =
 
 
 -- VIEW
-
-
-viewErrors : Model -> Html msg
-viewErrors model =
-    div [ class "errors" ] <|
-        case model.error of
-            Nothing ->
-                []
-
-            Just error ->
-                [ text error ]
 
 
 viewBeerTable : String -> List Beer -> Html BeerListMsg

@@ -31,12 +31,13 @@ type alias Model =
     { beerList : BeerListComponent.Model
     , addBeer : AddBeerComponent.Model
     , filter : String
+    , error : Maybe String
     }
 
 
 init : ( Model, Cmd Msg )
 init =
-    ( Model BeerListComponent.empty AddBeerComponent.empty "", getBeers )
+    ( Model BeerListComponent.empty AddBeerComponent.empty "" Nothing, getBeers )
 
 
 
@@ -71,7 +72,7 @@ update msg model =
             ( { model | addBeer = AddBeerComponent.update msg model.addBeer }, Cmd.none )
 
         RetrievedBeerList (Err _) ->
-            ( { model | beerList = BeerListComponent.updateError model.beerList <| Just "Unable to load beer list" }, Cmd.none )
+            ( { model | error = Just "Unable to load beer list" }, Cmd.none )
 
         RetrievedBeerList (Ok beers) ->
             ( { model | beerList = BeerListComponent.updateBeers model.beerList beers }, Cmd.none )
@@ -91,7 +92,7 @@ view model =
         , div [ class "row" ]
             [ div [ class "main seven columns" ]
                 [ Html.map BeerListMessage <| BeerListComponent.viewBeerTable model.filter model.beerList.beers
-                , BeerListComponent.viewErrors model.beerList
+                , viewErrors model.error
                 ]
             , div [ class "sidebar five columns" ]
                 [ FilterComponent.viewFilter model.filter
@@ -99,6 +100,17 @@ view model =
                 ]
             ]
         ]
+
+
+viewErrors : Maybe String -> Html msg
+viewErrors error =
+    div [ class "errors" ] <|
+        case error of
+            Nothing ->
+                []
+
+            Just error ->
+                [ text error ]
 
 
 viewTitle : Html Msg
