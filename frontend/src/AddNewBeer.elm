@@ -1,5 +1,6 @@
 module AddNewBeer exposing (..)
 
+import Beer exposing (Beer)
 import Html exposing (..)
 import Html.Attributes exposing (class, placeholder, type_, value)
 import Html.Events exposing (onClick, onInput)
@@ -27,6 +28,26 @@ updateNewBeerError model error =
     { model | error = error }
 
 
+validateForm : Model -> Result String Beer
+validateForm model =
+    let
+        yearResult =
+            String.toInt model.year
+
+        allFilledOut =
+            not <| List.any String.isEmpty [ model.name, model.year, model.style, model.brewery ]
+    in
+        case ( yearResult, allFilledOut ) of
+            ( Ok year, True ) ->
+                Ok <| Beer Nothing model.brewery model.name model.style year 1
+
+            ( Err err, _ ) ->
+                Err err
+
+            ( Ok _, False ) ->
+                Err "All fields must be filled out"
+
+
 
 -- UPDATE
 
@@ -37,6 +58,7 @@ type Msg
     | UpdateYear String
     | UpdateStyle String
     | AddNewBeer
+    | ClearForm
 
 
 update : Msg -> Model -> Model
@@ -53,6 +75,9 @@ update msg model =
 
         UpdateStyle style ->
             { model | style = style }
+
+        ClearForm ->
+            empty
 
         AddNewBeer ->
             -- handled by Main for now

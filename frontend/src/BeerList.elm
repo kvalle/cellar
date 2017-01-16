@@ -1,5 +1,6 @@
 module BeerList exposing (..)
 
+import Beer exposing (Beer)
 import Html exposing (..)
 import Html.Attributes exposing (class, placeholder, type_, value)
 import Html.Events exposing (onClick, onInput)
@@ -12,16 +13,6 @@ type alias Model =
     { beers : List Beer
     , filter : String
     , error : Maybe String
-    }
-
-
-type alias Beer =
-    { id : Int
-    , brewery : String
-    , name : String
-    , style : String
-    , year : Int
-    , count : Int
     }
 
 
@@ -66,7 +57,7 @@ incrementBeerCount =
 
 nextAvailableId : List Beer -> Int
 nextAvailableId beers =
-    case List.map .id beers |> List.maximum of
+    case List.filterMap .id beers |> List.maximum of
         Nothing ->
             1
 
@@ -97,6 +88,7 @@ type Msg
     = UpdateFilter String
     | DecrementBeerCount Beer
     | IncrementBeerCount Beer
+    | AddNewBeer Beer
 
 
 update : Msg -> Model -> Model
@@ -110,6 +102,9 @@ update msg model =
 
         IncrementBeerCount beer ->
             updateBeers model <| incrementBeerCount beer model.beers
+
+        AddNewBeer beer ->
+            { model | beers = beer :: model.beers }
 
 
 

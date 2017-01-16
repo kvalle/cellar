@@ -1,6 +1,7 @@
 module Main exposing (..)
 
-import BeerList exposing (Beer, nextAvailableId, updateBeers, updateBeerListError, viewErrors)
+import Beer exposing (Beer)
+import BeerList exposing (nextAvailableId, updateBeers, updateBeerListError, viewErrors)
 import AddNewBeer exposing (updateNewBeerError)
 import List
 import Html exposing (..)
@@ -34,49 +35,6 @@ init =
     ( Model BeerList.empty AddNewBeer.empty, getBeers )
 
 
-addBeerToBeer : Model -> Result String Beer
-addBeerToBeer model =
-    let
-        input =
-            model.addBeer
-
-        yearResult =
-            String.toInt input.year
-
-        allFilledOut =
-            not <| List.any String.isEmpty [ input.name, input.year, input.style, input.brewery ]
-
-        id =
-            nextAvailableId model.beerList.beers
-    in
-        case ( allFilledOut, yearResult ) of
-            ( False, _ ) ->
-                Err "All fields must be filled out"
-
-            ( True, Err err ) ->
-                Err err
-
-            ( True, Ok year ) ->
-                Ok <| Beer id input.brewery input.name input.style year 1
-
-
-addNewBeer : Model -> Model
-addNewBeer model =
-    let
-        result =
-            addBeerToBeer model
-    in
-        case result of
-            Ok beer ->
-                { model
-                    | beerList = updateBeers model.beerList (beer :: model.beerList.beers)
-                    , addBeer = AddNewBeer.empty
-                }
-
-            Err err ->
-                { model | addBeer = updateNewBeerError model.addBeer (Just err) }
-
-
 
 -- UPDATE
 
@@ -94,7 +52,19 @@ update msg model =
             ( { model | beerList = BeerList.update msg model.beerList }, Cmd.none )
 
         NewBeerInputMsg (AddNewBeer.AddNewBeer) ->
-            ( addNewBeer model, Cmd.none )
+            case AddNewBeer.validateForm model.addBeer of
+                Ok beer ->
+                    let
+                        beerList =
+                            BeerList.update (BeerList.AddNewBeer beer) model.beerList
+
+                        addBeer =
+                            AddNewBeer.update AddNewBeer.ClearForm model.addBeer
+                    in
+                        ( { model | beerList = beerList, addBeer = addBeer }, Cmd.none )
+
+                Err err ->
+                    ( { model | addBeer = updateNewBeerError model.addBeer (Just err) }, Cmd.none )
 
         NewBeerInputMsg msg ->
             ( { model | addBeer = AddNewBeer.update msg model.addBeer }, Cmd.none )
@@ -163,7 +133,7 @@ getBeers =
 beerDecoder : Decode.Decoder Beer
 beerDecoder =
     Decode.map6 Beer
-        (Decode.field "id" Decode.int)
+        (Decode.nullable (Decode.field "id" Decode.int))
         (Decode.field "brewery" Decode.string)
         (Decode.field "name" Decode.string)
         (Decode.field "style" Decode.string)
