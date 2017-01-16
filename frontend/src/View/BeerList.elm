@@ -1,6 +1,6 @@
 module View.BeerList exposing (viewBeerList)
 
-import Messages exposing (..)
+import Messages exposing (Msg(..))
 import Beer exposing (Beer)
 import Html exposing (..)
 import Html.Attributes exposing (class, placeholder, type_, value)

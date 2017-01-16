@@ -1,4 +1,4 @@
-module View.AddBeer exposing (..)
+module View.AddBeer exposing (viewAddBeerForm)
 
 import Messages exposing (Msg(..))
 import Beer exposing (Beer)

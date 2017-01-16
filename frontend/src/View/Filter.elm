@@ -1,7 +1,7 @@
-module View.Filter exposing (..)
+module View.Filter exposing (viewFilter)
 
-import Messages exposing (..)
-import Html exposing (..)
+import Messages exposing (Msg(..))
+import Html exposing (Html, h2, div, text, input, i)
 import Html.Attributes exposing (class, placeholder, type_, value)
 import Html.Events exposing (onClick, onInput)
 

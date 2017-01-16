@@ -1,6 +1,6 @@
 module Main exposing (..)
 
-import Messages exposing (..)
+import Messages exposing (Msg(..))
 import Subscriptions exposing (subscriptions)
 import Commands exposing (fetchBeerList)
 import Beer exposing (Beer)
@@ -8,12 +8,8 @@ import NewBeerForm exposing (NewBeerForm)
 import View.BeerList exposing (viewBeerList)
 import View.AddBeer exposing (viewAddBeerForm)
 import View.Filter exposing (viewFilter)
-import List
 import Html exposing (..)
-import Html.Attributes exposing (class, placeholder, type_, value)
-import Html.Events exposing (onClick, onInput)
-import Http
-import Json.Decode as Decode
+import Html.Attributes exposing (class)
 
 
 main =
