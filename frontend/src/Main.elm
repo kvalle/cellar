@@ -2,6 +2,7 @@ module Main exposing (..)
 
 import Messages exposing (..)
 import Subscriptions exposing (subscriptions)
+import Commands exposing (fetchBeerList)
 import Beer exposing (Beer)
 import NewBeerForm exposing (NewBeerForm)
 import View.BeerList exposing (viewBeerList)
@@ -38,7 +39,7 @@ type alias Model =
 
 init : ( Model, Cmd Msg )
 init =
-    ( Model [] NewBeerForm.empty "" Nothing, getBeers )
+    ( Model [] NewBeerForm.empty "" Nothing, fetchBeerList )
 
 
 
@@ -54,11 +55,12 @@ update msg model =
         AddNewBeer ->
             case NewBeerForm.validate model.addBeerForm of
                 Ok beer ->
-                    let
-                        beerList =
-                            Beer.addBeer beer model.beerList
-                    in
-                        ( { model | beerList = beerList, addBeerForm = NewBeerForm.empty }, Cmd.none )
+                    ( { model
+                        | beerList = Beer.addBeer beer model.beerList
+                        , addBeerForm = NewBeerForm.empty
+                      }
+                    , Cmd.none
+                    )
 
                 Err err ->
                     ( { model | addBeerForm = NewBeerForm.updateError model.addBeerForm (Just err) }, Cmd.none )
@@ -132,32 +134,3 @@ viewTitle =
         [ i [ class "icon-beer" ] []
         , text "Cellar Index"
         ]
-
-
-
--- HTTP
-
-
-getBeers : Cmd Msg
-getBeers =
-    let
-        url =
-            "http://localhost:9000/api/beers"
-    in
-        Http.send RetrievedBeerList (Http.get url beerListDecoder)
-
-
-beerDecoder : Decode.Decoder Beer
-beerDecoder =
-    Decode.map6 Beer
-        (Decode.nullable (Decode.field "id" Decode.int))
-        (Decode.field "brewery" Decode.string)
-        (Decode.field "name" Decode.string)
-        (Decode.field "style" Decode.string)
-        (Decode.field "year" Decode.int)
-        (Decode.field "count" Decode.int)
-
-
-beerListDecoder : Decode.Decoder (List Beer)
-beerListDecoder =
-    Decode.list beerDecoder
