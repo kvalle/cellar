@@ -1,5 +1,6 @@
 module BeerListComponent exposing (..)
 
+import Messages exposing (..)
 import Beer exposing (Beer)
 import Html exposing (..)
 import Html.Attributes exposing (class, placeholder, type_, value)
@@ -11,19 +12,13 @@ import Html.Events exposing (onClick, onInput)
 
 type alias Model =
     { beers : List Beer
-    , filter : String
     , error : Maybe String
     }
 
 
 empty : Model
 empty =
-    Model [] "" Nothing
-
-
-updateFilter : Model -> String -> Model
-updateFilter model filter =
-    { model | filter = filter }
+    Model [] Nothing
 
 
 updateBeers : Model -> List Beer -> Model
@@ -40,26 +35,16 @@ updateError model error =
 -- UPDATE
 
 
-type Msg
-    = UpdateFilter String
-    | DecrementBeerCount Beer
-    | IncrementBeerCount Beer
-    | AddNewBeer Beer
-
-
-update : Msg -> Model -> Model
+update : BeerListMsg -> Model -> Model
 update msg model =
     case msg of
-        UpdateFilter filter ->
-            { model | filter = filter }
-
         DecrementBeerCount beer ->
             updateBeers model <| Beer.decrementBeerCount beer model.beers
 
         IncrementBeerCount beer ->
             updateBeers model <| Beer.incrementBeerCount beer model.beers
 
-        AddNewBeer beer ->
+        AddBeerToList beer ->
             { model | beers = Beer.addBeer beer model.beers }
 
 
@@ -78,28 +63,19 @@ viewErrors model =
                 [ text error ]
 
 
-viewFilter : Model -> Html Msg
-viewFilter model =
-    div []
-        [ h2 [] [ text "Filter beers" ]
-        , input [ type_ "search", onInput UpdateFilter, value model.filter, placeholder "Filter" ] []
-        , i [ onClick <| UpdateFilter "", class "icon-cancel action" ] []
-        ]
-
-
-viewBeerTable : Model -> Html Msg
-viewBeerTable model =
+viewBeerTable : String -> List Beer -> Html BeerListMsg
+viewBeerTable filter beers =
     let
         heading =
             tr [] <| List.map (\name -> th [] [ text name ]) [ "#", "Brewery", "Beer", "Style", "" ]
 
         rows =
-            List.map viewBeerRow <| Beer.filteredBeers model.filter model.beers
+            List.map viewBeerRow <| Beer.filteredBeers filter beers
     in
         table [] <| heading :: rows
 
 
-viewBeerRow : Beer -> Html Msg
+viewBeerRow : Beer -> Html BeerListMsg
 viewBeerRow beer =
     let
         trClass =
@@ -124,12 +100,12 @@ viewBeerRow beer =
             ]
 
 
-viewIncrementCountAction : Beer -> Html Msg
+viewIncrementCountAction : Beer -> Html BeerListMsg
 viewIncrementCountAction beer =
     i [ onClick (IncrementBeerCount beer), class "action icon-plus" ] []
 
 
-viewDecrementCountAction : Beer -> Html Msg
+viewDecrementCountAction : Beer -> Html BeerListMsg
 viewDecrementCountAction beer =
     if beer.count < 1 then
         i [ class "action icon-minus disabled" ] []

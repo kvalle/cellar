@@ -1,5 +1,6 @@
 module AddBeerComponent exposing (..)
 
+import Messages exposing (..)
 import Beer exposing (Beer)
 import Html exposing (..)
 import Html.Attributes exposing (class, placeholder, type_, value)
@@ -52,16 +53,7 @@ validateForm model =
 -- UPDATE
 
 
-type Msg
-    = UpdateBrewery String
-    | UpdateName String
-    | UpdateYear String
-    | UpdateStyle String
-    | AddNewBeer
-    | ClearForm
-
-
-update : Msg -> Model -> Model
+update : AddBeerMsg -> Model -> Model
 update msg model =
     case msg of
         UpdateBrewery brewery ->
@@ -88,7 +80,7 @@ update msg model =
 -- VIEW
 
 
-viewAddBeerForm : Model -> Html Msg
+viewAddBeerForm : Model -> Html AddBeerMsg
 viewAddBeerForm model =
     div []
         [ h2 [] [ text "Add beer" ]
