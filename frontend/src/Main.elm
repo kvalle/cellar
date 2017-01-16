@@ -4,9 +4,9 @@ import Messages exposing (..)
 import Subscriptions exposing (subscriptions)
 import Beer exposing (Beer)
 import NewBeerForm exposing (NewBeerForm)
-import View.BeerList
-import AddBeerComponent
-import View.Filter
+import View.BeerList exposing (viewBeerList)
+import View.AddBeer exposing (viewAddBeerForm)
+import View.Filter exposing (viewFilter)
 import List
 import Html exposing (..)
 import Html.Attributes exposing (class, placeholder, type_, value)
@@ -55,22 +55,22 @@ update msg model =
             ( { model | beerList = updateBeerList msg model.beerList }, Cmd.none )
 
         AddBeerMessage AddNewBeer ->
-            case AddBeerComponent.validateForm model.addBeer of
+            case NewBeerForm.validate model.addBeer of
                 Ok beer ->
                     let
                         beerList =
                             updateBeerList (AddBeerToList beer) model.beerList
 
                         addBeer =
-                            AddBeerComponent.update ClearForm model.addBeer
+                            updateNewBeerForm ClearForm model.addBeer
                     in
                         ( { model | beerList = beerList, addBeer = addBeer }, Cmd.none )
 
                 Err err ->
-                    ( { model | addBeer = AddBeerComponent.updateError model.addBeer (Just err) }, Cmd.none )
+                    ( { model | addBeer = NewBeerForm.updateError model.addBeer (Just err) }, Cmd.none )
 
         AddBeerMessage msg ->
-            ( { model | addBeer = AddBeerComponent.update msg model.addBeer }, Cmd.none )
+            ( { model | addBeer = updateNewBeerForm msg model.addBeer }, Cmd.none )
 
         RetrievedBeerList (Err _) ->
             ( { model | error = Just "Unable to load beer list" }, Cmd.none )
@@ -92,6 +92,29 @@ updateBeerList msg model =
             Beer.addBeer beer model
 
 
+updateNewBeerForm : AddBeerMsg -> NewBeerForm -> NewBeerForm
+updateNewBeerForm msg model =
+    case msg of
+        UpdateBrewery brewery ->
+            { model | brewery = brewery }
+
+        UpdateName name ->
+            { model | name = name }
+
+        UpdateYear year ->
+            { model | year = year }
+
+        UpdateStyle style ->
+            { model | style = style }
+
+        ClearForm ->
+            NewBeerForm.empty
+
+        AddNewBeer ->
+            -- handled by Main for now
+            model
+
+
 
 -- VIEW
 
@@ -105,12 +128,12 @@ view model =
             ]
         , div [ class "row" ]
             [ div [ class "main seven columns" ]
-                [ Html.map BeerListMessage <| View.BeerList.viewBeerTable model.filter model.beerList
+                [ Html.map BeerListMessage <| viewBeerList model.filter model.beerList
                 , viewErrors model.error
                 ]
             , div [ class "sidebar five columns" ]
-                [ View.Filter.viewFilter model.filter
-                , Html.map AddBeerMessage <| AddBeerComponent.viewAddBeerForm model.addBeer
+                [ viewFilter model.filter
+                , Html.map AddBeerMessage <| viewAddBeerForm model.addBeer
                 ]
             ]
         ]

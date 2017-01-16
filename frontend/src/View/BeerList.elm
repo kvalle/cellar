@@ -1,4 +1,4 @@
-module View.BeerList exposing (..)
+module View.BeerList exposing (viewBeerList)
 
 import Messages exposing (..)
 import Beer exposing (Beer)
@@ -7,8 +7,8 @@ import Html.Attributes exposing (class, placeholder, type_, value)
 import Html.Events exposing (onClick, onInput)
 
 
-viewBeerTable : String -> List Beer -> Html BeerListMsg
-viewBeerTable filter beers =
+viewBeerList : String -> List Beer -> Html BeerListMsg
+viewBeerList filter beers =
     let
         heading =
             tr [] <| List.map (\name -> th [] [ text name ]) [ "#", "Brewery", "Beer", "Style", "" ]
