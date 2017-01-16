@@ -55,8 +55,8 @@ validate model =
             ( Ok year, True ) ->
                 Ok <| Beer Nothing model.brewery model.name model.style year 1
 
-            ( Err err, _ ) ->
-                Err err
-
-            ( Ok _, False ) ->
+            ( _, False ) ->
                 Err "All fields must be filled out"
+
+            ( Err err, _ ) ->
+                Err <| "Input '" ++ model.year ++ "' is not a vaild year"
