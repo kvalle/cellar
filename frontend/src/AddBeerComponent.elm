@@ -1,4 +1,4 @@
-module AddNewBeer exposing (..)
+module AddBeerComponent exposing (..)
 
 import Beer exposing (Beer)
 import Html exposing (..)
@@ -23,8 +23,8 @@ empty =
     Model "" "" "" "" Nothing
 
 
-updateNewBeerError : Model -> Maybe String -> Model
-updateNewBeerError model error =
+updateError : Model -> Maybe String -> Model
+updateError model error =
     { model | error = error }
 
 

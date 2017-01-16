@@ -1,4 +1,4 @@
-module BeerList exposing (..)
+module BeerListComponent exposing (..)
 
 import Beer exposing (Beer)
 import Html exposing (..)
@@ -21,50 +21,6 @@ empty =
     Model [] "" Nothing
 
 
-filteredBeers : Model -> List Beer
-filteredBeers beerList =
-    let
-        isMatch string =
-            String.contains (String.toLower beerList.filter) (String.toLower string)
-
-        beerMatches beer =
-            isMatch beer.name || isMatch beer.brewery || isMatch beer.style || isMatch (toString beer.year)
-    in
-        List.filter beerMatches beerList.beers
-
-
-updateBeer : (Beer -> Beer) -> Beer -> List Beer -> List Beer
-updateBeer fn original beers =
-    let
-        update beer =
-            if beer.id == original.id then
-                fn beer
-            else
-                beer
-    in
-        List.map update beers
-
-
-decrementBeerCount : Beer -> List Beer -> List Beer
-decrementBeerCount =
-    updateBeer (\beer -> { beer | count = beer.count - 1 })
-
-
-incrementBeerCount : Beer -> List Beer -> List Beer
-incrementBeerCount =
-    updateBeer (\beer -> { beer | count = beer.count + 1 })
-
-
-nextAvailableId : List Beer -> Int
-nextAvailableId beers =
-    case List.filterMap .id beers |> List.maximum of
-        Nothing ->
-            1
-
-        Just n ->
-            n + 1
-
-
 updateFilter : Model -> String -> Model
 updateFilter model filter =
     { model | filter = filter }
@@ -75,8 +31,8 @@ updateBeers model beers =
     { model | beers = beers }
 
 
-updateBeerListError : Model -> Maybe String -> Model
-updateBeerListError model error =
+updateError : Model -> Maybe String -> Model
+updateError model error =
     { model | error = error }
 
 
@@ -98,13 +54,13 @@ update msg model =
             { model | filter = filter }
 
         DecrementBeerCount beer ->
-            updateBeers model <| decrementBeerCount beer model.beers
+            updateBeers model <| Beer.decrementBeerCount beer model.beers
 
         IncrementBeerCount beer ->
-            updateBeers model <| incrementBeerCount beer model.beers
+            updateBeers model <| Beer.incrementBeerCount beer model.beers
 
         AddNewBeer beer ->
-            { model | beers = beer :: model.beers }
+            { model | beers = Beer.addBeer beer model.beers }
 
 
 
@@ -112,9 +68,9 @@ update msg model =
 
 
 viewErrors : Model -> Html msg
-viewErrors beerList =
+viewErrors model =
     div [ class "errors" ] <|
-        case beerList.error of
+        case model.error of
             Nothing ->
                 []
 
@@ -123,22 +79,22 @@ viewErrors beerList =
 
 
 viewFilter : Model -> Html Msg
-viewFilter beerList =
+viewFilter model =
     div []
         [ h2 [] [ text "Filter beers" ]
-        , input [ type_ "search", onInput UpdateFilter, value beerList.filter, placeholder "Filter" ] []
+        , input [ type_ "search", onInput UpdateFilter, value model.filter, placeholder "Filter" ] []
         , i [ onClick <| UpdateFilter "", class "icon-cancel action" ] []
         ]
 
 
 viewBeerTable : Model -> Html Msg
-viewBeerTable beerList =
+viewBeerTable model =
     let
         heading =
             tr [] <| List.map (\name -> th [] [ text name ]) [ "#", "Brewery", "Beer", "Style", "" ]
 
         rows =
-            List.map viewBeerRow <| filteredBeers beerList
+            List.map viewBeerRow <| Beer.filteredBeers model.filter model.beers
     in
         table [] <| heading :: rows
 
