@@ -7,7 +7,7 @@ import Html.Attributes exposing (class, placeholder, type_, value)
 import Html.Events exposing (onClick, onInput)
 
 
-viewBeerList : String -> List Beer -> Html BeerListMsg
+viewBeerList : String -> List Beer -> Html Msg
 viewBeerList filter beers =
     let
         heading =
@@ -19,7 +19,7 @@ viewBeerList filter beers =
         table [] <| heading :: rows
 
 
-viewBeerRow : Beer -> Html BeerListMsg
+viewBeerRow : Beer -> Html Msg
 viewBeerRow beer =
     let
         trClass =
@@ -44,12 +44,12 @@ viewBeerRow beer =
             ]
 
 
-viewIncrementCountAction : Beer -> Html BeerListMsg
+viewIncrementCountAction : Beer -> Html Msg
 viewIncrementCountAction beer =
     i [ onClick (IncrementBeerCount beer), class "action icon-plus" ] []
 
 
-viewDecrementCountAction : Beer -> Html BeerListMsg
+viewDecrementCountAction : Beer -> Html Msg
 viewDecrementCountAction beer =
     if beer.count < 1 then
         i [ class "action icon-minus disabled" ] []

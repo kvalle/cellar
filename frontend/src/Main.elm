@@ -51,26 +51,20 @@ update msg model =
         UpdateFilter filter ->
             ( { model | filter = filter }, Cmd.none )
 
-        BeerListMessage msg ->
-            ( { model | beerList = updateBeerList msg model.beerList }, Cmd.none )
-
-        AddBeerMessage AddNewBeer ->
+        AddNewBeer ->
             case NewBeerForm.validate model.addBeer of
                 Ok beer ->
                     let
                         beerList =
-                            updateBeerList (AddBeerToList beer) model.beerList
+                            Beer.addBeer beer model.beerList
 
                         addBeer =
-                            updateNewBeerForm ClearForm model.addBeer
+                            NewBeerForm.empty
                     in
                         ( { model | beerList = beerList, addBeer = addBeer }, Cmd.none )
 
                 Err err ->
                     ( { model | addBeer = NewBeerForm.updateError model.addBeer (Just err) }, Cmd.none )
-
-        AddBeerMessage msg ->
-            ( { model | addBeer = updateNewBeerForm msg model.addBeer }, Cmd.none )
 
         RetrievedBeerList (Err _) ->
             ( { model | error = Just "Unable to load beer list" }, Cmd.none )
@@ -78,41 +72,26 @@ update msg model =
         RetrievedBeerList (Ok beers) ->
             ( { model | beerList = beers }, Cmd.none )
 
-
-updateBeerList : BeerListMsg -> List Beer -> List Beer
-updateBeerList msg model =
-    case msg of
         DecrementBeerCount beer ->
-            Beer.decrementBeerCount beer model
+            ( { model | beerList = Beer.decrementBeerCount beer model.beerList }, Cmd.none )
 
         IncrementBeerCount beer ->
-            Beer.incrementBeerCount beer model
+            ( { model | beerList = Beer.incrementBeerCount beer model.beerList }, Cmd.none )
 
         AddBeerToList beer ->
-            Beer.addBeer beer model
+            ( { model | beerList = Beer.addBeer beer model.beerList }, Cmd.none )
 
-
-updateNewBeerForm : AddBeerMsg -> NewBeerForm -> NewBeerForm
-updateNewBeerForm msg model =
-    case msg of
         UpdateBrewery brewery ->
-            { model | brewery = brewery }
+            ( { model | addBeer = NewBeerForm.updateBrewery model.addBeer brewery }, Cmd.none )
 
         UpdateName name ->
-            { model | name = name }
+            ( { model | addBeer = NewBeerForm.updateName model.addBeer name }, Cmd.none )
 
         UpdateYear year ->
-            { model | year = year }
+            ( { model | addBeer = NewBeerForm.updateYear model.addBeer year }, Cmd.none )
 
         UpdateStyle style ->
-            { model | style = style }
-
-        ClearForm ->
-            NewBeerForm.empty
-
-        AddNewBeer ->
-            -- handled by Main for now
-            model
+            ( { model | addBeer = NewBeerForm.updateStyle model.addBeer style }, Cmd.none )
 
 
 
@@ -128,12 +107,12 @@ view model =
             ]
         , div [ class "row" ]
             [ div [ class "main seven columns" ]
-                [ Html.map BeerListMessage <| viewBeerList model.filter model.beerList
+                [ viewBeerList model.filter model.beerList
                 , viewErrors model.error
                 ]
             , div [ class "sidebar five columns" ]
                 [ viewFilter model.filter
-                , Html.map AddBeerMessage <| viewAddBeerForm model.addBeer
+                , viewAddBeerForm model.addBeer
                 ]
             ]
         ]

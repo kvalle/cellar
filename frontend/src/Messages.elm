@@ -5,22 +5,16 @@ import Http
 
 
 type Msg
-    = UpdateFilter String
-    | RetrievedBeerList (Result Http.Error (List Beer))
-    | BeerListMessage BeerListMsg
-    | AddBeerMessage AddBeerMsg
-
-
-type BeerListMsg
-    = DecrementBeerCount Beer
+    = RetrievedBeerList (Result Http.Error (List Beer))
+      -- Filter
+    | UpdateFilter String
+      -- BeerList
     | IncrementBeerCount Beer
+    | DecrementBeerCount Beer
     | AddBeerToList Beer
-
-
-type AddBeerMsg
-    = UpdateBrewery String
+      -- NewBeerForm
+    | UpdateBrewery String
     | UpdateName String
     | UpdateYear String
     | UpdateStyle String
     | AddNewBeer
-    | ClearForm

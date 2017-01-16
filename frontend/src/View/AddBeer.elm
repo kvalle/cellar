@@ -1,6 +1,6 @@
 module View.AddBeer exposing (..)
 
-import Messages exposing (..)
+import Messages exposing (Msg(..))
 import Beer exposing (Beer)
 import NewBeerForm exposing (NewBeerForm)
 import Html exposing (..)
@@ -8,7 +8,7 @@ import Html.Attributes exposing (class, placeholder, type_, value)
 import Html.Events exposing (onClick, onInput)
 
 
-viewAddBeerForm : NewBeerForm -> Html AddBeerMsg
+viewAddBeerForm : NewBeerForm -> Html Msg
 viewAddBeerForm model =
     div []
         [ h2 [] [ text "Add beer" ]

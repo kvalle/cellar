@@ -18,8 +18,28 @@ empty =
 
 
 updateError : NewBeerForm -> Maybe String -> NewBeerForm
-updateError model error =
-    { model | error = error }
+updateError form error =
+    { form | error = error }
+
+
+updateBrewery : NewBeerForm -> String -> NewBeerForm
+updateBrewery form brewery =
+    { form | brewery = brewery }
+
+
+updateName : NewBeerForm -> String -> NewBeerForm
+updateName form name =
+    { form | name = name }
+
+
+updateYear : NewBeerForm -> String -> NewBeerForm
+updateYear form year =
+    { form | year = year }
+
+
+updateStyle : NewBeerForm -> String -> NewBeerForm
+updateStyle form style =
+    { form | style = style }
 
 
 validate : NewBeerForm -> Result String Beer
