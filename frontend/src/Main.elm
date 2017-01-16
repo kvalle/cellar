@@ -37,7 +37,7 @@ type alias Model =
 
 init : ( Model, Cmd Msg )
 init =
-    ( Model BeerListComponent.empty AddBeerComponent.empty "" Nothing, getBeers )
+    ( Model [] AddBeerComponent.empty "" Nothing, getBeers )
 
 
 
@@ -51,14 +51,14 @@ update msg model =
             ( { model | filter = filter }, Cmd.none )
 
         BeerListMessage msg ->
-            ( { model | beerList = BeerListComponent.update msg model.beerList }, Cmd.none )
+            ( { model | beerList = updateBeerList msg model.beerList }, Cmd.none )
 
         AddBeerMessage AddNewBeer ->
             case AddBeerComponent.validateForm model.addBeer of
                 Ok beer ->
                     let
                         beerList =
-                            BeerListComponent.update (AddBeerToList beer) model.beerList
+                            updateBeerList (AddBeerToList beer) model.beerList
 
                         addBeer =
                             AddBeerComponent.update ClearForm model.addBeer
@@ -76,6 +76,19 @@ update msg model =
 
         RetrievedBeerList (Ok beers) ->
             ( { model | beerList = beers }, Cmd.none )
+
+
+updateBeerList : BeerListMsg -> List Beer -> List Beer
+updateBeerList msg model =
+    case msg of
+        DecrementBeerCount beer ->
+            Beer.decrementBeerCount beer model
+
+        IncrementBeerCount beer ->
+            Beer.incrementBeerCount beer model
+
+        AddBeerToList beer ->
+            Beer.addBeer beer model
 
 
 

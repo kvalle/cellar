@@ -7,35 +7,6 @@ import Html.Attributes exposing (class, placeholder, type_, value)
 import Html.Events exposing (onClick, onInput)
 
 
--- MODEL
-
-
-empty : List Beer
-empty =
-    []
-
-
-
--- UPDATE
-
-
-update : BeerListMsg -> List Beer -> List Beer
-update msg model =
-    case msg of
-        DecrementBeerCount beer ->
-            Beer.decrementBeerCount beer model
-
-        IncrementBeerCount beer ->
-            Beer.incrementBeerCount beer model
-
-        AddBeerToList beer ->
-            Beer.addBeer beer model
-
-
-
--- VIEW
-
-
 viewBeerTable : String -> List Beer -> Html BeerListMsg
 viewBeerTable filter beers =
     let
