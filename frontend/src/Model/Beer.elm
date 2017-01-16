@@ -1,4 +1,4 @@
-module Beer exposing (Beer, filteredBeers, decrementBeerCount, incrementBeerCount, addBeer)
+module Model.Beer exposing (Beer, filteredBeers, decrementBeerCount, incrementBeerCount, addBeer)
 
 
 type alias Beer =

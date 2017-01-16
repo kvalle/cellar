@@ -1,7 +1,7 @@
 module View.BeerList exposing (viewBeerList)
 
 import Messages exposing (Msg(..))
-import Beer exposing (Beer)
+import Model.Beer as Beer exposing (Beer)
 import Html exposing (..)
 import Html.Attributes exposing (class, placeholder, type_, value)
 import Html.Events exposing (onClick, onInput)

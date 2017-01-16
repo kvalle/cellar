@@ -1,6 +1,6 @@
 module Commands exposing (fetchBeerList)
 
-import Beer exposing (Beer)
+import Model.Beer exposing (Beer)
 import Messages exposing (Msg(..))
 import Http
 import Json.Decode as Decode

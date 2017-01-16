@@ -1,6 +1,6 @@
-module NewBeerForm exposing (..)
+module Model.NewBeerForm exposing (..)
 
-import Beer exposing (Beer)
+import Model.Beer exposing (Beer)
 
 
 type alias NewBeerForm =

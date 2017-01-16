@@ -1,6 +1,6 @@
 module Messages exposing (Msg(..))
 
-import Beer exposing (Beer)
+import Model.Beer exposing (Beer)
 import Http
 
 

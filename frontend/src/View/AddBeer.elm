@@ -1,8 +1,8 @@
 module View.AddBeer exposing (viewAddBeerForm)
 
 import Messages exposing (Msg(..))
-import Beer exposing (Beer)
-import NewBeerForm exposing (NewBeerForm)
+import Model.Beer exposing (Beer)
+import Model.NewBeerForm exposing (NewBeerForm)
 import Html exposing (..)
 import Html.Attributes exposing (class, placeholder, type_, value)
 import Html.Events exposing (onClick, onInput)
