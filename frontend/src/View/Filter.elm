@@ -1,4 +1,4 @@
-module FilterComponent exposing (..)
+module View.Filter exposing (..)
 
 import Messages exposing (..)
 import Html exposing (..)

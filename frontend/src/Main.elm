@@ -5,7 +5,7 @@ import Subscriptions exposing (subscriptions)
 import Beer exposing (Beer)
 import View.BeerList
 import AddBeerComponent
-import FilterComponent
+import View.Filter
 import List
 import Html exposing (..)
 import Html.Attributes exposing (class, placeholder, type_, value)
@@ -108,7 +108,7 @@ view model =
                 , viewErrors model.error
                 ]
             , div [ class "sidebar five columns" ]
-                [ FilterComponent.viewFilter model.filter
+                [ View.Filter.viewFilter model.filter
                 , Html.map AddBeerMessage <| AddBeerComponent.viewAddBeerForm model.addBeer
                 ]
             ]
