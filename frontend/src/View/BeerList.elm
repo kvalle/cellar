@@ -1,4 +1,4 @@
-module BeerListComponent exposing (..)
+module View.BeerList exposing (..)
 
 import Messages exposing (..)
 import Beer exposing (Beer)

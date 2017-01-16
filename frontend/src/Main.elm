@@ -3,7 +3,7 @@ module Main exposing (..)
 import Messages exposing (..)
 import Subscriptions exposing (subscriptions)
 import Beer exposing (Beer)
-import BeerListComponent
+import View.BeerList
 import AddBeerComponent
 import FilterComponent
 import List
@@ -104,7 +104,7 @@ view model =
             ]
         , div [ class "row" ]
             [ div [ class "main seven columns" ]
-                [ Html.map BeerListMessage <| BeerListComponent.viewBeerTable model.filter model.beerList
+                [ Html.map BeerListMessage <| View.BeerList.viewBeerTable model.filter model.beerList
                 , viewErrors model.error
                 ]
             , div [ class "sidebar five columns" ]
