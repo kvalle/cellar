@@ -1,4 +1,4 @@
-module Messages exposing (..)
+module Messages exposing (Msg(..))
 
 import Beer exposing (Beer)
 import Http

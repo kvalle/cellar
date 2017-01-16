@@ -30,8 +30,8 @@ main =
 
 type alias Model =
     { beerList : List Beer
-    , addBeer : NewBeerForm
-    , filter : String
+    , addBeerForm : NewBeerForm
+    , filterString : String
     , error : Maybe String
     }
 
@@ -49,22 +49,19 @@ update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
         UpdateFilter filter ->
-            ( { model | filter = filter }, Cmd.none )
+            ( { model | filterString = filter }, Cmd.none )
 
         AddNewBeer ->
-            case NewBeerForm.validate model.addBeer of
+            case NewBeerForm.validate model.addBeerForm of
                 Ok beer ->
                     let
                         beerList =
                             Beer.addBeer beer model.beerList
-
-                        addBeer =
-                            NewBeerForm.empty
                     in
-                        ( { model | beerList = beerList, addBeer = addBeer }, Cmd.none )
+                        ( { model | beerList = beerList, addBeerForm = NewBeerForm.empty }, Cmd.none )
 
                 Err err ->
-                    ( { model | addBeer = NewBeerForm.updateError model.addBeer (Just err) }, Cmd.none )
+                    ( { model | addBeerForm = NewBeerForm.updateError model.addBeerForm (Just err) }, Cmd.none )
 
         RetrievedBeerList (Err _) ->
             ( { model | error = Just "Unable to load beer list" }, Cmd.none )
@@ -82,16 +79,16 @@ update msg model =
             ( { model | beerList = Beer.addBeer beer model.beerList }, Cmd.none )
 
         UpdateBrewery brewery ->
-            ( { model | addBeer = NewBeerForm.updateBrewery model.addBeer brewery }, Cmd.none )
+            ( { model | addBeerForm = NewBeerForm.updateBrewery model.addBeerForm brewery }, Cmd.none )
 
         UpdateName name ->
-            ( { model | addBeer = NewBeerForm.updateName model.addBeer name }, Cmd.none )
+            ( { model | addBeerForm = NewBeerForm.updateName model.addBeerForm name }, Cmd.none )
 
         UpdateYear year ->
-            ( { model | addBeer = NewBeerForm.updateYear model.addBeer year }, Cmd.none )
+            ( { model | addBeerForm = NewBeerForm.updateYear model.addBeerForm year }, Cmd.none )
 
         UpdateStyle style ->
-            ( { model | addBeer = NewBeerForm.updateStyle model.addBeer style }, Cmd.none )
+            ( { model | addBeerForm = NewBeerForm.updateStyle model.addBeerForm style }, Cmd.none )
 
 
 
@@ -107,12 +104,12 @@ view model =
             ]
         , div [ class "row" ]
             [ div [ class "main seven columns" ]
-                [ viewBeerList model.filter model.beerList
+                [ viewBeerList model.filterString model.beerList
                 , viewErrors model.error
                 ]
             , div [ class "sidebar five columns" ]
-                [ viewFilter model.filter
-                , viewAddBeerForm model.addBeer
+                [ viewFilter model.filterString
+                , viewAddBeerForm model.addBeerForm
                 ]
             ]
         ]
