@@ -1,5 +1,6 @@
 module Main exposing (..)
 
+import Subscriptions exposing (subscriptions)
 import Beer exposing (Beer)
 import BeerListComponent
 import AddBeerComponent
@@ -106,15 +107,6 @@ viewTitle =
         [ i [ class "icon-beer" ] []
         , text "Cellar Index"
         ]
-
-
-
--- SUBSCRIPTIONS
-
-
-subscriptions : Model -> Sub Msg
-subscriptions model =
-    Sub.none
 
 
 
