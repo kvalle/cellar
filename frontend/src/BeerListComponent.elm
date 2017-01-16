@@ -10,36 +10,26 @@ import Html.Events exposing (onClick, onInput)
 -- MODEL
 
 
-type alias Model =
-    { beers : List Beer
-    }
-
-
-empty : Model
+empty : List Beer
 empty =
-    Model []
-
-
-updateBeers : Model -> List Beer -> Model
-updateBeers model beers =
-    { model | beers = beers }
+    []
 
 
 
 -- UPDATE
 
 
-update : BeerListMsg -> Model -> Model
+update : BeerListMsg -> List Beer -> List Beer
 update msg model =
     case msg of
         DecrementBeerCount beer ->
-            updateBeers model <| Beer.decrementBeerCount beer model.beers
+            Beer.decrementBeerCount beer model
 
         IncrementBeerCount beer ->
-            updateBeers model <| Beer.incrementBeerCount beer model.beers
+            Beer.incrementBeerCount beer model
 
         AddBeerToList beer ->
-            { model | beers = Beer.addBeer beer model.beers }
+            Beer.addBeer beer model
 
 
 

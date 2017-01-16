@@ -28,7 +28,7 @@ main =
 
 
 type alias Model =
-    { beerList : BeerListComponent.Model
+    { beerList : List Beer
     , addBeer : AddBeerComponent.Model
     , filter : String
     , error : Maybe String
@@ -75,7 +75,7 @@ update msg model =
             ( { model | error = Just "Unable to load beer list" }, Cmd.none )
 
         RetrievedBeerList (Ok beers) ->
-            ( { model | beerList = BeerListComponent.updateBeers model.beerList beers }, Cmd.none )
+            ( { model | beerList = beers }, Cmd.none )
 
 
 
@@ -91,7 +91,7 @@ view model =
             ]
         , div [ class "row" ]
             [ div [ class "main seven columns" ]
-                [ Html.map BeerListMessage <| BeerListComponent.viewBeerTable model.filter model.beerList.beers
+                [ Html.map BeerListMessage <| BeerListComponent.viewBeerTable model.filter model.beerList
                 , viewErrors model.error
                 ]
             , div [ class "sidebar five columns" ]
