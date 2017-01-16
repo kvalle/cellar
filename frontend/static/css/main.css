@@ -15,6 +15,19 @@ h1 i {
 	font-size: 1.7em;
 }
 
+/* Buttons */
+
+button i {
+	padding-left: 5px;
+}
+
+
+button:not(:first-child) {
+	margin-left: 5px;
+}
+
+/* Beer list view */
+
 tr.beer-count, tr.beer-style {
 	color: gray;
 }
@@ -26,6 +39,9 @@ tr .beer-year {
 tr.zero-row {
 	color: #ccc;
 }
+
+
+/** Action buttons */
 
 .action {
 	color: gray;
@@ -47,3 +63,6 @@ tr.zero-row {
 .errors {
 	color: red;
 }
+
+
+/* New beer form */

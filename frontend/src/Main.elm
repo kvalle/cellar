@@ -88,6 +88,9 @@ update msg model =
         UpdateStyle style ->
             ( { model | addBeerForm = NewBeerForm.updateStyle model.addBeerForm style }, Cmd.none )
 
+        ClearNewBeerForm ->
+            ( { model | addBeerForm = NewBeerForm.empty }, Cmd.none )
+
 
 
 -- VIEW

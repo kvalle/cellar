@@ -18,3 +18,4 @@ type Msg
     | UpdateYear String
     | UpdateStyle String
     | AddNewBeer
+    | ClearNewBeerForm
