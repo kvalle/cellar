@@ -1,4 +1,4 @@
-module NewBeerInput exposing (..)
+module AddNewBeer exposing (..)
 
 import Html exposing (..)
 import Html.Attributes exposing (class, placeholder, type_, value)

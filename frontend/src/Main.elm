@@ -1,7 +1,7 @@
 module Main exposing (..)
 
 import BeerList exposing (Beer, nextAvailableId, updateBeers, updateBeerListError, viewErrors)
-import NewBeerInput exposing (updateNewBeerError)
+import AddNewBeer exposing (updateNewBeerError)
 import List
 import Html exposing (..)
 import Html.Attributes exposing (class, placeholder, type_, value)
@@ -25,20 +25,20 @@ main =
 
 type alias Model =
     { beerList : BeerList.Model
-    , newBeerInput : NewBeerInput.Model
+    , addBeer : AddNewBeer.Model
     }
 
 
 init : ( Model, Cmd Msg )
 init =
-    ( Model BeerList.empty NewBeerInput.empty, getBeers )
+    ( Model BeerList.empty AddNewBeer.empty, getBeers )
 
 
-newBeerInputToBeer : Model -> Result String Beer
-newBeerInputToBeer model =
+addBeerToBeer : Model -> Result String Beer
+addBeerToBeer model =
     let
         input =
-            model.newBeerInput
+            model.addBeer
 
         yearResult =
             String.toInt input.year
@@ -64,17 +64,17 @@ addNewBeer : Model -> Model
 addNewBeer model =
     let
         result =
-            newBeerInputToBeer model
+            addBeerToBeer model
     in
         case result of
             Ok beer ->
                 { model
                     | beerList = updateBeers model.beerList (beer :: model.beerList.beers)
-                    , newBeerInput = NewBeerInput.empty
+                    , addBeer = AddNewBeer.empty
                 }
 
             Err err ->
-                { model | newBeerInput = updateNewBeerError model.newBeerInput (Just err) }
+                { model | addBeer = updateNewBeerError model.addBeer (Just err) }
 
 
 
@@ -84,7 +84,7 @@ addNewBeer model =
 type Msg
     = RetrievedBeerList (Result Http.Error (List Beer))
     | BeerListMsg BeerList.Msg
-    | NewBeerInputMsg NewBeerInput.Msg
+    | NewBeerInputMsg AddNewBeer.Msg
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -93,11 +93,11 @@ update msg model =
         BeerListMsg msg ->
             ( { model | beerList = BeerList.update msg model.beerList }, Cmd.none )
 
-        NewBeerInputMsg (NewBeerInput.AddNewBeer) ->
+        NewBeerInputMsg (AddNewBeer.AddNewBeer) ->
             ( addNewBeer model, Cmd.none )
 
         NewBeerInputMsg msg ->
-            ( { model | newBeerInput = NewBeerInput.update msg model.newBeerInput }, Cmd.none )
+            ( { model | addBeer = AddNewBeer.update msg model.addBeer }, Cmd.none )
 
         RetrievedBeerList (Err _) ->
             ( { model | beerList = updateBeerListError model.beerList <| Just "Unable to load beer list" }, Cmd.none )
@@ -124,7 +124,7 @@ view model =
                 ]
             , div [ class "sidebar five columns" ]
                 [ Html.map BeerListMsg <| BeerList.viewFilter model.beerList
-                , Html.map NewBeerInputMsg <| NewBeerInput.viewAddBeerForm model.newBeerInput
+                , Html.map NewBeerInputMsg <| AddNewBeer.viewAddBeerForm model.addBeer
                 ]
             ]
         ]
