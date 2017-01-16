@@ -2,6 +2,7 @@ module AddBeerComponent exposing (..)
 
 import Messages exposing (..)
 import Beer exposing (Beer)
+import NewBeerForm exposing (NewBeerForm)
 import Html exposing (..)
 import Html.Attributes exposing (class, placeholder, type_, value)
 import Html.Events exposing (onClick, onInput)
@@ -10,26 +11,12 @@ import Html.Events exposing (onClick, onInput)
 -- MODEL
 
 
-type alias Model =
-    { brewery : String
-    , name : String
-    , style : String
-    , year : String
-    , error : Maybe String
-    }
-
-
-empty : Model
-empty =
-    Model "" "" "" "" Nothing
-
-
-updateError : Model -> Maybe String -> Model
+updateError : NewBeerForm -> Maybe String -> NewBeerForm
 updateError model error =
     { model | error = error }
 
 
-validateForm : Model -> Result String Beer
+validateForm : NewBeerForm -> Result String Beer
 validateForm model =
     let
         yearResult =
@@ -53,7 +40,7 @@ validateForm model =
 -- UPDATE
 
 
-update : AddBeerMsg -> Model -> Model
+update : AddBeerMsg -> NewBeerForm -> NewBeerForm
 update msg model =
     case msg of
         UpdateBrewery brewery ->
@@ -69,7 +56,7 @@ update msg model =
             { model | style = style }
 
         ClearForm ->
-            empty
+            NewBeerForm.empty
 
         AddNewBeer ->
             -- handled by Main for now
@@ -80,7 +67,7 @@ update msg model =
 -- VIEW
 
 
-viewAddBeerForm : Model -> Html AddBeerMsg
+viewAddBeerForm : NewBeerForm -> Html AddBeerMsg
 viewAddBeerForm model =
     div []
         [ h2 [] [ text "Add beer" ]

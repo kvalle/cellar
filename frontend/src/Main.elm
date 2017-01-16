@@ -3,6 +3,7 @@ module Main exposing (..)
 import Messages exposing (..)
 import Subscriptions exposing (subscriptions)
 import Beer exposing (Beer)
+import NewBeerForm exposing (NewBeerForm)
 import View.BeerList
 import AddBeerComponent
 import View.Filter
@@ -29,7 +30,7 @@ main =
 
 type alias Model =
     { beerList : List Beer
-    , addBeer : AddBeerComponent.Model
+    , addBeer : NewBeerForm
     , filter : String
     , error : Maybe String
     }
@@ -37,7 +38,7 @@ type alias Model =
 
 init : ( Model, Cmd Msg )
 init =
-    ( Model [] AddBeerComponent.empty "" Nothing, getBeers )
+    ( Model [] NewBeerForm.empty "" Nothing, getBeers )
 
 
 
