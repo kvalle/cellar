@@ -38,7 +38,7 @@ function build {
   echo "Running 'elm format'"
   elm format src/ --yes
   echo "Running 'elm make'"
-  elm make src/Main.elm --output dist/app.js
+  elm make src/Main.elm --output dist/app.js --debug
   echo -e "Done.\n"
 }
 
