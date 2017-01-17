@@ -6,9 +6,22 @@ import Model.NewBeerForm exposing (NewBeerForm)
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (..)
+import Json.Decode
 
 
-textInputWithLabel : String -> String -> (String -> msg) -> String -> String -> Html msg
+onEnter : Msg -> Attribute Msg
+onEnter msg =
+    let
+        isEnter code =
+            if code == 13 then
+                Json.Decode.succeed msg
+            else
+                Json.Decode.fail "not ENTER"
+    in
+        on "keydown" (Json.Decode.andThen isEnter keyCode)
+
+
+textInputWithLabel : String -> String -> (String -> Msg) -> String -> String -> Html Msg
 textInputWithLabel labelText tag msg inputValue placeholderText =
     div []
         [ label [ for <| tag ++ "-input" ] [ text labelText ]
@@ -19,6 +32,7 @@ textInputWithLabel labelText tag msg inputValue placeholderText =
             , id <| tag ++ "-input"
             , onInput msg
             , value inputValue
+            , onEnter AddNewBeer
             ]
             []
         ]
@@ -34,7 +48,7 @@ buttonWithIcon buttonText icon msg classes =
 
 viewAddBeerForm : NewBeerForm -> Html Msg
 viewAddBeerForm model =
-    Html.form [ onSubmit AddNewBeer ]
+    div []
         [ h2 [] [ text "Add beer" ]
         , textInputWithLabel "Brewery" "brewery" UpdateBrewery model.brewery "Foobar Brewing"
         , textInputWithLabel "Beer Name" "name" UpdateName model.name "Baz Pils"
