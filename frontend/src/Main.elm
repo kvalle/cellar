@@ -12,6 +12,7 @@ import Html exposing (..)
 import Html.Attributes exposing (class)
 
 
+main : Program Never Model Msg
 main =
     Html.program
         { init = init
