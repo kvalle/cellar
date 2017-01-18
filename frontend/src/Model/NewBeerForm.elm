@@ -30,13 +30,13 @@ empty =
         Nothing
 
 
-updateError : NewBeerForm -> Maybe String -> NewBeerForm
-updateError form error =
+setError : NewBeerForm -> Maybe String -> NewBeerForm
+setError form error =
     { form | error = error }
 
 
-updateBrewery : NewBeerForm -> String -> NewBeerForm
-updateBrewery form brewery =
+setBrewery : NewBeerForm -> String -> NewBeerForm
+setBrewery form brewery =
     let
         old =
             form.brewery
@@ -47,8 +47,8 @@ updateBrewery form brewery =
         { form | brewery = newInput }
 
 
-updateName : NewBeerForm -> String -> NewBeerForm
-updateName form name =
+setName : NewBeerForm -> String -> NewBeerForm
+setName form name =
     let
         old =
             form.name
@@ -59,8 +59,8 @@ updateName form name =
         { form | name = newInput }
 
 
-updateYear : NewBeerForm -> String -> NewBeerForm
-updateYear form year =
+setYear : NewBeerForm -> String -> NewBeerForm
+setYear form year =
     let
         old =
             form.year
@@ -71,8 +71,8 @@ updateYear form year =
         { form | year = newInput }
 
 
-updateStyle : NewBeerForm -> String -> NewBeerForm
-updateStyle form style =
+setStyle : NewBeerForm -> String -> NewBeerForm
+setStyle form style =
     let
         old =
             form.style

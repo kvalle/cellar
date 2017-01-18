@@ -59,7 +59,7 @@ update msg model =
                     )
 
                 Err err ->
-                    ( { model | addBeerForm = NewBeerForm.updateError model.addBeerForm (Just err) }, Cmd.none )
+                    ( { model | addBeerForm = NewBeerForm.setError model.addBeerForm (Just err) }, Cmd.none )
 
         RetrievedBeerList (Err _) ->
             ( { model | error = Just "Unable to load beer list" }, Cmd.none )
@@ -77,16 +77,16 @@ update msg model =
             ( { model | beerList = Beer.addBeer beer model.beerList }, Cmd.none )
 
         UpdateBrewery brewery ->
-            ( { model | addBeerForm = NewBeerForm.updateBrewery model.addBeerForm brewery }, Cmd.none )
+            ( { model | addBeerForm = NewBeerForm.setBrewery model.addBeerForm brewery }, Cmd.none )
 
         UpdateName name ->
-            ( { model | addBeerForm = NewBeerForm.updateName model.addBeerForm name }, Cmd.none )
+            ( { model | addBeerForm = NewBeerForm.setName model.addBeerForm name }, Cmd.none )
 
         UpdateYear year ->
-            ( { model | addBeerForm = NewBeerForm.updateYear model.addBeerForm year }, Cmd.none )
+            ( { model | addBeerForm = NewBeerForm.setYear model.addBeerForm year }, Cmd.none )
 
         UpdateStyle style ->
-            ( { model | addBeerForm = NewBeerForm.updateStyle model.addBeerForm style }, Cmd.none )
+            ( { model | addBeerForm = NewBeerForm.setStyle model.addBeerForm style }, Cmd.none )
 
         ClearNewBeerForm ->
             ( { model | addBeerForm = NewBeerForm.empty }, Cmd.none )
