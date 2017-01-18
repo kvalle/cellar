@@ -8,8 +8,7 @@ import Html.Events exposing (onClick, onInput)
 
 viewFilter : String -> Html Msg
 viewFilter filter =
-    div []
-        [ h2 [] [ text "Filter beers" ]
-        , input [ type_ "search", onInput UpdateFilter, value filter, placeholder "Filter" ] []
+    div [ class "filter-form" ]
+        [ input [ type_ "search", onInput UpdateFilter, value filter, placeholder "Filter" ] []
         , i [ onClick <| UpdateFilter "", class "icon-cancel action" ] []
         ]

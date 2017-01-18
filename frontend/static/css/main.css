@@ -16,15 +16,42 @@ h1 i {
 	font-size: 1.7em;
 }
 
-/* Buttons */
+/* Tabs */
+
+.tabs {
+	margin-bottom: 20px;
+}
+
+.tab {
+	font-size: 1.8em;
+	padding: 5px 20px;
+	color: #ccc;
+}
+
+.tab:hover {
+	color: #33C3F0;
+	cursor: pointer;
+}
+
+.tab.selected {
+	color: black;
+}
+
+.tab:first-child {
+	padding-left: 0px;
+}
+
+.tab:not(:first-child) {
+	border-left: 2px solid #ccc;
+}
+
+
+/* Add beer form */
+
 
 .add-beer-form button i {
 	padding-left: 5px;
 }
-
-/*.add-beer-form button {
-	margin-top: 1.5em;
-}*/
 
 .add-beer-form button:not(:first-child) {
 	margin-left: 5px;
@@ -77,5 +104,3 @@ tr.zero-row {
 	color: gray;
 }
 
-
-/* New beer form */

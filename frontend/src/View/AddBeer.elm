@@ -52,29 +52,16 @@ buttonWithIcon buttonText icon msg classes =
         ]
 
 
-viewAddBeerTitle : String -> Html Msg
-viewAddBeerTitle icon =
-    h2 [ onClick ToggleAddBeerCollapsed ]
-        [ i [ class <| "icon-" ++ icon ] []
-        , text "Add beer"
-        ]
-
-
 viewAddBeerForm : NewBeerForm -> Html Msg
 viewAddBeerForm model =
-    div [ class "add-beer-form" ] <|
-        if model.collapsed then
-            [ viewAddBeerTitle "plus-squared"
+    div [ class "add-beer-form" ]
+        [ textInputWithLabel "Brewery" "brewery" (\val -> UpdateAddBeerInput (BreweryInput val)) model.submitted model.brewery
+        , textInputWithLabel "Beer Name" "name" (\val -> UpdateAddBeerInput (NameInput val)) model.submitted model.name
+        , textInputWithLabel "Beer Style" "style" (\val -> UpdateAddBeerInput (StyleInput val)) model.submitted model.style
+        , textInputWithLabel "Production year" "year" (\val -> UpdateAddBeerInput (YearInput val)) model.submitted model.year
+        , br [] []
+        , div []
+            [ buttonWithIcon "Add" "beer" SubmitAddBeer "button-primary"
+            , buttonWithIcon "Clear" "cancel" ClearAddBeer ""
             ]
-        else
-            [ viewAddBeerTitle "minus-squared"
-            , textInputWithLabel "Brewery" "brewery" (\val -> UpdateAddBeerInput (BreweryInput val)) model.submitted model.brewery
-            , textInputWithLabel "Beer Name" "name" (\val -> UpdateAddBeerInput (NameInput val)) model.submitted model.name
-            , textInputWithLabel "Beer Style" "style" (\val -> UpdateAddBeerInput (StyleInput val)) model.submitted model.style
-            , textInputWithLabel "Production year" "year" (\val -> UpdateAddBeerInput (YearInput val)) model.submitted model.year
-            , br [] []
-            , div []
-                [ buttonWithIcon "Add" "beer" SubmitAddBeer "button-primary"
-                , buttonWithIcon "Clear" "cancel" ClearAddBeer ""
-                ]
-            ]
+        ]

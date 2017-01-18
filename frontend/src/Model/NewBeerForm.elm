@@ -22,7 +22,6 @@ type alias NewBeerForm =
     , style : NewBeerInput
     , year : NewBeerInput
     , submitted : Bool
-    , collapsed : Bool
     }
 
 
@@ -77,11 +76,6 @@ markAsSubmitted form =
     { form | submitted = True }
 
 
-toggleCollapsed : NewBeerForm -> NewBeerForm
-toggleCollapsed form =
-    { form | collapsed = not form.collapsed }
-
-
 empty : NewBeerForm
 empty =
     NewBeerForm
@@ -90,7 +84,6 @@ empty =
         (newInput "" validateNotEmpty)
         (newInput "" validateYear)
         False
-        True
 
 
 validate : NewBeerForm -> Maybe Beer

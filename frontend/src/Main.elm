@@ -5,11 +5,13 @@ import Subscriptions exposing (subscriptions)
 import Commands exposing (fetchBeerList)
 import Model.Beer as Beer exposing (Beer)
 import Model.NewBeerForm as NewBeerForm exposing (NewBeerForm)
+import Model.Tab exposing (Tab(..))
 import View.BeerList exposing (viewBeerList)
 import View.AddBeer exposing (viewAddBeerForm)
 import View.Filter exposing (viewFilter)
 import Html exposing (..)
 import Html.Attributes exposing (class)
+import Html.Events exposing (onClick)
 
 
 main : Program Never Model Msg
@@ -31,12 +33,13 @@ type alias Model =
     , addBeerForm : NewBeerForm
     , filterString : String
     , error : Maybe String
+    , tab : Tab
     }
 
 
 init : ( Model, Cmd Msg )
 init =
-    ( Model [] NewBeerForm.empty "" Nothing, fetchBeerList )
+    ( Model [] NewBeerForm.empty "" Nothing FilterTab, fetchBeerList )
 
 
 
@@ -51,6 +54,9 @@ update msg model =
 
         RetrievedBeerList (Ok beers) ->
             ( { model | beerList = beers }, Cmd.none )
+
+        ChangeTab tab ->
+            ( { model | tab = tab }, Cmd.none )
 
         UpdateFilter filter ->
             ( { model | filterString = filter }, Cmd.none )
@@ -77,12 +83,31 @@ update msg model =
         ClearAddBeer ->
             ( { model | addBeerForm = NewBeerForm.empty }, Cmd.none )
 
-        ToggleAddBeerCollapsed ->
-            ( { model | addBeerForm = NewBeerForm.toggleCollapsed model.addBeerForm }, Cmd.none )
-
 
 
 -- VIEW
+
+
+viewTab : String -> Tab -> Tab -> Html Msg
+viewTab string selected tab =
+    let
+        classes =
+            if selected == tab then
+                "tab selected"
+            else
+                "tab"
+    in
+        span
+            [ class classes, onClick (ChangeTab tab) ]
+            [ text string ]
+
+
+viewTabs : Tab -> Html Msg
+viewTabs selected =
+    div [ class "tabs" ]
+        [ viewTab "Filter" selected FilterTab
+        , viewTab "Add new" selected AddBeerTab
+        ]
 
 
 view : Model -> Html Msg
@@ -98,8 +123,13 @@ view model =
                 , viewErrors model.error
                 ]
             , div [ class "sidebar five columns" ]
-                [ viewFilter model.filterString
-                , viewAddBeerForm model.addBeerForm
+                [ viewTabs model.tab
+                , case model.tab of
+                    FilterTab ->
+                        viewFilter model.filterString
+
+                    AddBeerTab ->
+                        viewAddBeerForm model.addBeerForm
                 ]
             ]
         ]
