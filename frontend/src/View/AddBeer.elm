@@ -20,17 +20,6 @@ onEnter msg =
         on "keydown" (Json.Decode.andThen isEnter keyCode)
 
 
-viewError : Bool -> Maybe String -> Html Msg
-viewError submitted error =
-    div [ class "error" ] <|
-        case ( submitted, error ) of
-            ( True, Just errorText ) ->
-                [ text errorText ]
-
-            _ ->
-                [ text "" ]
-
-
 textInputWithLabel : String -> String -> (String -> Msg) -> Bool -> NewBeerInput -> Html Msg
 textInputWithLabel labelText tag msg submitted beerInput =
     div []
