@@ -1,6 +1,7 @@
 module Messages exposing (Msg(..))
 
 import Model.Beer exposing (Beer)
+import Model.NewBeerForm exposing (AddBeerInput)
 import Http
 
 
@@ -13,9 +14,6 @@ type Msg
     | DecrementBeerCount Beer
     | AddBeerToList Beer
       -- NewBeerForm
-    | UpdateBrewery String
-    | UpdateName String
-    | UpdateYear String
-    | UpdateStyle String
+    | UpdateInput AddBeerInput
     | AddNewBeer
     | ClearNewBeerForm

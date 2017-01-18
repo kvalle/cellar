@@ -77,17 +77,8 @@ update msg model =
         AddBeerToList beer ->
             ( { model | beerList = Beer.addBeer beer model.beerList }, Cmd.none )
 
-        UpdateBrewery brewery ->
-            ( { model | addBeerForm = NewBeerForm.setBrewery model.addBeerForm brewery }, Cmd.none )
-
-        UpdateName name ->
-            ( { model | addBeerForm = NewBeerForm.setName model.addBeerForm name }, Cmd.none )
-
-        UpdateYear year ->
-            ( { model | addBeerForm = NewBeerForm.setYear model.addBeerForm year }, Cmd.none )
-
-        UpdateStyle style ->
-            ( { model | addBeerForm = NewBeerForm.setStyle model.addBeerForm style }, Cmd.none )
+        UpdateInput input ->
+            ( { model | addBeerForm = NewBeerForm.setInput input model.addBeerForm }, Cmd.none )
 
         ClearNewBeerForm ->
             ( { model | addBeerForm = NewBeerForm.empty }, Cmd.none )

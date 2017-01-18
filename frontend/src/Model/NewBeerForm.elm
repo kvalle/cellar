@@ -3,6 +3,13 @@ module Model.NewBeerForm exposing (..)
 import Model.Beer exposing (Beer)
 
 
+type AddBeerInput
+    = BreweryInput String
+    | NameInput String
+    | StyleInput String
+    | YearInput String
+
+
 type alias NewBeerInput =
     { value : String
     , error : Maybe String
@@ -19,6 +26,49 @@ type alias NewBeerForm =
     }
 
 
+newInput : NewBeerForm -> (NewBeerForm -> NewBeerInput) -> String -> (String -> Result String String) -> NewBeerInput
+newInput form getter value validateFn =
+    let
+        old =
+            getter form
+
+        validated =
+            validateFn value
+    in
+        case validated of
+            Ok _ ->
+                { old | value = value, error = Nothing }
+
+            Err err ->
+                { old | value = value, error = Just err }
+
+
+validateString : String -> Result String String
+validateString val =
+    Ok val
+
+
+validateYear : String -> Result String String
+validateYear val =
+    Ok val
+
+
+setInput : AddBeerInput -> NewBeerForm -> NewBeerForm
+setInput input form =
+    case input of
+        BreweryInput value ->
+            { form | brewery = (newInput form .brewery value validateString) }
+
+        NameInput value ->
+            { form | name = (newInput form .name value validateString) }
+
+        StyleInput value ->
+            { form | brewery = (newInput form .style value validateString) }
+
+        YearInput value ->
+            { form | year = (newInput form .year value validateYear) }
+
+
 empty : NewBeerForm
 empty =
     NewBeerForm
@@ -33,54 +83,6 @@ empty =
 setError : NewBeerForm -> Maybe String -> NewBeerForm
 setError form error =
     { form | error = error }
-
-
-setBrewery : NewBeerForm -> String -> NewBeerForm
-setBrewery form brewery =
-    let
-        old =
-            form.brewery
-
-        newInput =
-            { old | value = brewery }
-    in
-        { form | brewery = newInput }
-
-
-setName : NewBeerForm -> String -> NewBeerForm
-setName form name =
-    let
-        old =
-            form.name
-
-        newInput =
-            { old | value = name }
-    in
-        { form | name = newInput }
-
-
-setYear : NewBeerForm -> String -> NewBeerForm
-setYear form year =
-    let
-        old =
-            form.year
-
-        newInput =
-            { old | value = year }
-    in
-        { form | year = newInput }
-
-
-setStyle : NewBeerForm -> String -> NewBeerForm
-setStyle form style =
-    let
-        old =
-            form.style
-
-        newInput =
-            { old | value = style }
-    in
-        { form | style = newInput }
 
 
 validate : NewBeerForm -> Result String Beer

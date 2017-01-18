@@ -1,8 +1,7 @@
 module View.AddBeer exposing (viewAddBeerForm)
 
 import Messages exposing (Msg(..))
-import Model.Beer exposing (Beer)
-import Model.NewBeerForm exposing (NewBeerForm)
+import Model.NewBeerForm exposing (NewBeerForm, AddBeerInput(..))
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (..)
@@ -50,10 +49,10 @@ viewAddBeerForm : NewBeerForm -> Html Msg
 viewAddBeerForm model =
     div []
         [ h2 [] [ text "Add beer" ]
-        , textInputWithLabel "Brewery" "brewery" UpdateBrewery model.brewery.value "Foobar Brewing"
-        , textInputWithLabel "Beer Name" "name" UpdateName model.name.value "Baz Pils"
-        , textInputWithLabel "Beer Style" "style" UpdateStyle model.style.value "Pilsner"
-        , textInputWithLabel "Production year" "year" UpdateYear model.year.value "2017"
+        , textInputWithLabel "Brewery" "brewery" (\val -> UpdateInput (BreweryInput val)) model.brewery.value "updateInput Brewing"
+        , textInputWithLabel "Beer Name" "name" (\val -> UpdateInput (NameInput val)) model.name.value "Baz Pils"
+        , textInputWithLabel "Beer Style" "style" (\val -> UpdateInput (StyleInput val)) model.style.value "Pilsner"
+        , textInputWithLabel "Production year" "year" (\val -> UpdateInput (YearInput val)) model.year.value "2017"
         , div []
             [ buttonWithIcon "Add" "beer" AddNewBeer "button-primary"
             , buttonWithIcon "Clear" "cancel" ClearNewBeerForm ""
