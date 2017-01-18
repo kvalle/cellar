@@ -41,6 +41,18 @@
       "css": "minus",
       "code": 59398,
       "src": "elusive"
+    },
+    {
+      "uid": "1a5cfa186647e8c929c2b17b9fc4dac1",
+      "css": "plus-squared",
+      "code": 61694,
+      "src": "fontawesome"
+    },
+    {
+      "uid": "f755a58fb985eeb70bd47d9b31892a34",
+      "css": "minus-squared-1",
+      "code": 61766,
+      "src": "fontawesome"
     }
   ]
 }

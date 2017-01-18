@@ -77,6 +77,9 @@ update msg model =
         ClearAddBeer ->
             ( { model | addBeerForm = NewBeerForm.empty }, Cmd.none )
 
+        ToggleAddBeerCollapsed ->
+            ( { model | addBeerForm = NewBeerForm.toggleCollapsed model.addBeerForm }, Cmd.none )
+
 
 
 -- VIEW

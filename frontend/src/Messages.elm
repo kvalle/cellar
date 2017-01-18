@@ -16,3 +16,4 @@ type Msg
     | UpdateAddBeerInput AddBeerInput
     | SubmitAddBeer
     | ClearAddBeer
+    | ToggleAddBeerCollapsed
