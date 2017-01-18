@@ -46,8 +46,23 @@ init =
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
+        RetrievedBeerList (Err _) ->
+            ( { model | error = Just "Unable to load beer list" }, Cmd.none )
+
+        RetrievedBeerList (Ok beers) ->
+            ( { model | beerList = beers }, Cmd.none )
+
         UpdateFilter filter ->
             ( { model | filterString = filter }, Cmd.none )
+
+        DecrementBeerCount beer ->
+            ( { model | beerList = Beer.decrementBeerCount beer model.beerList }, Cmd.none )
+
+        IncrementBeerCount beer ->
+            ( { model | beerList = Beer.incrementBeerCount beer model.beerList }, Cmd.none )
+
+        UpdateAddBeerInput input ->
+            ( { model | addBeerForm = NewBeerForm.setInput input model.addBeerForm }, Cmd.none )
 
         SubmitAddBeer ->
             case NewBeerForm.validate model.addBeerForm of
@@ -58,24 +73,6 @@ update msg model =
 
                 Nothing ->
                     ( { model | addBeerForm = NewBeerForm.markAsSubmitted model.addBeerForm }, Cmd.none )
-
-        RetrievedBeerList (Err _) ->
-            ( { model | error = Just "Unable to load beer list" }, Cmd.none )
-
-        RetrievedBeerList (Ok beers) ->
-            ( { model | beerList = beers }, Cmd.none )
-
-        DecrementBeerCount beer ->
-            ( { model | beerList = Beer.decrementBeerCount beer model.beerList }, Cmd.none )
-
-        IncrementBeerCount beer ->
-            ( { model | beerList = Beer.incrementBeerCount beer model.beerList }, Cmd.none )
-
-        AddBeerToList beer ->
-            ( { model | beerList = Beer.addBeer beer model.beerList }, Cmd.none )
-
-        UpdateAddBeerInput input ->
-            ( { model | addBeerForm = NewBeerForm.setInput input model.addBeerForm }, Cmd.none )
 
         ClearAddBeer ->
             ( { model | addBeerForm = NewBeerForm.empty }, Cmd.none )

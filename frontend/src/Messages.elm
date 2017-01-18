@@ -12,8 +12,7 @@ type Msg
       -- BeerList
     | IncrementBeerCount Beer
     | DecrementBeerCount Beer
-    | AddBeerToList Beer
-      -- NewBeerForm
+      -- AddBeerForm
     | UpdateAddBeerInput AddBeerInput
     | SubmitAddBeer
     | ClearAddBeer
