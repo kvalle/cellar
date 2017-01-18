@@ -50,10 +50,10 @@ viewAddBeerForm : NewBeerForm -> Html Msg
 viewAddBeerForm model =
     div []
         [ h2 [] [ text "Add beer" ]
-        , textInputWithLabel "Brewery" "brewery" UpdateBrewery model.brewery "Foobar Brewing"
-        , textInputWithLabel "Beer Name" "name" UpdateName model.name "Baz Pils"
-        , textInputWithLabel "Beer Style" "style" UpdateStyle model.style "Pilsner"
-        , textInputWithLabel "Production year" "year" UpdateYear model.year "2017"
+        , textInputWithLabel "Brewery" "brewery" UpdateBrewery model.brewery.value "Foobar Brewing"
+        , textInputWithLabel "Beer Name" "name" UpdateName model.name.value "Baz Pils"
+        , textInputWithLabel "Beer Style" "style" UpdateStyle model.style.value "Pilsner"
+        , textInputWithLabel "Production year" "year" UpdateYear model.year.value "2017"
         , div []
             [ buttonWithIcon "Add" "beer" AddNewBeer "button-primary"
             , buttonWithIcon "Clear" "cancel" ClearNewBeerForm ""
