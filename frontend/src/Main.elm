@@ -49,7 +49,7 @@ update msg model =
         UpdateFilter filter ->
             ( { model | filterString = filter }, Cmd.none )
 
-        AddNewBeer ->
+        SubmitAddBeer ->
             case NewBeerForm.validate model.addBeerForm of
                 Just beer ->
                     ( { model | beerList = Beer.addBeer beer model.beerList, addBeerForm = NewBeerForm.empty }
@@ -74,10 +74,10 @@ update msg model =
         AddBeerToList beer ->
             ( { model | beerList = Beer.addBeer beer model.beerList }, Cmd.none )
 
-        UpdateInput input ->
+        UpdateAddBeerInput input ->
             ( { model | addBeerForm = NewBeerForm.setInput input model.addBeerForm }, Cmd.none )
 
-        ClearNewBeerForm ->
+        ClearAddBeer ->
             ( { model | addBeerForm = NewBeerForm.empty }, Cmd.none )
 
 
