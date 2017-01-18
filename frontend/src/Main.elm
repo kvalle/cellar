@@ -51,16 +51,13 @@ update msg model =
 
         AddNewBeer ->
             case NewBeerForm.validate model.addBeerForm of
-                Ok beer ->
-                    ( { model
-                        | beerList = Beer.addBeer beer model.beerList
-                        , addBeerForm = NewBeerForm.empty
-                      }
+                Just beer ->
+                    ( { model | beerList = Beer.addBeer beer model.beerList, addBeerForm = NewBeerForm.empty }
                     , Cmd.none
                     )
 
-                Err err ->
-                    ( { model | addBeerForm = NewBeerForm.setError model.addBeerForm (Just err) }, Cmd.none )
+                Nothing ->
+                    ( { model | addBeerForm = NewBeerForm.markAsSubmitted model.addBeerForm }, Cmd.none )
 
         RetrievedBeerList (Err _) ->
             ( { model | error = Just "Unable to load beer list" }, Cmd.none )

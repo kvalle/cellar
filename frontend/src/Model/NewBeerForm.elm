@@ -22,84 +22,75 @@ type alias NewBeerForm =
     , style : NewBeerInput
     , year : NewBeerInput
     , submitted : Bool
-    , error : Maybe String
     }
 
 
-newInput : NewBeerForm -> (NewBeerForm -> NewBeerInput) -> String -> (String -> Result String String) -> NewBeerInput
-newInput form getter value validateFn =
-    let
-        old =
-            getter form
+newInput : String -> (String -> Result String String) -> NewBeerInput
+newInput value validateFn =
+    case validateFn value of
+        Ok _ ->
+            { value = value, error = Nothing }
 
-        validated =
-            validateFn value
-    in
-        case validated of
-            Ok _ ->
-                { old | value = value, error = Nothing }
-
-            Err err ->
-                { old | value = value, error = Just err }
+        Err err ->
+            { value = value, error = Just err }
 
 
-validateString : String -> Result String String
-validateString val =
-    Ok val
+validateNotEmpty : String -> Result String String
+validateNotEmpty val =
+    case String.isEmpty val of
+        True ->
+            Err "Cannot be empty"
+
+        False ->
+            Ok val
 
 
 validateYear : String -> Result String String
 validateYear val =
-    Ok val
+    case String.toInt val of
+        Err _ ->
+            Err "Not a valid year"
+
+        Ok _ ->
+            Ok val
 
 
 setInput : AddBeerInput -> NewBeerForm -> NewBeerForm
 setInput input form =
     case input of
         BreweryInput value ->
-            { form | brewery = (newInput form .brewery value validateString) }
+            { form | brewery = (newInput value validateNotEmpty) }
 
         NameInput value ->
-            { form | name = (newInput form .name value validateString) }
+            { form | name = (newInput value validateNotEmpty) }
 
         StyleInput value ->
-            { form | brewery = (newInput form .style value validateString) }
+            { form | style = (newInput value validateNotEmpty) }
 
         YearInput value ->
-            { form | year = (newInput form .year value validateYear) }
+            { form | year = (newInput value validateYear) }
+
+
+markAsSubmitted : NewBeerForm -> NewBeerForm
+markAsSubmitted form =
+    { form | submitted = True }
 
 
 empty : NewBeerForm
 empty =
     NewBeerForm
-        (NewBeerInput "" Nothing)
-        (NewBeerInput "" Nothing)
-        (NewBeerInput "" Nothing)
-        (NewBeerInput "" Nothing)
+        (newInput "" validateNotEmpty)
+        (newInput "" validateNotEmpty)
+        (newInput "" validateNotEmpty)
+        (newInput "" validateYear)
         False
-        Nothing
 
 
-setError : NewBeerForm -> Maybe String -> NewBeerForm
-setError form error =
-    { form | error = error }
-
-
-validate : NewBeerForm -> Result String Beer
+validate : NewBeerForm -> Maybe Beer
 validate model =
-    let
-        yearResult =
-            String.toInt model.year.value
+    case String.toInt model.year.value of
+        Ok year ->
+            Just <| Beer Nothing model.brewery.value model.name.value model.style.value year 1
 
-        allFilledOut =
-            not <| List.any String.isEmpty <| List.map .value [ model.name, model.year, model.style, model.brewery ]
-    in
-        case ( yearResult, allFilledOut ) of
-            ( Ok year, True ) ->
-                Ok <| Beer Nothing model.brewery.value model.name.value model.style.value year 1
-
-            ( _, False ) ->
-                Err "All fields must be filled out"
-
-            ( Err err, _ ) ->
-                Err <| "Input '" ++ model.year.value ++ "' is not a vaild year"
+        Err err ->
+            Nothing
