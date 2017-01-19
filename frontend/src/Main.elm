@@ -32,6 +32,7 @@ type alias Model =
     { beerList : List Beer
     , addBeerForm : NewBeerForm
     , filterString : String
+    , filterAge : String
     , error : Maybe String
     , tab : Tab
     }
@@ -39,7 +40,7 @@ type alias Model =
 
 init : ( Model, Cmd Msg )
 init =
-    ( Model [] NewBeerForm.empty "" Nothing FilterTab, fetchBeerList )
+    ( Model [] NewBeerForm.empty "" "0" Nothing FilterTab, fetchBeerList )
 
 
 
@@ -58,8 +59,11 @@ update msg model =
         ChangeTab tab ->
             ( { model | tab = tab }, Cmd.none )
 
-        UpdateFilter filter ->
+        UpdateFilterText filter ->
             ( { model | filterString = filter }, Cmd.none )
+
+        UpdateFilterAge filter ->
+            ( { model | filterAge = filter }, Cmd.none )
 
         DecrementBeerCount beer ->
             ( { model | beerList = Beer.decrementBeerCount beer model.beerList }, Cmd.none )
@@ -104,7 +108,7 @@ view model =
                 [ viewTabs model.tab
                 , case model.tab of
                     FilterTab ->
-                        viewFilter model.filterString
+                        viewFilter model.filterString model.filterAge
 
                     AddBeerTab ->
                         viewAddBeerForm model.addBeerForm

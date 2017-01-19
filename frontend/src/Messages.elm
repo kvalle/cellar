@@ -10,7 +10,8 @@ type Msg
     = RetrievedBeerList (Result Http.Error (List Beer))
     | ChangeTab Tab
       -- Filter
-    | UpdateFilter String
+    | UpdateFilterText String
+    | UpdateFilterAge String
       -- BeerList
     | IncrementBeerCount Beer
     | DecrementBeerCount Beer
