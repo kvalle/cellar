@@ -63,7 +63,7 @@ update msg model =
             ( { model | tab = tab }, Cmd.none )
 
         ClearFilter ->
-            ( { model | filters = Filter.empty }, Cmd.none )
+            ( { model | filters = Filter.setContext model.beers Filter.empty }, Cmd.none )
 
         UpdateFilter value ->
             ( { model | filters = Filter.setValue model.filters value }, Cmd.none )
