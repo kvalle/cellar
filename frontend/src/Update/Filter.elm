@@ -1,4 +1,4 @@
-module Update.Filter exposing (updateLimits, setValue, empty)
+module Update.Filter exposing (setContext, setValue, empty)
 
 import Model.Filter exposing (Filters, FilterValue(..))
 import Model.Beer exposing (Beer)
@@ -9,8 +9,8 @@ empty =
     Filters "" 0 ( 0, 0 )
 
 
-updateLimits : List Beer -> Filters -> Filters
-updateLimits beers filters =
+setContext : List Beer -> Filters -> Filters
+setContext beers filters =
     let
         lower =
             List.map .year beers |> List.minimum |> Maybe.withDefault 0

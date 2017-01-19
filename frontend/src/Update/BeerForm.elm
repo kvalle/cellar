@@ -1,12 +1,12 @@
-module Update.NewBeerForm exposing (newInput, empty, markAsSubmitted, validate, setInput)
+module Update.BeerForm exposing (empty, markSubmitted, setInput, toBeer)
 
-import Model.NewBeerForm exposing (NewBeerForm, AddBeerInput(..), NewBeerInput)
+import Model.BeerForm exposing (BeerForm, BeerInput(..), BeerFormField)
 import Model.Beer exposing (Beer)
 
 
-empty : NewBeerForm
+empty : BeerForm
 empty =
-    NewBeerForm
+    BeerForm
         (newInput "" validateNotEmpty)
         (newInput "" validateNotEmpty)
         (newInput "" validateNotEmpty)
@@ -14,8 +14,8 @@ empty =
         False
 
 
-validate : NewBeerForm -> Maybe Beer
-validate model =
+toBeer : BeerForm -> Maybe Beer
+toBeer model =
     case String.toInt model.year.value of
         Ok year ->
             Just <| Beer Nothing model.brewery.value model.name.value model.style.value year 1
@@ -24,22 +24,12 @@ validate model =
             Nothing
 
 
-markAsSubmitted : NewBeerForm -> NewBeerForm
-markAsSubmitted form =
+markSubmitted : BeerForm -> BeerForm
+markSubmitted form =
     { form | submitted = True }
 
 
-newInput : String -> (String -> Result String String) -> NewBeerInput
-newInput value validateFn =
-    case validateFn value of
-        Ok _ ->
-            { value = value, error = Nothing }
-
-        Err err ->
-            { value = value, error = Just err }
-
-
-setInput : AddBeerInput -> NewBeerForm -> NewBeerForm
+setInput : BeerInput -> BeerForm -> BeerForm
 setInput input form =
     case input of
         BreweryInput value ->
@@ -77,3 +67,13 @@ validateYear val =
 
         Ok _ ->
             Ok val
+
+
+newInput : String -> (String -> Result String String) -> BeerFormField
+newInput value validateFn =
+    case validateFn value of
+        Ok _ ->
+            { value = value, error = Nothing }
+
+        Err err ->
+            { value = value, error = Just err }

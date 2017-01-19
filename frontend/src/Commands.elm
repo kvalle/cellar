@@ -1,4 +1,4 @@
-module Commands exposing (fetchBeerList)
+module Commands exposing (fetchBeers)
 
 import Model.Beer exposing (Beer)
 import Messages exposing (Msg(..))
@@ -6,13 +6,17 @@ import Http
 import Json.Decode as Decode
 
 
-fetchBeerList : Cmd Msg
-fetchBeerList =
+fetchBeers : Cmd Msg
+fetchBeers =
     let
         url =
             "http://localhost:9000/api/beers"
     in
         Http.send RetrievedBeerList (Http.get url beerListDecoder)
+
+
+
+-- UNEXPOSED FUNCTIONS
 
 
 beerDecoder : Decode.Decoder Beer

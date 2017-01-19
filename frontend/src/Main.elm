@@ -2,9 +2,9 @@ module Main exposing (..)
 
 import Messages exposing (Msg(..))
 import Subscriptions exposing (subscriptions)
-import Commands exposing (fetchBeerList)
+import Commands exposing (fetchBeers)
 import Model.Beer exposing (Beer)
-import Model.NewBeerForm exposing (NewBeerForm)
+import Model.BeerForm exposing (BeerForm)
 import Model.Tab exposing (Tab(..))
 import Model.Filter exposing (FilterValue(..), Filters)
 import View.BeerList exposing (viewBeerList)
@@ -13,7 +13,7 @@ import View.Filter exposing (viewFilter)
 import View.Tabs exposing (viewTabs)
 import Update.Beer as Beer
 import Update.Filter as Filter
-import Update.NewBeerForm as NewBeerForm
+import Update.BeerForm as BeerForm
 import Html exposing (..)
 import Html.Attributes exposing (class)
 
@@ -33,8 +33,8 @@ main =
 
 
 type alias Model =
-    { beerList : List Beer
-    , addBeerForm : NewBeerForm
+    { beers : List Beer
+    , beerForm : BeerForm
     , filters : Filters
     , error : Maybe String
     , tab : Tab
@@ -43,7 +43,7 @@ type alias Model =
 
 init : ( Model, Cmd Msg )
 init =
-    ( Model [] NewBeerForm.empty Filter.empty Nothing FilterTab, fetchBeerList )
+    ( Model [] BeerForm.empty Filter.empty Nothing FilterTab, fetchBeers )
 
 
 
@@ -57,7 +57,7 @@ update msg model =
             ( { model | error = Just "Unable to load beer list" }, Cmd.none )
 
         RetrievedBeerList (Ok beers) ->
-            ( { model | beerList = beers, filters = Filter.updateLimits beers model.filters }, Cmd.none )
+            ( { model | beers = beers, filters = Filter.setContext beers model.filters }, Cmd.none )
 
         ChangeTab tab ->
             ( { model | tab = tab }, Cmd.none )
@@ -68,38 +68,38 @@ update msg model =
         UpdateFilter value ->
             ( { model | filters = Filter.setValue model.filters value }, Cmd.none )
 
-        DecrementBeerCount beer ->
-            ( { model | beerList = Beer.decrementBeerCount beer model.beerList }, Cmd.none )
+        DecrementBeer beer ->
+            ( { model | beers = Beer.decrement beer model.beers }, Cmd.none )
 
-        IncrementBeerCount beer ->
-            ( { model | beerList = Beer.incrementBeerCount beer model.beerList }, Cmd.none )
+        IncrementBeer beer ->
+            ( { model | beers = Beer.increment beer model.beers }, Cmd.none )
 
-        UpdateAddBeerInput input ->
-            ( { model | addBeerForm = NewBeerForm.setInput input model.addBeerForm }, Cmd.none )
+        UpdateBeerForm input ->
+            ( { model | beerForm = BeerForm.setInput input model.beerForm }, Cmd.none )
 
-        SubmitAddBeer ->
-            case NewBeerForm.validate model.addBeerForm of
+        SubmitBeerForm ->
+            case BeerForm.toBeer model.beerForm of
                 Just beer ->
                     let
                         beerList =
-                            Beer.addBeer beer model.beerList
+                            Beer.add beer model.beers
 
                         updatedFilters =
-                            Filter.updateLimits beerList model.filters
+                            Filter.setContext beerList model.filters
                     in
                         ( { model
-                            | beerList = beerList
-                            , addBeerForm = NewBeerForm.empty
+                            | beers = beerList
+                            , beerForm = BeerForm.empty
                             , filters = updatedFilters
                           }
                         , Cmd.none
                         )
 
                 Nothing ->
-                    ( { model | addBeerForm = NewBeerForm.markAsSubmitted model.addBeerForm }, Cmd.none )
+                    ( { model | beerForm = BeerForm.markSubmitted model.beerForm }, Cmd.none )
 
-        ClearAddBeer ->
-            ( { model | addBeerForm = NewBeerForm.empty }, Cmd.none )
+        ClearBeerForm ->
+            ( { model | beerForm = BeerForm.empty }, Cmd.none )
 
 
 
@@ -115,7 +115,7 @@ view model =
             ]
         , div [ class "row" ]
             [ div [ class "main seven columns" ]
-                [ viewBeerList model.filters model.beerList
+                [ viewBeerList model.filters model.beers
                 , viewErrors model.error
                 ]
             , div [ class "sidebar five columns" ]
@@ -125,7 +125,7 @@ view model =
                         viewFilter model.filters
 
                     AddBeerTab ->
-                        viewAddBeerForm model.addBeerForm
+                        viewAddBeerForm model.beerForm
                 ]
             ]
         ]

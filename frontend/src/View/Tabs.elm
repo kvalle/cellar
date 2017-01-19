@@ -7,6 +7,18 @@ import Html.Attributes exposing (class)
 import Html.Events exposing (onClick)
 
 
+viewTabs : Tab -> Html Msg
+viewTabs selected =
+    div [ class "tabs" ]
+        [ viewTab "Filter" selected FilterTab
+        , viewTab "Add new" selected AddBeerTab
+        ]
+
+
+
+-- UNEXPOSED FUNCTIONS
+
+
 viewTab : String -> Tab -> Tab -> Html Msg
 viewTab string selected tab =
     let
@@ -19,11 +31,3 @@ viewTab string selected tab =
         span
             [ class classes, onClick (ChangeTab tab) ]
             [ text string ]
-
-
-viewTabs : Tab -> Html Msg
-viewTabs selected =
-    div [ class "tabs" ]
-        [ viewTab "Filter" selected FilterTab
-        , viewTab "Add new" selected AddBeerTab
-        ]

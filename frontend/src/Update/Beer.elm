@@ -1,26 +1,26 @@
-module Update.Beer exposing (filteredBeers, decrementBeerCount, incrementBeerCount, addBeer)
+module Update.Beer exposing (filtered, decrement, increment, add)
 
 import Model.Filter exposing (Filters)
 import Model.Beer exposing (Beer)
 
 
-filteredBeers : Filters -> List Beer -> List Beer
-filteredBeers filters beers =
-    List.filter (isMatch filters) beers
+filtered : Filters -> List Beer -> List Beer
+filtered filters beers =
+    List.filter (matches filters) beers
 
 
-decrementBeerCount : Beer -> List Beer -> List Beer
-decrementBeerCount =
+decrement : Beer -> List Beer -> List Beer
+decrement =
     updateBeer (\beer -> { beer | count = beer.count - 1 })
 
 
-incrementBeerCount : Beer -> List Beer -> List Beer
-incrementBeerCount =
+increment : Beer -> List Beer -> List Beer
+increment =
     updateBeer (\beer -> { beer | count = beer.count + 1 })
 
 
-addBeer : Beer -> List Beer -> List Beer
-addBeer beer beers =
+add : Beer -> List Beer -> List Beer
+add beer beers =
     { beer | id = Just <| nextAvailableId beers } :: beers
 
 
@@ -50,8 +50,8 @@ updateBeer fn original beers =
         List.map update beers
 
 
-isMatch : Filters -> Beer -> Bool
-isMatch filters beer =
+matches : Filters -> Beer -> Bool
+matches filters beer =
     let
         textMatch string =
             String.contains (String.toLower filters.textMatch) (String.toLower string)

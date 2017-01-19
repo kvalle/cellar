@@ -3,7 +3,7 @@ module Messages exposing (Msg(..))
 import Model.Filter exposing (FilterValue)
 import Model.Tab exposing (Tab)
 import Model.Beer exposing (Beer)
-import Model.NewBeerForm exposing (AddBeerInput)
+import Model.BeerForm exposing (BeerInput)
 import Http
 
 
@@ -14,9 +14,9 @@ type Msg
     | ClearFilter
     | UpdateFilter FilterValue
       -- BeerList
-    | IncrementBeerCount Beer
-    | DecrementBeerCount Beer
+    | IncrementBeer Beer
+    | DecrementBeer Beer
       -- AddBeerForm
-    | UpdateAddBeerInput AddBeerInput
-    | SubmitAddBeer
-    | ClearAddBeer
+    | UpdateBeerForm BeerInput
+    | SubmitBeerForm
+    | ClearBeerForm

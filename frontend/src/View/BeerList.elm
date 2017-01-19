@@ -1,9 +1,9 @@
 module View.BeerList exposing (viewBeerList)
 
 import Messages exposing (Msg(..))
-import Model.Beer as Beer exposing (Beer)
+import Model.Beer exposing (Beer)
 import Model.Filter exposing (Filters)
-import Update.Beer exposing (filteredBeers)
+import Update.Beer as Beer
 import Html exposing (..)
 import Html.Attributes exposing (class, placeholder, type_, value)
 import Html.Events exposing (onClick, onInput)
@@ -16,9 +16,13 @@ viewBeerList filters beers =
             tr [] <| List.map (\name -> th [] [ text name ]) [ "#", "Brewery", "Beer", "Style", "" ]
 
         rows =
-            List.map viewBeerRow <| filteredBeers filters beers
+            List.map viewBeerRow <| Beer.filtered filters beers
     in
         table [] <| heading :: rows
+
+
+
+-- UNEXPOSED FUNCTIONS
 
 
 viewBeerRow : Beer -> Html Msg
@@ -48,7 +52,7 @@ viewBeerRow beer =
 
 viewIncrementCountAction : Beer -> Html Msg
 viewIncrementCountAction beer =
-    i [ onClick (IncrementBeerCount beer), class "action icon-plus" ] []
+    i [ onClick (IncrementBeer beer), class "action icon-plus" ] []
 
 
 viewDecrementCountAction : Beer -> Html Msg
@@ -56,4 +60,4 @@ viewDecrementCountAction beer =
     if beer.count < 1 then
         i [ class "action icon-minus disabled" ] []
     else
-        i [ onClick (DecrementBeerCount beer), class "action icon-minus" ] []
+        i [ onClick (DecrementBeer beer), class "action icon-minus" ] []
