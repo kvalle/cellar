@@ -6,6 +6,7 @@ import Commands exposing (fetchBeerList)
 import Model.Beer as Beer exposing (Beer)
 import Model.NewBeerForm as NewBeerForm exposing (NewBeerForm)
 import Model.Tab exposing (Tab(..))
+import Model.Filter as Filter exposing (FilterValue(..), Filters, empty)
 import View.BeerList exposing (viewBeerList)
 import View.AddBeer exposing (viewAddBeerForm)
 import View.Filter exposing (viewFilter)
@@ -31,8 +32,7 @@ main =
 type alias Model =
     { beerList : List Beer
     , addBeerForm : NewBeerForm
-    , filterString : String
-    , filterAge : String
+    , filters : Filters
     , error : Maybe String
     , tab : Tab
     }
@@ -40,7 +40,7 @@ type alias Model =
 
 init : ( Model, Cmd Msg )
 init =
-    ( Model [] NewBeerForm.empty "" "0" Nothing FilterTab, fetchBeerList )
+    ( Model [] NewBeerForm.empty Filter.empty Nothing FilterTab, fetchBeerList )
 
 
 
@@ -59,11 +59,11 @@ update msg model =
         ChangeTab tab ->
             ( { model | tab = tab }, Cmd.none )
 
-        UpdateFilterText filter ->
-            ( { model | filterString = filter }, Cmd.none )
+        ClearFilter ->
+            ( { model | filters = Filter.empty }, Cmd.none )
 
-        UpdateFilterAge filter ->
-            ( { model | filterAge = filter }, Cmd.none )
+        UpdateFilter value ->
+            ( { model | filters = Filter.setValue model.filters value }, Cmd.none )
 
         DecrementBeerCount beer ->
             ( { model | beerList = Beer.decrementBeerCount beer model.beerList }, Cmd.none )
@@ -101,14 +101,14 @@ view model =
             ]
         , div [ class "row" ]
             [ div [ class "main seven columns" ]
-                [ viewBeerList model.filterString model.beerList
+                [ viewBeerList model.filters model.beerList
                 , viewErrors model.error
                 ]
             , div [ class "sidebar five columns" ]
                 [ viewTabs model.tab
                 , case model.tab of
                     FilterTab ->
-                        viewFilter model.filterString model.filterAge
+                        viewFilter model.filters
 
                     AddBeerTab ->
                         viewAddBeerForm model.addBeerForm

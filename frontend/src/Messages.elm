@@ -1,5 +1,6 @@
 module Messages exposing (Msg(..))
 
+import Model.Filter exposing (FilterValue)
 import Model.Tab exposing (Tab)
 import Model.Beer exposing (Beer)
 import Model.NewBeerForm exposing (AddBeerInput)
@@ -10,8 +11,8 @@ type Msg
     = RetrievedBeerList (Result Http.Error (List Beer))
     | ChangeTab Tab
       -- Filter
-    | UpdateFilterText String
-    | UpdateFilterAge String
+    | ClearFilter
+    | UpdateFilter FilterValue
       -- BeerList
     | IncrementBeerCount Beer
     | DecrementBeerCount Beer

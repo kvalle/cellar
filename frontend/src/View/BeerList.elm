@@ -2,19 +2,20 @@ module View.BeerList exposing (viewBeerList)
 
 import Messages exposing (Msg(..))
 import Model.Beer as Beer exposing (Beer)
+import Model.Filter exposing (Filters)
 import Html exposing (..)
 import Html.Attributes exposing (class, placeholder, type_, value)
 import Html.Events exposing (onClick, onInput)
 
 
-viewBeerList : String -> List Beer -> Html Msg
-viewBeerList filter beers =
+viewBeerList : Filters -> List Beer -> Html Msg
+viewBeerList filters beers =
     let
         heading =
             tr [] <| List.map (\name -> th [] [ text name ]) [ "#", "Brewery", "Beer", "Style", "" ]
 
         rows =
-            List.map viewBeerRow <| Beer.filteredBeers filter beers
+            List.map viewBeerRow <| Beer.filteredBeers filters.textMatch beers
     in
         table [] <| heading :: rows
 
