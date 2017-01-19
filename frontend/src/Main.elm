@@ -2,7 +2,7 @@ module Main exposing (..)
 
 import Messages exposing (Msg(..))
 import Subscriptions exposing (subscriptions)
-import Commands exposing (fetchBeers)
+import Commands exposing (fetchBeers, saveBeers)
 import Model.Beer exposing (Beer)
 import Model.BeerForm exposing (BeerForm)
 import Model.Tab exposing (Tab(..))
@@ -11,6 +11,7 @@ import View.BeerList exposing (viewBeerList)
 import View.BeerForm exposing (viewBeerForm)
 import View.Filter exposing (viewFilter)
 import View.Tabs exposing (viewTabs)
+import View exposing (buttonWithIcon)
 import Update.Beer as Beer
 import Update.Filter as Filter
 import Update.BeerForm as BeerForm
@@ -38,12 +39,13 @@ type alias Model =
     , filters : Filters
     , error : Maybe String
     , tab : Tab
+    , saved : Bool
     }
 
 
 init : ( Model, Cmd Msg )
 init =
-    ( Model [] BeerForm.empty Filter.empty Nothing FilterTab, fetchBeers )
+    ( Model [] BeerForm.empty Filter.empty Nothing FilterTab False, fetchBeers )
 
 
 
@@ -57,7 +59,19 @@ update msg model =
             ( { model | error = Just "Unable to load beer list" }, Cmd.none )
 
         RetrievedBeerList (Ok beers) ->
-            ( { model | beers = beers, filters = Filter.setContext beers model.filters }, Cmd.none )
+            ( { model
+                | beers = beers
+                , filters = Filter.setContext beers model.filters
+                , saved = True
+              }
+            , Cmd.none
+            )
+
+        SavedBeerList (Ok _) ->
+            ( { model | saved = True }, Cmd.none )
+
+        SavedBeerList (Err _) ->
+            ( { model | error = Just "Unable to store beer list" }, Cmd.none )
 
         ChangeTab tab ->
             ( { model | tab = tab }, Cmd.none )
@@ -69,10 +83,23 @@ update msg model =
             ( { model | filters = Filter.setValue model.filters value }, Cmd.none )
 
         DecrementBeer beer ->
-            ( { model | beers = Beer.decrement beer model.beers }, Cmd.none )
+            ( { model
+                | beers = Beer.decrement beer model.beers
+                , saved = False
+              }
+            , Cmd.none
+            )
 
         IncrementBeer beer ->
-            ( { model | beers = Beer.increment beer model.beers }, Cmd.none )
+            ( { model
+                | beers = Beer.increment beer model.beers
+                , saved = False
+              }
+            , Cmd.none
+            )
+
+        SaveBeers ->
+            ( model, saveBeers model.beers )
 
         UpdateBeerForm input ->
             ( { model | beerForm = BeerForm.setInput input model.beerForm }, Cmd.none )
@@ -88,6 +115,7 @@ update msg model =
                             | beers = beerList
                             , beerForm = BeerForm.empty
                             , filters = Filter.setContext beerList model.filters
+                            , saved = False
                           }
                         , Cmd.none
                         )
@@ -115,6 +143,7 @@ view model =
         , div [ class "row" ]
             [ div [ class "main seven columns" ]
                 [ viewBeerList model.filters model.beers
+                , viewSaveButton model
                 , viewErrors model.error
                 ]
             , div [ class "sidebar five columns" ]
@@ -138,6 +167,12 @@ viewErrors error =
 
             Just error ->
                 [ text error ]
+
+
+viewSaveButton : Model -> Html Msg
+viewSaveButton model =
+    div []
+        [ buttonWithIcon "Save" "floppy" SaveBeers "button-primary" ]
 
 
 viewTitle : Html Msg

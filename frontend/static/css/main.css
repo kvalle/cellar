@@ -16,6 +16,10 @@ h1 i {
 	font-size: 1.7em;
 }
 
+button i {
+	padding-left: 5px;
+}
+
 /* Tabs */
 
 .tabs {
@@ -49,10 +53,6 @@ h1 i {
 
 /* Add beer form */
 
-
-.add-beer-form button i {
-	padding-left: 5px;
-}
 
 .add-beer-form button:not(:first-child) {
 	margin-left: 5px;

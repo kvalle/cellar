@@ -5,7 +5,7 @@ import Model.BeerForm exposing (BeerForm, BeerFormField, BeerInput(..))
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (..)
-import View exposing (onEnter)
+import View exposing (onEnter, buttonWithIcon)
 
 
 viewBeerForm : BeerForm -> Html Msg
@@ -48,12 +48,4 @@ fieldwithLabel labelText tag msg submitted beerInput =
 
                 _ ->
                     []
-        ]
-
-
-buttonWithIcon : String -> String -> msg -> String -> Html msg
-buttonWithIcon buttonText icon msg classes =
-    button [ onClick msg, class classes ]
-        [ text buttonText
-        , i [ class <| "icon-" ++ icon ] []
         ]

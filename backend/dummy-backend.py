@@ -23,23 +23,22 @@ class dummyHandler(BaseHTTPRequestHandler):
 		self.send_response(200)
 		self.send_header('Access-Control-Allow-Methods','*')
 		self.send_header('Access-Control-Allow-Origin', '*')
+		self.send_header('Access-Control-Allow-Headers', 'Content-type')
 		self.end_headers()
 		self.wfile.write("")
 
 	def do_GET(self):
 		self.send_response(200)
-		self.send_header('Content-type','application/json; charset=utf-8')
-		self.send_header('Access-Control-Allow-Origin', '*')
 		self.end_headers()
 		self.wfile.write(load())
 
 	def do_POST(self):
-		global data
 		content_len = int(self.headers.getheader('content-length', 0))
-		store(self.rfile.read(content_len))
+		data = self.rfile.read(content_len)
+		store(data)
 		self.send_response(200)
-		self.send_header('Access-Control-Allow-Origin', '*')
 		self.end_headers()
+		self.wfile.write(data)
 
 try:
 	server = HTTPServer(('', PORT_NUMBER), dummyHandler)

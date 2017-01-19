@@ -9,6 +9,7 @@ import Http
 
 type Msg
     = RetrievedBeerList (Result Http.Error (List Beer))
+    | SavedBeerList (Result Http.Error (List Beer))
     | ChangeTab Tab
       -- Filter
     | ClearFilter
@@ -16,6 +17,7 @@ type Msg
       -- BeerList
     | IncrementBeer Beer
     | DecrementBeer Beer
+    | SaveBeers
       -- AddBeerForm
     | UpdateBeerForm BeerInput
     | SubmitBeerForm
