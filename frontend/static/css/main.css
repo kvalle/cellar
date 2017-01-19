@@ -19,6 +19,7 @@ h1 i {
 /* Tabs */
 
 .tabs {
+	margin-top: 40px;
 	margin-bottom: 20px;
 }
 
@@ -61,13 +62,10 @@ h1 i {
 	margin-bottom: 0.2em;
 }
 
-.add-beer-form label {
-	margin-top: 1em;
-}
-
 .add-beer-form .error {
 	color: red;
 	height: 1em;
+	margin-bottom: 1em;
 }
 
 /* Beer list view */

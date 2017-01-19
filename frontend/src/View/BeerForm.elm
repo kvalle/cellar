@@ -1,4 +1,4 @@
-module View.AddBeer exposing (viewAddBeerForm)
+module View.BeerForm exposing (viewBeerForm)
 
 import Messages exposing (Msg(..))
 import Model.BeerForm exposing (BeerForm, BeerFormField, BeerInput(..))
@@ -8,8 +8,8 @@ import Html.Events exposing (..)
 import View exposing (onEnter)
 
 
-viewAddBeerForm : BeerForm -> Html Msg
-viewAddBeerForm model =
+viewBeerForm : BeerForm -> Html Msg
+viewBeerForm model =
     div [ class "add-beer-form" ]
         [ fieldwithLabel "Brewery" "brewery" (\val -> UpdateBeerForm (BreweryInput val)) model.submitted model.brewery
         , fieldwithLabel "Beer Name" "name" (\val -> UpdateBeerForm (NameInput val)) model.submitted model.name

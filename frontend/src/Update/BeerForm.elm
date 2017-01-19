@@ -15,13 +15,20 @@ empty =
 
 
 toBeer : BeerForm -> Maybe Beer
-toBeer model =
-    case String.toInt model.year.value of
-        Ok year ->
-            Just <| Beer Nothing model.brewery.value model.name.value model.style.value year 1
+toBeer form =
+    let
+        inputsValidated =
+            List.filterMap .error [ form.brewery, form.name, form.style, form.year ] |> List.isEmpty
 
-        Err err ->
-            Nothing
+        year =
+            String.toInt form.year.value
+    in
+        case ( inputsValidated, year ) of
+            ( True, Ok year ) ->
+                Just <| Beer Nothing form.brewery.value form.name.value form.style.value year 1
+
+            _ ->
+                Nothing
 
 
 markSubmitted : BeerForm -> BeerForm

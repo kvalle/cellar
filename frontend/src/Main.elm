@@ -8,7 +8,7 @@ import Model.BeerForm exposing (BeerForm)
 import Model.Tab exposing (Tab(..))
 import Model.Filter exposing (FilterValue(..), Filters)
 import View.BeerList exposing (viewBeerList)
-import View.AddBeer exposing (viewAddBeerForm)
+import View.BeerForm exposing (viewBeerForm)
 import View.Filter exposing (viewFilter)
 import View.Tabs exposing (viewTabs)
 import Update.Beer as Beer
@@ -83,14 +83,11 @@ update msg model =
                     let
                         beerList =
                             Beer.add beer model.beers
-
-                        updatedFilters =
-                            Filter.setContext beerList model.filters
                     in
                         ( { model
                             | beers = beerList
                             , beerForm = BeerForm.empty
-                            , filters = updatedFilters
+                            , filters = Filter.setContext beerList model.filters
                           }
                         , Cmd.none
                         )
@@ -110,8 +107,10 @@ view : Model -> Html Msg
 view model =
     div [ class "container" ]
         [ div [ class "row" ]
-            [ div [ class "twelve columns" ]
+            [ div [ class "main seven columns" ]
                 [ viewTitle ]
+            , div [ class "sidebar five columns" ]
+                [ viewTabs model.tab ]
             ]
         , div [ class "row" ]
             [ div [ class "main seven columns" ]
@@ -119,13 +118,12 @@ view model =
                 , viewErrors model.error
                 ]
             , div [ class "sidebar five columns" ]
-                [ viewTabs model.tab
-                , case model.tab of
+                [ case model.tab of
                     FilterTab ->
                         viewFilter model.filters
 
                     AddBeerTab ->
-                        viewAddBeerForm model.beerForm
+                        viewBeerForm model.beerForm
                 ]
             ]
         ]
