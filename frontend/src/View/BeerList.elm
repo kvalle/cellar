@@ -15,7 +15,7 @@ viewBeerList filters beers =
             tr [] <| List.map (\name -> th [] [ text name ]) [ "#", "Brewery", "Beer", "Style", "" ]
 
         rows =
-            List.map viewBeerRow <| Beer.filteredBeers filters.textMatch beers
+            List.map viewBeerRow <| Beer.filteredBeers filters beers
     in
         table [] <| heading :: rows
 

@@ -40,7 +40,7 @@ type alias Model =
 
 init : ( Model, Cmd Msg )
 init =
-    ( Model [] NewBeerForm.empty Filter.empty Nothing FilterTab, fetchBeerList )
+    ( Model [] NewBeerForm.empty (Filter.empty "2017") Nothing FilterTab, fetchBeerList )
 
 
 
@@ -60,7 +60,7 @@ update msg model =
             ( { model | tab = tab }, Cmd.none )
 
         ClearFilter ->
-            ( { model | filters = Filter.empty }, Cmd.none )
+            ( { model | filters = (Filter.empty "2017") }, Cmd.none )
 
         UpdateFilter value ->
             ( { model | filters = Filter.setValue model.filters value }, Cmd.none )
@@ -108,7 +108,7 @@ view model =
                 [ viewTabs model.tab
                 , case model.tab of
                     FilterTab ->
-                        viewFilter model.filters
+                        viewFilter "2010" "2017" model.filters
 
                     AddBeerTab ->
                         viewAddBeerForm model.addBeerForm

@@ -32,6 +32,6 @@ setOlderThan filters text =
     { filters | olderThan = text }
 
 
-empty : Filters
-empty =
-    Filters "" "0"
+empty : String -> Filters
+empty minYear =
+    Filters "" minYear

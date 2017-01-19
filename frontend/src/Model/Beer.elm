@@ -1,5 +1,7 @@
 module Model.Beer exposing (Beer, filteredBeers, decrementBeerCount, incrementBeerCount, addBeer)
 
+import Model.Filter exposing (Filters)
+
 
 type alias Beer =
     { id : Maybe Int
@@ -11,16 +13,29 @@ type alias Beer =
     }
 
 
-filteredBeers : String -> List Beer -> List Beer
-filteredBeers filter beers =
+isMatch : Filters -> Beer -> Bool
+isMatch filters beer =
     let
-        isMatch string =
-            String.contains (String.toLower filter) (String.toLower string)
+        textMatch string =
+            String.contains (String.toLower filters.textMatch) (String.toLower string)
 
-        beerMatches beer =
-            isMatch beer.name || isMatch beer.brewery || isMatch beer.style || isMatch (toString beer.year)
+        isTextMatch =
+            textMatch beer.name || textMatch beer.brewery || textMatch beer.style || textMatch (toString beer.year)
+
+        isInYearRange =
+            case String.toInt filters.olderThan of
+                Ok year ->
+                    beer.year <= year
+
+                Err _ ->
+                    False
     in
-        List.filter beerMatches beers
+        isTextMatch && isInYearRange
+
+
+filteredBeers : Filters -> List Beer -> List Beer
+filteredBeers filters beers =
+    List.filter (isMatch filters) beers
 
 
 decrementBeerCount : Beer -> List Beer -> List Beer
