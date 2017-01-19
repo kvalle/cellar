@@ -1,5 +1,7 @@
 module Model.Filter exposing (..)
 
+import Model.Beer exposing (Beer)
+
 
 type FilterValue
     = OlderThan String
@@ -8,30 +10,6 @@ type FilterValue
 
 type alias Filters =
     { textMatch : String
-    , olderThan : String
+    , olderThan : Int
+    , yearRange : ( Int, Int )
     }
-
-
-setValue : Filters -> FilterValue -> Filters
-setValue filters value =
-    case value of
-        OlderThan years ->
-            { filters | olderThan = years }
-
-        TextMatches text ->
-            { filters | textMatch = text }
-
-
-setTextFilter : Filters -> String -> Filters
-setTextFilter filters text =
-    { filters | textMatch = text }
-
-
-setOlderThan : Filters -> String -> Filters
-setOlderThan filters text =
-    { filters | olderThan = text }
-
-
-empty : String -> Filters
-empty minYear =
-    Filters "" minYear

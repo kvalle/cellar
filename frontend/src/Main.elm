@@ -3,14 +3,17 @@ module Main exposing (..)
 import Messages exposing (Msg(..))
 import Subscriptions exposing (subscriptions)
 import Commands exposing (fetchBeerList)
-import Model.Beer as Beer exposing (Beer)
-import Model.NewBeerForm as NewBeerForm exposing (NewBeerForm)
+import Model.Beer exposing (Beer)
+import Model.NewBeerForm exposing (NewBeerForm)
 import Model.Tab exposing (Tab(..))
-import Model.Filter as Filter exposing (FilterValue(..), Filters, empty)
+import Model.Filter exposing (FilterValue(..), Filters)
 import View.BeerList exposing (viewBeerList)
 import View.AddBeer exposing (viewAddBeerForm)
 import View.Filter exposing (viewFilter)
 import View.Tabs exposing (viewTabs)
+import Update.Beer as Beer
+import Update.Filter as Filter
+import Update.NewBeerForm as NewBeerForm
 import Html exposing (..)
 import Html.Attributes exposing (class)
 
@@ -40,7 +43,7 @@ type alias Model =
 
 init : ( Model, Cmd Msg )
 init =
-    ( Model [] NewBeerForm.empty (Filter.empty "2017") Nothing FilterTab, fetchBeerList )
+    ( Model [] NewBeerForm.empty Filter.empty Nothing FilterTab, fetchBeerList )
 
 
 
@@ -54,13 +57,13 @@ update msg model =
             ( { model | error = Just "Unable to load beer list" }, Cmd.none )
 
         RetrievedBeerList (Ok beers) ->
-            ( { model | beerList = beers }, Cmd.none )
+            ( { model | beerList = beers, filters = Filter.updateLimits beers model.filters }, Cmd.none )
 
         ChangeTab tab ->
             ( { model | tab = tab }, Cmd.none )
 
         ClearFilter ->
-            ( { model | filters = (Filter.empty "2017") }, Cmd.none )
+            ( { model | filters = Filter.empty }, Cmd.none )
 
         UpdateFilter value ->
             ( { model | filters = Filter.setValue model.filters value }, Cmd.none )
@@ -77,9 +80,20 @@ update msg model =
         SubmitAddBeer ->
             case NewBeerForm.validate model.addBeerForm of
                 Just beer ->
-                    ( { model | beerList = Beer.addBeer beer model.beerList, addBeerForm = NewBeerForm.empty }
-                    , Cmd.none
-                    )
+                    let
+                        beerList =
+                            Beer.addBeer beer model.beerList
+
+                        updatedFilters =
+                            Filter.updateLimits beerList model.filters
+                    in
+                        ( { model
+                            | beerList = beerList
+                            , addBeerForm = NewBeerForm.empty
+                            , filters = updatedFilters
+                          }
+                        , Cmd.none
+                        )
 
                 Nothing ->
                     ( { model | addBeerForm = NewBeerForm.markAsSubmitted model.addBeerForm }, Cmd.none )
@@ -108,7 +122,7 @@ view model =
                 [ viewTabs model.tab
                 , case model.tab of
                     FilterTab ->
-                        viewFilter "2010" "2017" model.filters
+                        viewFilter model.filters
 
                     AddBeerTab ->
                         viewAddBeerForm model.addBeerForm

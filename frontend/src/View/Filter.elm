@@ -7,8 +7,8 @@ import Html.Events exposing (onClick, onInput)
 import Model.Filter exposing (Filters, FilterValue(..))
 
 
-viewFilter : String -> String -> Filters -> Html Msg
-viewFilter yearMin yearMax filters =
+viewFilter : Filters -> Html Msg
+viewFilter filters =
     div [ class "filter-form" ]
         [ label [ for "text-filter-input" ] [ text "Text filter" ]
         , input
@@ -19,14 +19,14 @@ viewFilter yearMin yearMax filters =
             , class "u-full-width"
             ]
             []
-        , label [ for "age-filter-input" ] [ text <| "Older than: " ++ filters.olderThan ]
+        , label [ for "age-filter-input" ] [ text <| "Made in " ++ (toString filters.olderThan) ++ " or earlier" ]
         , input
             [ type_ "range"
             , id "age-filter-input"
             , class "u-full-width"
-            , Html.Attributes.min yearMin
-            , Html.Attributes.max yearMax
-            , value filters.olderThan
+            , Html.Attributes.min <| toString <| Tuple.first filters.yearRange
+            , Html.Attributes.max <| toString <| Tuple.second filters.yearRange
+            , value <| toString filters.olderThan
             , onInput (\val -> (UpdateFilter (OlderThan val)))
             ]
             []

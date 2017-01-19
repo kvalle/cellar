@@ -3,6 +3,7 @@ module View.BeerList exposing (viewBeerList)
 import Messages exposing (Msg(..))
 import Model.Beer as Beer exposing (Beer)
 import Model.Filter exposing (Filters)
+import Update.Beer exposing (filteredBeers)
 import Html exposing (..)
 import Html.Attributes exposing (class, placeholder, type_, value)
 import Html.Events exposing (onClick, onInput)
@@ -15,7 +16,7 @@ viewBeerList filters beers =
             tr [] <| List.map (\name -> th [] [ text name ]) [ "#", "Brewery", "Beer", "Style", "" ]
 
         rows =
-            List.map viewBeerRow <| Beer.filteredBeers filters beers
+            List.map viewBeerRow <| filteredBeers filters beers
     in
         table [] <| heading :: rows
 
