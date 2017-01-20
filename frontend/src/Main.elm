@@ -33,19 +33,25 @@ main =
 -- MODEL
 
 
+type State
+    = Saved
+    | Unsaved
+    | Saving
+
+
 type alias Model =
     { beers : List Beer
     , beerForm : BeerForm
     , filters : Filters
     , error : Maybe String
     , tab : Tab
-    , saved : Bool
+    , state : State
     }
 
 
 init : ( Model, Cmd Msg )
 init =
-    ( Model [] BeerForm.empty Filter.empty Nothing FilterTab False, fetchBeers )
+    ( Model [] BeerForm.empty Filter.empty Nothing FilterTab Unsaved, fetchBeers )
 
 
 
@@ -62,13 +68,13 @@ update msg model =
             ( { model
                 | beers = beers
                 , filters = Filter.setContext beers model.filters
-                , saved = True
+                , state = Saved
               }
             , Cmd.none
             )
 
         SavedBeerList (Ok _) ->
-            ( { model | saved = True }, Cmd.none )
+            ( { model | state = Saved }, Cmd.none )
 
         SavedBeerList (Err _) ->
             ( { model | error = Just "Unable to store beer list" }, Cmd.none )
@@ -85,7 +91,7 @@ update msg model =
         DecrementBeer beer ->
             ( { model
                 | beers = Beer.decrement beer model.beers
-                , saved = False
+                , state = Unsaved
               }
             , Cmd.none
             )
@@ -93,13 +99,13 @@ update msg model =
         IncrementBeer beer ->
             ( { model
                 | beers = Beer.increment beer model.beers
-                , saved = False
+                , state = Unsaved
               }
             , Cmd.none
             )
 
         SaveBeers ->
-            ( model, saveBeers model.beers )
+            ( { model | state = Saving }, saveBeers model.beers )
 
         UpdateBeerForm input ->
             ( { model | beerForm = BeerForm.setInput input model.beerForm }, Cmd.none )
@@ -115,7 +121,7 @@ update msg model =
                             | beers = beerList
                             , beerForm = BeerForm.empty
                             , filters = Filter.setContext beerList model.filters
-                            , saved = False
+                            , state = Unsaved
                           }
                         , Cmd.none
                         )
@@ -172,7 +178,18 @@ viewErrors error =
 viewSaveButton : Model -> Html Msg
 viewSaveButton model =
     div []
-        [ buttonWithIcon "Save" "floppy" SaveBeers "button-primary" ]
+        [ buttonWithIcon "Save" "floppy" SaveBeers "button-primary"
+        , span [ class "save-status" ] <|
+            case model.state of
+                Saved ->
+                    [ text "" ]
+
+                Unsaved ->
+                    [ text "You have unsaved changes" ]
+
+                Saving ->
+                    [ text "Saving…" ]
+        ]
 
 
 viewTitle : Html Msg

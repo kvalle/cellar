@@ -1,8 +1,10 @@
 #!/usr/bin/python
 # encoding: utf-8
 
-from BaseHTTPServer import BaseHTTPRequestHandler,HTTPServer
+import time
 import os
+
+from BaseHTTPServer import BaseHTTPRequestHandler,HTTPServer
 
 SERVER_DIR = os.path.dirname(os.path.realpath(__file__))
 FILE_PATH = SERVER_DIR+"/data/beers.json"
@@ -29,6 +31,8 @@ class dummyHandler(BaseHTTPRequestHandler):
 
 	def do_GET(self):
 		self.send_response(200)
+		self.send_header('Content-type','application/json; charset=utf-8')
+		self.send_header('Access-Control-Allow-Origin', '*')
 		self.end_headers()
 		self.wfile.write(load())
 
@@ -36,7 +40,10 @@ class dummyHandler(BaseHTTPRequestHandler):
 		content_len = int(self.headers.getheader('content-length', 0))
 		data = self.rfile.read(content_len)
 		store(data)
+		time.sleep(2)
 		self.send_response(200)
+		self.send_header('Access-Control-Allow-Origin', '*')
+		self.send_header('Access-Control-Allow-Headers', '*')
 		self.end_headers()
 		self.wfile.write(data)
 

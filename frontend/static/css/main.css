@@ -82,8 +82,14 @@ tr.zero-row {
 	color: #ccc;
 }
 
+/* Save status */
 
-/** Action buttons */
+.save-status {
+	padding-left: 15px;
+	font-style: italic;
+}
+
+/* Action buttons */
 
 .action {
 	color: gray;
