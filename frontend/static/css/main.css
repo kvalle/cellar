@@ -20,6 +20,10 @@ button i {
 	padding-left: 5px;
 }
 
+.spinner {
+	height: 1.2em;
+}
+
 /* Tabs */
 
 .tabs {

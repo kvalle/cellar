@@ -16,7 +16,7 @@ import Update.Beer as Beer
 import Update.Filter as Filter
 import Update.BeerForm as BeerForm
 import Html exposing (..)
-import Html.Attributes exposing (class)
+import Html.Attributes exposing (class, src)
 
 
 main : Program Never Model Msg
@@ -188,7 +188,9 @@ viewSaveButton model =
                     [ text "You have unsaved changes" ]
 
                 Saving ->
-                    [ text "Saving…" ]
+                    [ i [ class "icon-spinner animate-spin" ] []
+                    , text "Saving…"
+                    ]
         ]
 
 
