@@ -24,5 +24,7 @@ type Msg
     | SubmitBeerForm
     | ClearBeerForm
       -- Authentication
-    | LoginResult Auth.UserData
     | Login
+    | LoginResult Auth.UserData
+    | Logout
+    | LogoutResult ()

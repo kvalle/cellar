@@ -14,7 +14,7 @@
     }
 
     function getUserInfo(result) {
-        console.log("Getting userinfo");
+        console.log("Fetching user info.");
         lock.getProfile(result.idToken, function(error, profile) {
             if (error) {
                 if (error.error === 401) {
@@ -25,7 +25,7 @@
             }
 
             localStorage.setItem('cellar_login_token', result.idToken);
-            console.log("Calling loginResult port");
+            console.log("Logged in.");
             app.ports.loginResult.send({
                 token: result.idToken,
                 profile: profile
@@ -35,6 +35,13 @@
 
     app.ports.login.subscribe(function() {
         lock.show();
+    });
+
+    app.ports.logout.subscribe(function() {
+        console.log("Deleting credentials");
+        localStorage.removeItem('cellar_login_token');
+        console.log("Logged out.")
+        app.ports.logoutResult.send(null);
     });
 
     lock.on('authenticated', getUserInfo);

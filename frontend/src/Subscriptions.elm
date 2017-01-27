@@ -6,4 +6,7 @@ import Messages
 
 subscriptions : model -> Sub Messages.Msg
 subscriptions model =
-    Auth.loginResult Messages.LoginResult
+    Sub.batch
+        [ Auth.loginResult Messages.LoginResult
+        , Auth.logoutResult Messages.LogoutResult
+        ]

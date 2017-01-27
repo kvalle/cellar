@@ -19,7 +19,6 @@ import Update.BeerForm as BeerForm
 import Html exposing (..)
 import Html.Events exposing (onClick)
 import Html.Attributes exposing (class, src)
-import LocalStorage
 
 
 main : Program Never Model Msg
@@ -51,16 +50,6 @@ type alias Model =
     , state : State
     , auth : Auth.AuthStatus
     }
-
-
-authStatus : Auth.AuthStatus
-authStatus =
-    case LocalStorage.get "cellar_login_token" of
-        Just token ->
-            Auth.LoggedIn <| Auth.UserData token <| Auth.User "" False ""
-
-        Nothing ->
-            Auth.LoggedOut
 
 
 init : ( Model, Cmd Msg )
@@ -146,11 +135,17 @@ update msg model =
         ClearBeerForm ->
             ( { model | beerForm = BeerForm.empty }, Cmd.none )
 
+        Login ->
+            ( model, Auth.login () )
+
         LoginResult userData ->
             ( { model | auth = Auth.LoggedIn userData }, Cmd.none )
 
-        Login ->
-            ( model, Auth.login () )
+        Logout ->
+            ( model, Auth.logout () )
+
+        LogoutResult _ ->
+            ( { model | auth = Auth.LoggedOut }, Cmd.none )
 
 
 
@@ -174,6 +169,13 @@ viewLoggedOut =
         ]
 
 
+viewLogOutButton : Html Msg
+viewLogOutButton =
+    div []
+        [ button [ onClick Logout ] [ text "Log out" ]
+        ]
+
+
 viewLoggedIn : Model -> Html Msg
 viewLoggedIn model =
     div [ class "container" ]
@@ -181,7 +183,9 @@ viewLoggedIn model =
             [ div [ class "main seven columns" ]
                 [ viewTitle ]
             , div [ class "sidebar five columns" ]
-                [ viewTabs model.tab ]
+                [ viewTabs model.tab
+                , viewLogOutButton
+                ]
             ]
         , div [ class "row" ]
             [ div [ class "main seven columns" ]
