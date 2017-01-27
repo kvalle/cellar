@@ -11,8 +11,11 @@ FILE_PATH = SERVER_DIR+"/data/beers.json"
 PORT_NUMBER = 9000
 
 def load():
-	with open(FILE_PATH, "r") as f:
-		return "".join(f.readlines())
+	try:
+		with open(FILE_PATH, "r") as f:
+			return "".join(f.readlines())
+	except IOError:
+		return "[]"
 
 def store(data):
 	with open(FILE_PATH, "w") as f:

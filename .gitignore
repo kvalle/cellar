@@ -1,3 +1,4 @@
 **/elm-stuff/
+backend/data/beers.json*
 frontend/dist/
 .DS_Store
