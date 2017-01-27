@@ -54,7 +54,9 @@ type alias Model =
 
 init : ( Model, Cmd Msg )
 init =
-    ( Model [] BeerForm.empty Filter.empty Nothing FilterTab Unsaved Auth.LoggedOut, fetchBeers )
+    ( Model [] BeerForm.empty Filter.empty Nothing FilterTab Unsaved Auth.LoggedOut
+    , fetchBeers
+    )
 
 
 
