@@ -1,4 +1,4 @@
-port module Auth exposing (..)
+module Model.Auth exposing (..)
 
 
 type alias User =
@@ -17,15 +17,3 @@ type alias UserData =
 type AuthStatus
     = LoggedOut
     | LoggedIn UserData
-
-
-port login : () -> Cmd msg
-
-
-port loginResult : (UserData -> msg) -> Sub msg
-
-
-port logout : () -> Cmd msg
-
-
-port logoutResult : (() -> msg) -> Sub msg

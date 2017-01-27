@@ -1,9 +1,9 @@
 module Main exposing (..)
 
-import Auth
 import Messages exposing (Msg(..))
 import Subscriptions exposing (subscriptions)
 import Commands exposing (fetchBeers, saveBeers)
+import Model.Auth exposing (AuthStatus(..))
 import Model.Beer exposing (Beer)
 import Model.BeerForm exposing (BeerForm)
 import Model.Tab exposing (Tab(..))
@@ -16,6 +16,7 @@ import View exposing (buttonWithIcon)
 import Update.Beer as Beer
 import Update.Filter as Filter
 import Update.BeerForm as BeerForm
+import Ports
 import Html exposing (..)
 import Html.Events exposing (onClick)
 import Html.Attributes exposing (class, src)
@@ -48,13 +49,13 @@ type alias Model =
     , error : Maybe String
     , tab : Tab
     , state : State
-    , auth : Auth.AuthStatus
+    , auth : AuthStatus
     }
 
 
 init : ( Model, Cmd Msg )
 init =
-    ( Model [] BeerForm.empty Filter.empty Nothing FilterTab Unsaved Auth.LoggedOut
+    ( Model [] BeerForm.empty Filter.empty Nothing FilterTab Unsaved LoggedOut
     , fetchBeers
     )
 
@@ -138,16 +139,16 @@ update msg model =
             ( { model | beerForm = BeerForm.empty }, Cmd.none )
 
         Login ->
-            ( model, Auth.login () )
+            ( model, Ports.login () )
 
         LoginResult userData ->
-            ( { model | auth = Auth.LoggedIn userData }, Cmd.none )
+            ( { model | auth = LoggedIn userData }, Cmd.none )
 
         Logout ->
-            ( model, Auth.logout () )
+            ( model, Ports.logout () )
 
         LogoutResult _ ->
-            ( { model | auth = Auth.LoggedOut }, Cmd.none )
+            ( { model | auth = LoggedOut }, Cmd.none )
 
 
 
@@ -157,10 +158,10 @@ update msg model =
 view : Model -> Html Msg
 view model =
     case model.auth of
-        Auth.LoggedOut ->
+        LoggedOut ->
             viewLoggedOut
 
-        Auth.LoggedIn userData ->
+        LoggedIn userData ->
             viewLoggedIn model
 
 

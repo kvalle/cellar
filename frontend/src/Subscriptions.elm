@@ -1,12 +1,12 @@
 module Subscriptions exposing (subscriptions)
 
-import Auth
+import Ports
 import Messages
 
 
 subscriptions : model -> Sub Messages.Msg
 subscriptions model =
     Sub.batch
-        [ Auth.loginResult Messages.LoginResult
-        , Auth.logoutResult Messages.LogoutResult
+        [ Ports.loginResult Messages.LoginResult
+        , Ports.logoutResult Messages.LogoutResult
         ]

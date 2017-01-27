@@ -4,7 +4,7 @@ import Model.Filter exposing (FilterValue)
 import Model.Tab exposing (Tab)
 import Model.Beer exposing (Beer)
 import Model.BeerForm exposing (BeerInput)
-import Auth
+import Model.Auth exposing (UserData)
 import Http
 
 
@@ -25,6 +25,6 @@ type Msg
     | ClearBeerForm
       -- Authentication
     | Login
-    | LoginResult Auth.UserData
+    | LoginResult UserData
     | Logout
     | LogoutResult ()
