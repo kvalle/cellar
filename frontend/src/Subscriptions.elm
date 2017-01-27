@@ -1,6 +1,9 @@
 module Subscriptions exposing (subscriptions)
 
+import Auth
+import Messages
 
-subscriptions : model -> Sub msg
+
+subscriptions : model -> Sub Messages.Msg
 subscriptions model =
-    Sub.none
+    Auth.loginResult Messages.LoginResult

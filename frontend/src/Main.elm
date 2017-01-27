@@ -1,5 +1,6 @@
 module Main exposing (..)
 
+import Auth
 import Messages exposing (Msg(..))
 import Subscriptions exposing (subscriptions)
 import Commands exposing (fetchBeers, saveBeers)
@@ -16,7 +17,9 @@ import Update.Beer as Beer
 import Update.Filter as Filter
 import Update.BeerForm as BeerForm
 import Html exposing (..)
+import Html.Events exposing (onClick)
 import Html.Attributes exposing (class, src)
+import LocalStorage
 
 
 main : Program Never Model Msg
@@ -46,12 +49,23 @@ type alias Model =
     , error : Maybe String
     , tab : Tab
     , state : State
+    , auth : Auth.AuthStatus
     }
+
+
+authStatus : Auth.AuthStatus
+authStatus =
+    case LocalStorage.get "cellar_login_token" of
+        Just token ->
+            Auth.LoggedIn <| Auth.UserData token <| Auth.User "" False ""
+
+        Nothing ->
+            Auth.LoggedOut
 
 
 init : ( Model, Cmd Msg )
 init =
-    ( Model [] BeerForm.empty Filter.empty Nothing FilterTab Unsaved, fetchBeers )
+    ( Model [] BeerForm.empty Filter.empty Nothing FilterTab Unsaved Auth.LoggedOut, fetchBeers )
 
 
 
@@ -132,6 +146,12 @@ update msg model =
         ClearBeerForm ->
             ( { model | beerForm = BeerForm.empty }, Cmd.none )
 
+        LoginResult userData ->
+            ( { model | auth = Auth.LoggedIn userData }, Cmd.none )
+
+        Login ->
+            ( model, Auth.login () )
+
 
 
 -- VIEW
@@ -139,6 +159,23 @@ update msg model =
 
 view : Model -> Html Msg
 view model =
+    case model.auth of
+        Auth.LoggedOut ->
+            viewLoggedOut
+
+        Auth.LoggedIn userData ->
+            viewLoggedIn model
+
+
+viewLoggedOut : Html Msg
+viewLoggedOut =
+    div []
+        [ button [ onClick Login ] [ text "Log in" ]
+        ]
+
+
+viewLoggedIn : Model -> Html Msg
+viewLoggedIn model =
     div [ class "container" ]
         [ div [ class "row" ]
             [ div [ class "main seven columns" ]
