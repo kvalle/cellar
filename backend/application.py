@@ -11,7 +11,7 @@ from flask_cors import cross_origin
 
 from auth import requires_auth
 
-app = Flask(__name__)
+application = Flask(__name__)
 
 
 SERVER_DIR = os.path.dirname(os.path.realpath(__file__))
@@ -37,7 +37,12 @@ def bad_request():
     return resp
 
 
-@app.route("/api/beers", methods=['GET', 'POST'])
+@application.route("/ping", methods=['GET'])
+def ping():
+    return "pong"
+
+
+@application.route("/api/beers", methods=['GET', 'POST'])
 @cross_origin(headers=['Content-Type', 'Authorization'])
 @requires_auth
 def beers():
@@ -55,5 +60,5 @@ def beers():
 
 
 if __name__ == "__main__":
-    app.debug = True
-    app.run(host="0.0.0.0", port=9000, threaded=True)
+    application.debug = True
+    application.run(host="0.0.0.0", port=9000, threaded=True)
