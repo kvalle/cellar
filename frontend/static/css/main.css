@@ -40,8 +40,18 @@ button i {
 	color: #aaa;
 }
 
+.user-info img {
+	display: inline-block;
+	margin-right: 10px;
+	width: 1em;
+	vertical-align: middle;
+	border: 1px solid #ccc;
+}
+
 .user-info a.logout {
 	margin-left: 10px;
+	border-left: 1px solid #ccc;
+	padding-left: 10px;
 }
 
 .user-info a.logout:hover {

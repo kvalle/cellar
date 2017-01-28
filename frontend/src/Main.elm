@@ -180,7 +180,8 @@ viewHeader auth =
 
         LoggedIn user ->
             div [ class "user-info" ]
-                [ span [ class "profile" ] [ text <| "Logged in as " ++ user.profile.email ]
+                [ img [ src user.profile.picture ] []
+                , span [ class "profile" ] [ text user.profile.username ]
                 , a [ class "logout", onClick Logout ] [ text "Log out" ]
                 ]
 

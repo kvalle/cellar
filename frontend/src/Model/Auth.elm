@@ -3,6 +3,7 @@ module Model.Auth exposing (..)
 
 type alias User =
     { email : String
+    , username : String
     , email_verified : Bool
     , picture : String
     }
