@@ -16,5 +16,10 @@ if [[ -f tmp/app.zip ]]; then
 	rm tmp/app.zip
 fi
 
+if [ ! -f config.py ]; then
+	echo "Config file seems to be missing. Aborting."
+	exit 1
+fi
+
 echo "> Packaging app"
 zip --quiet --recurse-paths --exclude=".elasticbeanstalk/config.yml" tmp/app.zip .elasticbeanstalk/ .ebextensions/ application.py auth.py config.py
