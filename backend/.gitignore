@@ -6,5 +6,6 @@
 # Configuration file
 config.py
 
-# Compiled files
+# Compiled and packaged files
 *.pyc
+tmp/app.zip
