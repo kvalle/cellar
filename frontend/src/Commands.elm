@@ -7,17 +7,17 @@ import Json.Decode as Decode
 import Json.Encode as Encode
 
 
-fetchBeers : Cmd Msg
-fetchBeers =
+fetchBeers : String -> Cmd Msg
+fetchBeers token =
     let
         url =
             "http://localhost:9000/api/beers"
     in
-        Http.send RetrievedBeerList (Http.get url beerListDecoder)
+        Http.send RetrievedBeerList (request "GET" url Http.emptyBody beerListDecoder token)
 
 
-saveBeers : List Beer -> Cmd Msg
-saveBeers beers =
+saveBeers : String -> List Beer -> Cmd Msg
+saveBeers token beers =
     let
         url =
             "http://localhost:9000/api/beers"
@@ -25,11 +25,27 @@ saveBeers beers =
         body =
             Encode.list <| List.map beerEncoder beers
     in
-        Http.send SavedBeerList (Http.post url (Http.jsonBody body) beerListDecoder)
+        Http.send SavedBeerList (request "POST" url (Http.jsonBody body) beerListDecoder token)
 
 
 
 -- UNEXPOSED FUNCTIONS
+
+
+request : String -> String -> Http.Body -> Decode.Decoder a -> String -> Http.Request a
+request method url body decoder token =
+    Http.request
+        { method = method
+        , headers =
+            [ Http.header "Content-type" "application/json"
+            , Http.header "Authorization" ("Bearer " ++ token)
+            ]
+        , url = url
+        , body = body
+        , expect = Http.expectJson decoder
+        , timeout = Nothing
+        , withCredentials = False
+        }
 
 
 idEncoder : Maybe Int -> Encode.Value

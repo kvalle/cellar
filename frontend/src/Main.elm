@@ -55,8 +55,8 @@ type alias Model =
 
 init : ( Model, Cmd Msg )
 init =
-    ( Model [] BeerForm.empty Filter.empty Nothing FilterTab Unsaved LoggedOut
-    , fetchBeers
+    ( Model [] BeerForm.empty Filter.empty Nothing FilterTab Saved LoggedOut
+    , Cmd.none
     )
 
 
@@ -83,7 +83,7 @@ update msg model =
             ( { model | state = Saved }, Cmd.none )
 
         SavedBeerList (Err _) ->
-            ( { model | error = Just "Unable to store beer list" }, Cmd.none )
+            ( { model | error = Just "Unable to store beer list", state = Unsaved }, Cmd.none )
 
         ChangeTab tab ->
             ( { model | tab = tab }, Cmd.none )
@@ -111,7 +111,12 @@ update msg model =
             )
 
         SaveBeers ->
-            ( { model | state = Saving }, saveBeers model.beers )
+            case model.auth of
+                LoggedOut ->
+                    ( { model | error = Just "You are not logged in" }, Cmd.none )
+
+                LoggedIn userData ->
+                    ( { model | state = Saving }, saveBeers userData.token model.beers )
 
         UpdateBeerForm input ->
             ( { model | beerForm = BeerForm.setInput input model.beerForm }, Cmd.none )
@@ -142,13 +147,13 @@ update msg model =
             ( model, Ports.login () )
 
         LoginResult userData ->
-            ( { model | auth = LoggedIn userData }, Cmd.none )
+            ( { model | auth = LoggedIn userData }, fetchBeers userData.token )
 
         Logout ->
             ( model, Ports.logout () )
 
         LogoutResult _ ->
-            ( { model | auth = LoggedOut }, Cmd.none )
+            ( { model | auth = LoggedOut, beers = [] }, Cmd.none )
 
 
 

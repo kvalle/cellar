@@ -1,8 +1,10 @@
-import jwt
 import os
-
+import json
 from functools import wraps
-from flask import Flask, request, jsonify, _app_ctx_stack
+import time
+
+import jwt
+from flask import Flask, request, jsonify, _app_ctx_stack, Response
 from flask_cors import cross_origin
 
 from auth import requires_auth
@@ -15,14 +17,15 @@ FILE_PATH = SERVER_DIR+"/data/beers.json"
 
 def load():
     try:
+        print "Loading from %s" % FILE_PATH
         with open(FILE_PATH, "r") as f:
             return "".join(f.readlines())
     except IOError:
         return "[]"
 
-def store(data):
+def store(string):
     with open(FILE_PATH, "w") as f:
-        f.write(data)
+        f.write(string)
         f.flush()
 
 def bad_request():
@@ -36,10 +39,14 @@ def bad_request():
 @cross_origin(headers=['Content-Type', 'Authorization'])
 @requires_auth
 def beers():
+    print "Got request."
     if request.method == 'POST':
+        print "It's a POST!"
         data = request.get_json()
         if data is None:
             return bad_request()
-        store(str(data))
+        store(json.dumps(data))
+        time.sleep(2)
 
-    return load()
+    print "Returning."
+    return Response(response=load(), status=200, mimetype="application/json")

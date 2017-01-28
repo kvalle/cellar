@@ -25,6 +25,7 @@
 
             localStorage.setItem('cellar_login_token', result.idToken);
             console.log("Logged in.");
+            console.log("Token:", result.idToken);
             console.log("Profile:", profile);
             app.ports.loginResult.send({
                 token: result.idToken,
