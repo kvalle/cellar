@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 import os
+import os.path
 import json
 from functools import wraps
 import time
@@ -26,6 +27,9 @@ def load():
         return "[]"
 
 def store(string):
+    if not os.path.isdir(SERVER_DIR+"/data"):
+        os.makedirs(SERVER_DIR+"/data")
+
     with open(FILE_PATH, "w") as f:
         f.write(string)
         f.flush()
