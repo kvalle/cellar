@@ -167,7 +167,7 @@ view model =
 
 viewLoggedOut : Html Msg
 viewLoggedOut =
-    div []
+    div [ class "login" ]
         [ button [ onClick Login ] [ text "Log in" ]
         ]
 
@@ -179,7 +179,7 @@ viewHeader auth =
             text ""
 
         LoggedIn user ->
-            div [ class "login-info" ]
+            div [ class "user-info" ]
                 [ span [ class "profile" ] [ text <| "Logged in as " ++ user.profile.email ]
                 , a [ class "logout", onClick Logout ] [ text "Log out" ]
                 ]

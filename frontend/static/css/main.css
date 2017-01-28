@@ -1,4 +1,6 @@
+html,
 body {
+	height: 100%;
 	font-family: 'Roboto Condensed', sans-serif;
 }
 
@@ -24,18 +26,25 @@ button i {
 	height: 1.2em;
 }
 
+.login {
+	align-items: center;
+	display: flex;
+	justify-content: center;
+	height: 100%;
+}
+
 /* Header */
 
-.login-info {
+.user-info {
 	float: right;
 	color: #aaa;
 }
 
-.login-info a.logout {
+.user-info a.logout {
 	margin-left: 10px;
 }
 
-.login-info a.logout:hover {
+.user-info a.logout:hover {
 	cursor: pointer;
 }
 

@@ -1,7 +1,6 @@
 (function() {
     var token = localStorage.getItem('cellar_login_token');
-    var node = document.getElementById('app');
-    var app = Elm.Main.embed(node);
+    var app = Elm.Main.fullscreen();
 
     var lock = new Auth0Lock('VRWeBjxOOu4TptcJNGiYw370OBcpTghq', 'cellar.eu.auth0.com');
     if (token) {
@@ -26,6 +25,7 @@
 
             localStorage.setItem('cellar_login_token', result.idToken);
             console.log("Logged in.");
+            console.log("Profile:", profile);
             app.ports.loginResult.send({
                 token: result.idToken,
                 profile: profile
