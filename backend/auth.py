@@ -5,7 +5,8 @@ from functools import wraps
 from flask import Flask, request, jsonify, _app_ctx_stack
 from flask_cors import cross_origin
 
-# Format error response and append status code.
+import config
+
 def handle_error(error, status_code):
     resp = jsonify(error)
     resp.status_code = status_code
@@ -37,12 +38,10 @@ def requires_auth(f):
 
         token = parts[1]
         try:
-            client_secret = "sU6KK4awGEg5MnKTnL-6RV4qUJc_zSq1_SJL_ClH_FvFWALloDt5jtWoGqNVpHZt"
-            client_id = "VRWeBjxOOu4TptcJNGiYw370OBcpTghq"
             payload = jwt.decode(
                 token,
-                client_secret,
-                audience=client_id
+                config.client_secret,
+                audience=config.client_id
             )
             print "Authenticated: " + str(payload)
         except jwt.ExpiredSignature:
@@ -51,7 +50,7 @@ def requires_auth(f):
         except jwt.InvalidAudienceError:
             return handle_error({'code': 'invalid_audience',
                                 'description': 'incorrect audience, expected: '
-                                 + client_id}, 401)
+                                 + config.client_id}, 401)
         except jwt.DecodeError:
             return handle_error({'code': 'token_invalid_signature',
                                 'description':
