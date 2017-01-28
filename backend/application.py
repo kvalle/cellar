@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 import os
 import json
 from functools import wraps
@@ -50,3 +52,8 @@ def beers():
 
     print "Returning."
     return Response(response=load(), status=200, mimetype="application/json")
+
+
+if __name__ == "__main__":
+    app.debug = True
+    app.run(host="0.0.0.0", port=9000, threaded=True)
