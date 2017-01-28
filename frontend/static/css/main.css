@@ -24,6 +24,21 @@ button i {
 	height: 1.2em;
 }
 
+/* Header */
+
+.login-info {
+	float: right;
+	color: #aaa;
+}
+
+.login-info a.logout {
+	margin-left: 10px;
+}
+
+.login-info a.logout:hover {
+	cursor: pointer;
+}
+
 /* Tabs */
 
 .tabs {

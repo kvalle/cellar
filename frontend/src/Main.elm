@@ -172,22 +172,31 @@ viewLoggedOut =
         ]
 
 
-viewLogOutButton : Html Msg
-viewLogOutButton =
-    div []
-        [ button [ onClick Logout ] [ text "Log out" ]
-        ]
+viewHeader : AuthStatus -> Html Msg
+viewHeader auth =
+    case auth of
+        LoggedOut ->
+            text ""
+
+        LoggedIn user ->
+            div [ class "login-info" ]
+                [ span [ class "profile" ] [ text <| "Logged in as " ++ user.profile.email ]
+                , a [ class "logout", onClick Logout ] [ text "Log out" ]
+                ]
 
 
 viewLoggedIn : Model -> Html Msg
 viewLoggedIn model =
     div [ class "container" ]
         [ div [ class "row" ]
+            [ div [ class "header twelve columns" ]
+                [ viewHeader model.auth ]
+            ]
+        , div [ class "row" ]
             [ div [ class "main seven columns" ]
                 [ viewTitle ]
             , div [ class "sidebar five columns" ]
                 [ viewTabs model.tab
-                , viewLogOutButton
                 ]
             ]
         , div [ class "row" ]
