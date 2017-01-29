@@ -31,7 +31,7 @@ viewFilter filters =
             ]
             []
         , button [ onClick ClearFilter ]
-            [ text "Clear"
+            [ text "Clear filters"
             , i [ class "icon-cancel" ] []
             ]
         ]

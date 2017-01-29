@@ -56,6 +56,7 @@ viewLoggedIn model =
                 [ div [ class "buttons" ]
                     [ viewButton "Save" "floppy" Msg.SaveBeers
                     , viewButton "Reset" "ccw" Msg.LoadBeers
+                    , viewButton "Clear filters" "cancel" Msg.ClearFilter
                     , viewDisabledButton "Download" "download"
                     , viewDisabledButton "Upload" "upload"
                     ]
