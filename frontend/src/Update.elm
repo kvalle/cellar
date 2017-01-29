@@ -66,20 +66,10 @@ update msg model =
             )
 
         SaveBeers ->
-            case model.auth of
-                LoggedOut ->
-                    ( { model | error = Just "You are not logged in" }, Cmd.none )
-
-                LoggedIn userData ->
-                    ( { model | state = Saving }, saveBeers model.env userData.token model.beers )
+            ( { model | state = Saving }, saveBeers model.env model.auth model.beers )
 
         LoadBeers ->
-            case model.auth of
-                LoggedOut ->
-                    ( { model | error = Just "You are not logged in" }, Cmd.none )
-
-                LoggedIn userData ->
-                    ( { model | state = Loading }, fetchBeers model.env userData.token )
+            ( { model | state = Loading }, fetchBeers model.env model.auth )
 
         UpdateBeerForm input ->
             ( { model | beerForm = BeerForm.setInput input model.beerForm }, Cmd.none )
@@ -110,7 +100,7 @@ update msg model =
             ( model, Ports.login () )
 
         LoginResult userData ->
-            ( { model | auth = LoggedIn userData }, fetchBeers model.env userData.token )
+            ( { model | auth = LoggedIn userData }, fetchBeers model.env <| LoggedIn userData )
 
         Logout ->
             ( model, Ports.logout () )

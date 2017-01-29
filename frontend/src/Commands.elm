@@ -2,24 +2,35 @@ module Commands exposing (fetchBeers, saveBeers)
 
 import Model.Beer exposing (Beer)
 import Model.Environment exposing (Environment(..))
+import Model.Auth exposing (AuthStatus(..))
 import Messages exposing (Msg(..))
 import Http
 import Json.Decode as Decode
 import Json.Encode as Encode
 
 
-fetchBeers : Environment -> String -> Cmd Msg
-fetchBeers env token =
-    Http.send RetrievedBeerList (request "GET" (url env) Http.emptyBody beerListDecoder token)
+fetchBeers : Environment -> AuthStatus -> Cmd Msg
+fetchBeers env auth =
+    case auth of
+        LoggedOut ->
+            Cmd.none
+
+        LoggedIn userData ->
+            Http.send RetrievedBeerList (request "GET" (url env) Http.emptyBody beerListDecoder userData.token)
 
 
-saveBeers : Environment -> String -> List Beer -> Cmd Msg
-saveBeers env token beers =
-    let
-        body =
-            Encode.list <| List.map beerEncoder beers
-    in
-        Http.send SavedBeerList (request "POST" (url env) (Http.jsonBody body) beerListDecoder token)
+saveBeers : Environment -> AuthStatus -> List Beer -> Cmd Msg
+saveBeers env auth beers =
+    case auth of
+        LoggedOut ->
+            Cmd.none
+
+        LoggedIn userData ->
+            let
+                body =
+                    Encode.list <| List.map beerEncoder beers
+            in
+                Http.send SavedBeerList (request "POST" (url env) (Http.jsonBody body) beerListDecoder userData.token)
 
 
 
