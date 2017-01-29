@@ -20,6 +20,7 @@ type Msg
     | DecrementBeer Beer
     | DeleteBeer Beer
     | SaveBeers
+    | LoadBeers
       -- AddBeerForm
     | UpdateBeerForm BeerInput
     | SubmitBeerForm

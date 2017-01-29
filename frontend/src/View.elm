@@ -9,10 +9,9 @@ import View.BeerList exposing (viewBeerList)
 import View.BeerForm exposing (viewBeerForm)
 import View.Filter exposing (viewFilter)
 import View.Tabs exposing (viewTabs)
-import View.Utils as Utils
 import Html exposing (..)
 import Html.Events exposing (onClick)
-import Html.Attributes exposing (class, src)
+import Html.Attributes exposing (class, src, title)
 
 
 view : Model -> Html Msg
@@ -36,20 +35,6 @@ viewLoggedOut =
         ]
 
 
-viewHeader : Auth.AuthStatus -> Html Msg
-viewHeader auth =
-    case auth of
-        Auth.LoggedOut ->
-            text ""
-
-        Auth.LoggedIn user ->
-            div [ class "user-info" ]
-                [ img [ src user.profile.picture ] []
-                , span [ class "profile" ] [ text user.profile.username ]
-                , a [ class "logout", onClick Msg.Logout ] [ text "Log out" ]
-                ]
-
-
 viewLoggedIn : Model -> Html Msg
 viewLoggedIn model =
     div [ class "container" ]
@@ -57,7 +42,7 @@ viewLoggedIn model =
             [ div [ class "header seven columns" ]
                 [ viewTitle ]
             , div [ class "header five columns" ]
-                [ viewHeader model.auth ]
+                [ viewUserInfo model.auth ]
             ]
         , div [ class "row" ]
             [ div [ class "main twelve columns" ]
@@ -65,9 +50,10 @@ viewLoggedIn model =
             ]
         , div [ class "row" ]
             [ div [ class "main seven columns" ]
-                [ viewSaveState model.state
-                , viewBeerList model.filters model.beers
+                [ viewButtons
+                , viewSaveState model.state
                 , viewErrors model.error
+                , viewBeerList model.filters model.beers
                 ]
             , div [ class "sidebar five columns" ]
                 [ viewTabs model.tab
@@ -84,6 +70,20 @@ viewLoggedIn model =
         ]
 
 
+viewUserInfo : Auth.AuthStatus -> Html Msg
+viewUserInfo auth =
+    case auth of
+        Auth.LoggedOut ->
+            text ""
+
+        Auth.LoggedIn user ->
+            div [ class "user-info" ]
+                [ img [ src user.profile.picture ] []
+                , span [ class "profile" ] [ text user.profile.username ]
+                , a [ class "logout", onClick Msg.Logout ] [ text "Log out" ]
+                ]
+
+
 viewErrors : Maybe String -> Html msg
 viewErrors error =
     div [ class "errors" ] <|
@@ -98,11 +98,7 @@ viewErrors error =
 viewSaveState : State.State -> Html Msg
 viewSaveState state =
     div []
-        [ span [ class "action", onClick Msg.SaveBeers ]
-            [ i [ class "icon-floppy" ] []
-            , text "Save"
-            ]
-        , span [ class "save-status" ] <|
+        [ span [ class "save-status" ] <|
             case state of
                 State.Saved ->
                     [ text "" ]
@@ -114,6 +110,33 @@ viewSaveState state =
                     [ i [ class "icon-spinner animate-spin" ] []
                     , text "Saving…"
                     ]
+
+                State.Loading ->
+                    [ i [ class "icon-spinner animate-spin" ] []
+                    , text "Loading…"
+                    ]
+        ]
+
+
+viewButtons : Html Msg
+viewButtons =
+    div [ class "buttons" ]
+        [ span [ class "action", onClick Msg.SaveBeers ]
+            [ i [ class "icon-floppy" ] []
+            , text "Save"
+            ]
+        , span [ class "action", onClick Msg.LoadBeers ]
+            [ i [ class "icon-ccw" ] []
+            , text "Reset"
+            ]
+        , span [ class "action disabled", title "Not implemented yet" ]
+            [ i [ class "icon-upload" ] []
+            , text "Upload"
+            ]
+        , span [ class "action disabled", title "Not implemented yet" ]
+            [ i [ class "icon-download" ] []
+            , text "Download"
+            ]
         ]
 
 

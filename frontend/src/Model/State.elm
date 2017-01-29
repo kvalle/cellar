@@ -5,3 +5,4 @@ type State
     = Saved
     | Unsaved
     | Saving
+    | Loading

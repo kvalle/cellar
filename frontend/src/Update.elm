@@ -73,6 +73,14 @@ update msg model =
                 LoggedIn userData ->
                     ( { model | state = Saving }, saveBeers model.env userData.token model.beers )
 
+        LoadBeers ->
+            case model.auth of
+                LoggedOut ->
+                    ( { model | error = Just "You are not logged in" }, Cmd.none )
+
+                LoggedIn userData ->
+                    ( { model | state = Loading }, fetchBeers model.env userData.token )
+
         UpdateBeerForm input ->
             ( { model | beerForm = BeerForm.setInput input model.beerForm }, Cmd.none )
 

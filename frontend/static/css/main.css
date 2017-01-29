@@ -33,6 +33,12 @@ button i {
 	height: 100%;
 }
 
+/* Buttons */
+
+.buttons span {
+	margin-right: 15px;
+}
+
 /* Header */
 
 
