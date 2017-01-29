@@ -16,20 +16,20 @@ application = Flask(__name__)
 
 
 SERVER_DIR = os.path.dirname(os.path.realpath(__file__))
-FILE_PATH = SERVER_DIR+"/data/beers.json"
+FILE_PATH = SERVER_DIR+"/data/%s.json"
 
-def load():
+def load(user_id):
     try:
-        with open(FILE_PATH, "r") as f:
+        with open(FILE_PATH % user_id, "r") as f:
             return "".join(f.readlines())
     except IOError:
         return "[]"
 
-def store(string):
+def store(user_id, string):
     if not os.path.isdir(SERVER_DIR+"/data"):
         os.makedirs(SERVER_DIR+"/data")
 
-    with open(FILE_PATH, "w") as f:
+    with open(FILE_PATH % user_id, "w") as f:
         f.write(string)
         f.flush()
 
@@ -49,14 +49,16 @@ def ping():
 @cross_origin(headers=['Content-Type', 'Authorization'])
 @requires_auth
 def beers():
+    user_id = _app_ctx_stack.top.current_user["sub"]
+
     if request.method == 'POST':
         data = request.get_json()
         if data is None:
             return bad_request()
-        store(json.dumps(data))
+        store(user_id, json.dumps(data))
         time.sleep(2)
 
-    return Response(response=load(), status=200, mimetype="application/json")
+    return Response(response=load(user_id), status=200, mimetype="application/json")
 
 
 if __name__ == "__main__":

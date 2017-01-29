@@ -1,5 +1,5 @@
 **/elm-stuff/
-backend/data/beers.json*
+backend/data/*.json
 frontend/dist/
 .DS_Store
 .vagrant/
