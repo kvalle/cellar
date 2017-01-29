@@ -12,4 +12,5 @@ type alias Filters =
     { textMatch : String
     , olderThan : Int
     , yearRange : ( Int, Int )
+    , active : Bool
     }

@@ -6,7 +6,7 @@ import Model.Beer exposing (Beer)
 
 empty : Filters
 empty =
-    Filters "" 0 ( 0, 0 )
+    Filters "" 0 ( 0, 0 ) False
 
 
 setContext : List Beer -> Filters -> Filters
@@ -19,7 +19,7 @@ setContext beers filters =
             List.map .year beers |> List.maximum |> Maybe.withDefault 0
 
         newOlderThan =
-            if filters.olderThan > upper || filters.olderThan < lower then
+            if not filters.active || filters.olderThan > upper || filters.olderThan < lower then
                 upper
             else
                 filters.olderThan
@@ -31,7 +31,7 @@ setValue : Filters -> FilterValue -> Filters
 setValue filters value =
     case value of
         OlderThan years ->
-            { filters | olderThan = String.toInt years |> Result.withDefault 0 }
+            { filters | active = True, olderThan = String.toInt years |> Result.withDefault 0 }
 
         TextMatches text ->
-            { filters | textMatch = text }
+            { filters | active = True, textMatch = text }
