@@ -54,9 +54,9 @@ viewLoggedIn model =
         , div [ class "row" ]
             [ div [ class "main seven columns" ]
                 [ div [ class "buttons" ]
-                    [ viewButton "Save" "floppy" Msg.SaveBeers
-                    , viewButton "Reset" "ccw" Msg.LoadBeers
-                    , viewButton "Clear filters" "cancel" Msg.ClearFilter
+                    [ viewButton "Save" "floppy" Msg.SaveBeers (model.changes == State.Changed)
+                    , viewButton "Reset" "ccw" Msg.LoadBeers (model.changes == State.Changed)
+                    , viewButton "Clear filters" "cancel" Msg.ClearFilter model.filters.active
                     , viewDisabledButton "Download" "download"
                     , viewDisabledButton "Upload" "upload"
                     ]
@@ -87,12 +87,19 @@ viewDisabledButton name icon =
         ]
 
 
-viewButton : String -> String -> Msg -> Html Msg
-viewButton name icon msg =
-    span [ class "action", onClick msg ]
-        [ i [ class <| "icon-" ++ icon ] []
-        , text name
-        ]
+viewButton : String -> String -> Msg -> Bool -> Html Msg
+viewButton name icon msg active =
+    let
+        attributes =
+            if active then
+                [ class "action", onClick msg ]
+            else
+                [ class "action disabled" ]
+    in
+        span attributes
+            [ i [ class <| "icon-" ++ icon ] []
+            , text name
+            ]
 
 
 viewUserInfo : Auth.AuthStatus -> Html Msg
@@ -142,28 +149,6 @@ viewStatus model =
 
                         State.Changed ->
                             [ text "You have unsaved changes" ]
-        ]
-
-
-viewButtons : Html Msg
-viewButtons =
-    div [ class "buttons" ]
-        [ span [ class "action", onClick Msg.SaveBeers ]
-            [ i [ class "icon-floppy" ] []
-            , text "Save"
-            ]
-        , span [ class "action", onClick Msg.LoadBeers ]
-            [ i [ class "icon-ccw" ] []
-            , text "Reset"
-            ]
-        , span [ class "action disabled", title "Not implemented yet" ]
-            [ i [ class "icon-upload" ] []
-            , text "Upload"
-            ]
-        , span [ class "action disabled", title "Not implemented yet" ]
-            [ i [ class "icon-download" ] []
-            , text "Download"
-            ]
         ]
 
 
