@@ -50,9 +50,13 @@ viewLoggedIn model =
             ]
         , div [ class "row" ]
             [ div [ class "main seven columns" ]
-                [ viewButtons
-                , viewNetwork model.network
-                , viewChanges model.changes
+                [ div [ class "buttons" ]
+                    [ viewButton "Save" "floppy" Msg.SaveBeers
+                    , viewButton "Reset" "ccw" Msg.LoadBeers
+                    , viewDisabledButton "Download" "download"
+                    , viewDisabledButton "Upload" "upload"
+                    ]
+                , viewStatus model
                 , viewErrors model.error
                 , viewBeerList model.filters model.beers
                 ]
@@ -68,6 +72,22 @@ viewLoggedIn model =
                     ]
                 ]
             ]
+        ]
+
+
+viewDisabledButton : String -> String -> Html Msg
+viewDisabledButton name icon =
+    span [ class "action disabled", title "Not implemented yet" ]
+        [ i [ class <| "icon-" ++ icon ] []
+        , text name
+        ]
+
+
+viewButton : String -> String -> Msg -> Html Msg
+viewButton name icon msg =
+    span [ class "action", onClick msg ]
+        [ i [ class <| "icon-" ++ icon ] []
+        , text name
         ]
 
 
@@ -96,24 +116,11 @@ viewErrors error =
                 [ text error ]
 
 
-viewChanges : State.Changes -> Html Msg
-viewChanges state =
-    div []
-        [ span [ class "save-status" ] <|
-            case state of
-                State.Unchanged ->
-                    [ text "" ]
-
-                State.Changed ->
-                    [ text "You have unsaved changes" ]
-        ]
-
-
-viewNetwork : State.Network -> Html Msg
-viewNetwork state =
-    div []
-        [ span [ class "save-status" ] <|
-            case state of
+viewStatus : Model -> Html Msg
+viewStatus model =
+    div [ class "status-info" ]
+        [ span [] <|
+            case model.network of
                 State.Saving ->
                     [ i [ class "icon-spinner animate-spin" ] []
                     , text "Saving…"
@@ -125,7 +132,12 @@ viewNetwork state =
                     ]
 
                 State.Idle ->
-                    [ text "" ]
+                    case model.changes of
+                        State.Unchanged ->
+                            [ text "" ]
+
+                        State.Changed ->
+                            [ text "You have unsaved changes" ]
         ]
 
 

@@ -145,17 +145,18 @@ tr.empty-beer-list {
 	font-style: italic;
 }
 
-/* Save status */
+/* Info and error messages */
 
-.save-status {
-	padding-left: 15px;
+.status-info {
+	height: 1.5em;
 	font-style: italic;
+	color: #33C3F0;
 }
 
 /* Action buttons */
 
 .action {
-	color: gray;
+	color: #222;
 	cursor: pointer;
 }
 
