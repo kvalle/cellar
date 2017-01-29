@@ -131,6 +131,10 @@ button i {
 
 /* Beer list view */
 
+table.beer-list {
+	width: 100%;
+}
+
 tr.beer-count, tr.beer-style {
 	color: gray;
 }
@@ -175,7 +179,7 @@ tr.empty-beer-list {
 }
 
 .action:hover {
-	color: black;
+	color: #33C3F0;
 }
 
 .action.disabled:hover {

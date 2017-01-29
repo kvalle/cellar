@@ -3,6 +3,7 @@ module View.BeerList exposing (viewBeerList)
 import Messages exposing (Msg(..))
 import Model.Beer exposing (Beer)
 import Model.Filter exposing (Filters)
+import Model.Tab as Tab
 import Update.Beer as Beer
 import Html exposing (..)
 import Html.Attributes exposing (class, placeholder, type_, value, colspan)
@@ -21,7 +22,7 @@ viewBeerList filters beers =
             else
                 List.map viewBeerRow <| Beer.filtered filters beers
     in
-        table [] <| heading :: rows
+        table [ class "beer-list" ] <| heading :: rows
 
 
 
@@ -32,7 +33,10 @@ viewEmptyTableRow : Html Msg
 viewEmptyTableRow =
     tr [ class "empty-beer-list" ]
         [ td [ colspan 5 ]
-            [ text "Your cellar appears to be empty. Try adding a few beers!" ]
+            [ text "Your cellar appears to be empty. Try "
+            , span [ onClick (ChangeTab Tab.AddBeerTab), class "action" ] [ text "adding" ]
+            , text " a few beers!"
+            ]
         ]
 
 
