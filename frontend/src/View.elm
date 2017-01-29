@@ -1,26 +1,120 @@
-module View exposing (..)
+module View exposing (view)
 
+import Messages as Msg exposing (Msg)
+import Model exposing (Model)
+import Model.State as State
+import Model.Auth as Auth
+import Model.Tab as Tab
+import View.BeerList exposing (viewBeerList)
+import View.BeerForm exposing (viewBeerForm)
+import View.Filter exposing (viewFilter)
+import View.Tabs exposing (viewTabs)
+import View.Utils as Utils
 import Html exposing (..)
-import Html.Events exposing (..)
-import Html.Attributes exposing (..)
-import Json.Decode
+import Html.Events exposing (onClick)
+import Html.Attributes exposing (class, src)
 
 
-onEnter : msg -> Attribute msg
-onEnter msg =
-    let
-        isEnter code =
-            if code == 13 then
-                Json.Decode.succeed msg
-            else
-                Json.Decode.fail "not ENTER"
-    in
-        on "keydown" (Json.Decode.andThen isEnter keyCode)
+view : Model -> Html Msg
+view model =
+    case model.auth of
+        Auth.LoggedOut ->
+            viewLoggedOut
+
+        Auth.LoggedIn userData ->
+            viewLoggedIn model
 
 
-buttonWithIcon : String -> String -> msg -> String -> Html msg
-buttonWithIcon buttonText icon msg classes =
-    button [ onClick msg, class classes ]
-        [ text buttonText
-        , i [ class <| "icon-" ++ icon ] []
+
+-- UNEXPOSED FUNCTIONS
+
+
+viewLoggedOut : Html Msg
+viewLoggedOut =
+    div [ class "login" ]
+        [ button [ onClick Msg.Login ] [ text "Log in" ]
+        ]
+
+
+viewHeader : Auth.AuthStatus -> Html Msg
+viewHeader auth =
+    case auth of
+        Auth.LoggedOut ->
+            text ""
+
+        Auth.LoggedIn user ->
+            div [ class "user-info" ]
+                [ img [ src user.profile.picture ] []
+                , span [ class "profile" ] [ text user.profile.username ]
+                , a [ class "logout", onClick Msg.Logout ] [ text "Log out" ]
+                ]
+
+
+viewLoggedIn : Model -> Html Msg
+viewLoggedIn model =
+    div [ class "container" ]
+        [ div [ class "row" ]
+            [ div [ class "header twelve columns" ]
+                [ viewHeader model.auth ]
+            ]
+        , div [ class "row" ]
+            [ div [ class "main seven columns" ]
+                [ viewTitle ]
+            , div [ class "sidebar five columns" ]
+                [ viewTabs model.tab
+                ]
+            ]
+        , div [ class "row" ]
+            [ div [ class "main seven columns" ]
+                [ viewBeerList model.filters model.beers
+                , viewSaveButton model
+                , viewErrors model.error
+                ]
+            , div [ class "sidebar five columns" ]
+                [ case model.tab of
+                    Tab.FilterTab ->
+                        viewFilter model.filters
+
+                    Tab.AddBeerTab ->
+                        viewBeerForm model.beerForm
+                ]
+            ]
+        ]
+
+
+viewErrors : Maybe String -> Html msg
+viewErrors error =
+    div [ class "errors" ] <|
+        case error of
+            Nothing ->
+                []
+
+            Just error ->
+                [ text error ]
+
+
+viewSaveButton : Model -> Html Msg
+viewSaveButton model =
+    div []
+        [ Utils.buttonWithIcon "Save" "floppy" Msg.SaveBeers "button-primary"
+        , span [ class "save-status" ] <|
+            case model.state of
+                State.Saved ->
+                    [ text "" ]
+
+                State.Unsaved ->
+                    [ text "You have unsaved changes" ]
+
+                State.Saving ->
+                    [ i [ class "icon-spinner animate-spin" ] []
+                    , text "Saving…"
+                    ]
+        ]
+
+
+viewTitle : Html Msg
+viewTitle =
+    h1 []
+        [ i [ class "icon-beer" ] []
+        , text "Cellar Index"
         ]

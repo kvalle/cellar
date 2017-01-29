@@ -5,7 +5,7 @@ import Model.BeerForm exposing (BeerForm, BeerFormField, BeerInput(..))
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (..)
-import View exposing (onEnter, buttonWithIcon)
+import View.Utils exposing (onEnter, buttonWithIcon)
 
 
 viewBeerForm : BeerForm -> Html Msg
