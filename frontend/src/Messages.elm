@@ -18,6 +18,7 @@ type Msg
       -- BeerList
     | IncrementBeer Beer
     | DecrementBeer Beer
+    | DeleteBeer Beer
     | SaveBeers
       -- AddBeerForm
     | UpdateBeerForm BeerInput

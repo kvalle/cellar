@@ -57,6 +57,14 @@ update msg model =
             , Cmd.none
             )
 
+        DeleteBeer beer ->
+            ( { model
+                | beers = Beer.delete beer model.beers
+                , state = Unsaved
+              }
+            , Cmd.none
+            )
+
         SaveBeers ->
             case model.auth of
                 LoggedOut ->

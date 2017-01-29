@@ -107,6 +107,12 @@
       "css": "spinner",
       "code": 61712,
       "src": "fontawesome"
+    },
+    {
+      "uid": "3ab2abf6f936d3e53ee8c184cedaed82",
+      "css": "trash",
+      "code": 59407,
+      "src": "elusive"
     }
   ]
 }

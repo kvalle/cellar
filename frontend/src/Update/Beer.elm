@@ -1,4 +1,4 @@
-module Update.Beer exposing (filtered, decrement, increment, add)
+module Update.Beer exposing (filtered, decrement, increment, delete, add)
 
 import Model.Filter exposing (Filters)
 import Model.Beer exposing (Beer)
@@ -17,6 +17,11 @@ decrement =
 increment : Beer -> List Beer -> List Beer
 increment =
     updateBeer (\beer -> { beer | count = beer.count + 1 })
+
+
+delete : Beer -> List Beer -> List Beer
+delete beer =
+    List.filter (\b -> b.id /= beer.id)
 
 
 add : Beer -> List Beer -> List Beer

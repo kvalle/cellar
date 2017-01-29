@@ -55,20 +55,26 @@ viewBeerRow beer =
                 ]
             , td [ class "beer-style" ] [ text beer.style ]
             , td []
-                [ viewIncrementCountAction beer
-                , viewDecrementCountAction beer
+                [ viewIncrementAction beer
+                , viewDecrementAction beer
+                , viewDeleteAction beer
                 ]
             ]
 
 
-viewIncrementCountAction : Beer -> Html Msg
-viewIncrementCountAction beer =
+viewIncrementAction : Beer -> Html Msg
+viewIncrementAction beer =
     i [ onClick (IncrementBeer beer), class "action icon-plus" ] []
 
 
-viewDecrementCountAction : Beer -> Html Msg
-viewDecrementCountAction beer =
+viewDecrementAction : Beer -> Html Msg
+viewDecrementAction beer =
     if beer.count < 1 then
         i [ class "action icon-minus disabled" ] []
     else
         i [ onClick (DecrementBeer beer), class "action icon-minus" ] []
+
+
+viewDeleteAction : Beer -> Html Msg
+viewDeleteAction beer =
+    i [ onClick (DeleteBeer beer), class "action icon-trash" ] []
