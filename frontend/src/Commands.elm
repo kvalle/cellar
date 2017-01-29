@@ -30,10 +30,10 @@ url : Environment -> String
 url env =
     case env of
         Prod ->
-            "https://cellar.kjetilvalle.com/beers"
+            "https://api.cellar.kjetilvalle.com/beers"
 
         Test ->
-            "https://test.cellar.kjetilvalle.com/beers"
+            "https://test.api.cellar.kjetilvalle.com/beers"
 
         Local ->
             "http://localhost:9000/beers"
