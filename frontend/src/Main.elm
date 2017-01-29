@@ -3,12 +3,11 @@ module Main exposing (..)
 import Messages exposing (Msg(..))
 import Subscriptions exposing (subscriptions)
 import Commands exposing (fetchBeers, saveBeers)
+import Model exposing (Model)
+import Model.State exposing (State(..))
 import Model.Auth exposing (AuthStatus(..))
-import Model.Beer exposing (Beer)
-import Model.BeerForm exposing (BeerForm)
 import Model.Tab exposing (Tab(..))
-import Model.Filter exposing (FilterValue(..), Filters)
-import Model.Environment exposing (Environment, envFromLocation)
+import Model.Environment exposing (envFromLocation)
 import View.BeerList exposing (viewBeerList)
 import View.BeerForm exposing (viewBeerForm)
 import View.Filter exposing (viewFilter)
@@ -37,26 +36,8 @@ main =
 -- MODEL
 
 
-type State
-    = Saved
-    | Unsaved
-    | Saving
-
-
 type alias Flags =
     { location : String }
-
-
-type alias Model =
-    { beers : List Beer
-    , beerForm : BeerForm
-    , filters : Filters
-    , error : Maybe String
-    , tab : Tab
-    , state : State
-    , auth : AuthStatus
-    , env : Environment
-    }
 
 
 init : Flags -> ( Model, Cmd Msg )
