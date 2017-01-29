@@ -107,13 +107,13 @@ viewUserInfo auth =
 
 viewErrors : Maybe String -> Html msg
 viewErrors error =
-    div [ class "errors" ] <|
-        case error of
-            Nothing ->
-                []
+    case error of
+        Nothing ->
+            text ""
 
-            Just error ->
-                [ text error ]
+        Just error ->
+            div [ class "errors" ]
+                [ text <| "Error: " ++ error ]
 
 
 viewStatus : Model -> Html Msg

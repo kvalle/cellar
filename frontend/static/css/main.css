@@ -26,6 +26,8 @@ button i {
 	height: 1.2em;
 }
 
+/* Page centered login button */
+
 .login {
 	align-items: center;
 	display: flex;
@@ -151,6 +153,13 @@ tr.empty-beer-list {
 	height: 1.5em;
 	font-style: italic;
 	color: #33C3F0;
+}
+
+.errors {
+	border: 1px solid #ccc;
+	border-radius: 5px;
+	padding: 10px;
+	border-left: 5px solid #d9534f;
 }
 
 /* Action buttons */
