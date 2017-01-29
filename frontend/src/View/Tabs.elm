@@ -9,7 +9,7 @@ import Html.Events exposing (onClick)
 
 viewTabs : Tab -> Html Msg
 viewTabs selected =
-    div [ class "tabs" ]
+    ul [ class "tabs" ]
         [ viewTab "Filter" selected FilterTab
         , viewTab "Add new" selected AddBeerTab
         ]
@@ -24,10 +24,10 @@ viewTab string selected tab =
     let
         classes =
             if selected == tab then
-                "tab selected"
+                "selected"
             else
-                "tab"
+                ""
     in
-        span
+        li
             [ class classes, onClick (ChangeTab tab) ]
             [ text string ]

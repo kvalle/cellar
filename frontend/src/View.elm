@@ -58,11 +58,8 @@ viewLoggedIn model =
                 [ viewHeader model.auth ]
             ]
         , div [ class "row" ]
-            [ div [ class "main seven columns" ]
+            [ div [ class "main twelve columns" ]
                 [ viewTitle ]
-            , div [ class "sidebar five columns" ]
-                [ viewTabs model.tab
-                ]
             ]
         , div [ class "row" ]
             [ div [ class "main seven columns" ]
@@ -71,12 +68,15 @@ viewLoggedIn model =
                 , viewErrors model.error
                 ]
             , div [ class "sidebar five columns" ]
-                [ case model.tab of
-                    Tab.FilterTab ->
-                        viewFilter model.filters
+                [ viewTabs model.tab
+                , div [ class "content" ]
+                    [ case model.tab of
+                        Tab.FilterTab ->
+                            viewFilter model.filters
 
-                    Tab.AddBeerTab ->
-                        viewBeerForm model.beerForm
+                        Tab.AddBeerTab ->
+                            viewBeerForm model.beerForm
+                    ]
                 ]
             ]
         ]

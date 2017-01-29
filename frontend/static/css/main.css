@@ -35,6 +35,7 @@ button i {
 
 /* Header */
 
+
 .user-info {
 	float: right;
 	color: #aaa;
@@ -61,31 +62,76 @@ button i {
 /* Tabs */
 
 .tabs {
-	margin-top: 40px;
-	margin-bottom: 20px;
+    text-align: left;
+    list-style: none;
+    padding: 0;
+    line-height: 34px;
+    height: 36px;
+    overflow: hidden;
+    font-family: verdana;
+    position: relative;
+    font-size: 1.2em;
 }
-
-.tab {
-	font-size: 1.8em;
-	padding: 5px 20px;
-	color: #ccc;
+.tabs li:first-child {
+	margin-left: 25px;
 }
-
-.tab:hover {
-	color: #33C3F0;
-	cursor: pointer;
+.tabs li {
+    border: 1px solid #ccc;
+    background: #999;
+    background: -o-linear-gradient(top, #ECECEC 50%, #D1D1D1 100%);
+    background: -ms-linear-gradient(top, #ECECEC 50%, #D1D1D1 100%);
+    background: -moz-linear-gradient(top, #ECECEC 50%, #D1D1D1 100%);
+    background: -webkit-linear-gradient(top, #ECECEC 50%, #D1D1D1 100%);
+    background: linear-gradient(top, #ECECEC 50%, #D1D1D1 100%);
+    display: inline-block;
+    position: relative;
+    z-index: 0;
+    border-top-left-radius: 6px;
+    border-top-right-radius: 6px;
+    margin: 0 -5px;
+    padding: 0 30px;
+    cursor: pointer;
 }
-
-.tab.selected {
-	color: black;
+.tabs li.selected {
+    background: white; 
+    z-index: 2;
+    border-bottom-color: white;
 }
-
-.tab:first-child {
-	padding-left: 0px;
+.tabs:before {
+    position: absolute;
+    content: " ";
+    width: 100%;
+    bottom: 0;
+    left: 0;
+    border-bottom: 1px solid #ccc;
+    z-index: 1;
 }
-
-.tab:not(:first-child) {
-	border-left: 2px solid #ccc;
+.tabs li:before,
+.tabs li:after {
+    border: 1px solid #ccc;
+    position: absolute;
+    bottom: -1px;
+    width: 5px;
+    height: 5px;
+    content: " ";
+}
+.tabs li:before {
+    left: -6px;
+    border-bottom-right-radius: 6px;
+    border-width: 0 1px 1px 0;
+    box-shadow: 2px 2px 0 #D1D1D1;
+}
+.tabs li:after {
+    right: -6px;
+    border-bottom-left-radius: 6px;
+    border-width: 0 0 1px 1px;
+    box-shadow: -2px 2px 0 #D1D1D1;
+}
+.tabs li.selected:before {
+    box-shadow: 2px 2px 0 #FFF;
+}
+.tabs li.selected:after {
+    box-shadow: -2px 2px 0 #FFF;
 }
 
 
