@@ -1,8 +1,12 @@
 module Model.State exposing (..)
 
 
-type State
-    = Saved
-    | Unsaved
-    | Saving
+type Changes
+    = Changed
+    | Unchanged
+
+
+type Network
+    = Saving
     | Loading
+    | Idle

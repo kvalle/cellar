@@ -3,7 +3,7 @@ module Update exposing (update)
 import Messages exposing (Msg(..))
 import Commands exposing (fetchBeers, saveBeers)
 import Model exposing (Model)
-import Model.State exposing (State(..))
+import Model.State exposing (Changes(..), Network(..))
 import Model.Auth exposing (AuthStatus(..))
 import Update.Beer as Beer
 import Update.Filter as Filter
@@ -15,22 +15,33 @@ update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
         RetrievedBeerList (Err _) ->
-            ( { model | error = Just "Unable to load beer list" }, Cmd.none )
+            ( { model
+                | error = Just "Unable to load beer list"
+                , network = Idle
+              }
+            , Cmd.none
+            )
 
         RetrievedBeerList (Ok beers) ->
             ( { model
                 | beers = beers
                 , filters = Filter.setContext beers model.filters
-                , state = Saved
+                , changes = Unchanged
+                , network = Idle
               }
             , Cmd.none
             )
 
         SavedBeerList (Ok _) ->
-            ( { model | state = Saved }, Cmd.none )
+            ( { model | changes = Unchanged, network = Idle }, Cmd.none )
 
         SavedBeerList (Err _) ->
-            ( { model | error = Just "Unable to store beer list", state = Unsaved }, Cmd.none )
+            ( { model
+                | error = Just "Unable to store beer list"
+                , network = Idle
+              }
+            , Cmd.none
+            )
 
         ChangeTab tab ->
             ( { model | tab = tab }, Cmd.none )
@@ -44,7 +55,7 @@ update msg model =
         DecrementBeer beer ->
             ( { model
                 | beers = Beer.decrement beer model.beers
-                , state = Unsaved
+                , changes = Changed
               }
             , Cmd.none
             )
@@ -52,7 +63,7 @@ update msg model =
         IncrementBeer beer ->
             ( { model
                 | beers = Beer.increment beer model.beers
-                , state = Unsaved
+                , changes = Changed
               }
             , Cmd.none
             )
@@ -60,16 +71,16 @@ update msg model =
         DeleteBeer beer ->
             ( { model
                 | beers = Beer.delete beer model.beers
-                , state = Unsaved
+                , changes = Changed
               }
             , Cmd.none
             )
 
         SaveBeers ->
-            ( { model | state = Saving }, saveBeers model.env model.auth model.beers )
+            ( { model | network = Saving }, saveBeers model.env model.auth model.beers )
 
         LoadBeers ->
-            ( { model | state = Loading }, fetchBeers model.env model.auth )
+            ( { model | network = Loading }, fetchBeers model.env model.auth )
 
         UpdateBeerForm input ->
             ( { model | beerForm = BeerForm.setInput input model.beerForm }, Cmd.none )
@@ -78,14 +89,14 @@ update msg model =
             case BeerForm.toBeer model.beerForm of
                 Just beer ->
                     let
-                        beerList =
+                        newBeers =
                             Beer.add beer model.beers
                     in
                         ( { model
-                            | beers = beerList
+                            | beers = newBeers
                             , beerForm = BeerForm.empty
-                            , filters = Filter.setContext beerList model.filters
-                            , state = Unsaved
+                            , filters = Filter.setContext newBeers model.filters
+                            , changes = Changed
                           }
                         , Cmd.none
                         )

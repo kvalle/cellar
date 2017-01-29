@@ -3,7 +3,7 @@ module Main exposing (..)
 import Messages exposing (Msg(..))
 import Subscriptions
 import Model exposing (Model)
-import Model.State exposing (State(..))
+import Model.State exposing (Changes(..), Network(..))
 import Model.Auth exposing (AuthStatus(..))
 import Model.Tab exposing (Tab(..))
 import Model.Environment exposing (envFromLocation)
@@ -26,7 +26,7 @@ main =
 
 init : Flags -> ( Model, Cmd Msg )
 init flags =
-    ( Model [] BeerForm.empty Filter.empty Nothing FilterTab Saved LoggedOut (envFromLocation flags.location)
+    ( Model [] BeerForm.empty Filter.empty Nothing FilterTab Unchanged Idle LoggedOut (envFromLocation flags.location)
     , Cmd.none
     )
 

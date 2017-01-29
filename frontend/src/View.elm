@@ -51,7 +51,8 @@ viewLoggedIn model =
         , div [ class "row" ]
             [ div [ class "main seven columns" ]
                 [ viewButtons
-                , viewSaveState model.state
+                , viewNetwork model.network
+                , viewChanges model.changes
                 , viewErrors model.error
                 , viewBeerList model.filters model.beers
                 ]
@@ -95,17 +96,24 @@ viewErrors error =
                 [ text error ]
 
 
-viewSaveState : State.State -> Html Msg
-viewSaveState state =
+viewChanges : State.Changes -> Html Msg
+viewChanges state =
     div []
         [ span [ class "save-status" ] <|
             case state of
-                State.Saved ->
+                State.Unchanged ->
                     [ text "" ]
 
-                State.Unsaved ->
+                State.Changed ->
                     [ text "You have unsaved changes" ]
+        ]
 
+
+viewNetwork : State.Network -> Html Msg
+viewNetwork state =
+    div []
+        [ span [ class "save-status" ] <|
+            case state of
                 State.Saving ->
                     [ i [ class "icon-spinner animate-spin" ] []
                     , text "Saving…"
@@ -115,6 +123,9 @@ viewSaveState state =
                     [ i [ class "icon-spinner animate-spin" ] []
                     , text "Loading…"
                     ]
+
+                State.Idle ->
+                    [ text "" ]
         ]
 
 

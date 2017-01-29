@@ -15,7 +15,8 @@ type alias Model =
     , filters : Model.Filter.Filters
     , error : Maybe String
     , tab : Model.Tab.Tab
-    , state : Model.State.State
+    , changes : Model.State.Changes
+    , network : Model.State.Network
     , auth : Model.Auth.AuthStatus
     , env : Model.Environment.Environment
     }
