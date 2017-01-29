@@ -1,37 +1,45 @@
 module Commands exposing (fetchBeers, saveBeers)
 
 import Model.Beer exposing (Beer)
+import Model.Environment exposing (Environment(..))
 import Messages exposing (Msg(..))
 import Http
 import Json.Decode as Decode
 import Json.Encode as Encode
 
 
-fetchBeers : String -> Cmd Msg
-fetchBeers token =
+fetchBeers : Environment -> String -> Cmd Msg
+fetchBeers env token =
+    Http.send RetrievedBeerList (request "GET" (url env) Http.emptyBody beerListDecoder token)
+
+
+saveBeers : Environment -> String -> List Beer -> Cmd Msg
+saveBeers env token beers =
     let
-        url =
-            --"http://localhost:9000/api/beers"
-            "https://test.api.cellar.kjetilvalle.com/api/beers"
-    in
-        Http.send RetrievedBeerList (request "GET" url Http.emptyBody beerListDecoder token)
-
-
-saveBeers : String -> List Beer -> Cmd Msg
-saveBeers token beers =
-    let
-        url =
-            --"http://localhost:9000/api/beers"
-            "https://test.api.cellar.kjetilvalle.com/api/beers"
-
         body =
             Encode.list <| List.map beerEncoder beers
     in
-        Http.send SavedBeerList (request "POST" url (Http.jsonBody body) beerListDecoder token)
+        Http.send SavedBeerList (request "POST" (url env) (Http.jsonBody body) beerListDecoder token)
 
 
 
 -- UNEXPOSED FUNCTIONS
+
+
+url : Environment -> String
+url env =
+    case env of
+        Prod ->
+            "https://cellar.kjetilvalle.com/beers"
+
+        Test ->
+            "https://test.cellar.kjetilvalle.com/beers"
+
+        Local ->
+            "http://localhost:9000/beers"
+
+        Unknown ->
+            "/api/beers"
 
 
 request : String -> String -> Http.Body -> Decode.Decoder a -> String -> Http.Request a

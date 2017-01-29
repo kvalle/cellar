@@ -8,6 +8,7 @@ import Model.Beer exposing (Beer)
 import Model.BeerForm exposing (BeerForm)
 import Model.Tab exposing (Tab(..))
 import Model.Filter exposing (FilterValue(..), Filters)
+import Model.Environment exposing (Environment, envFromLocation)
 import View.BeerList exposing (viewBeerList)
 import View.BeerForm exposing (viewBeerForm)
 import View.Filter exposing (viewFilter)
@@ -22,9 +23,9 @@ import Html.Events exposing (onClick)
 import Html.Attributes exposing (class, src)
 
 
-main : Program Never Model Msg
+main : Program Flags Model Msg
 main =
-    Html.program
+    Html.programWithFlags
         { init = init
         , view = view
         , update = update
@@ -42,6 +43,10 @@ type State
     | Saving
 
 
+type alias Flags =
+    { location : String }
+
+
 type alias Model =
     { beers : List Beer
     , beerForm : BeerForm
@@ -50,12 +55,13 @@ type alias Model =
     , tab : Tab
     , state : State
     , auth : AuthStatus
+    , env : Environment
     }
 
 
-init : ( Model, Cmd Msg )
-init =
-    ( Model [] BeerForm.empty Filter.empty Nothing FilterTab Saved LoggedOut
+init : Flags -> ( Model, Cmd Msg )
+init flags =
+    ( Model [] BeerForm.empty Filter.empty Nothing FilterTab Saved LoggedOut (envFromLocation flags.location)
     , Cmd.none
     )
 
@@ -116,7 +122,7 @@ update msg model =
                     ( { model | error = Just "You are not logged in" }, Cmd.none )
 
                 LoggedIn userData ->
-                    ( { model | state = Saving }, saveBeers userData.token model.beers )
+                    ( { model | state = Saving }, saveBeers model.env userData.token model.beers )
 
         UpdateBeerForm input ->
             ( { model | beerForm = BeerForm.setInput input model.beerForm }, Cmd.none )
@@ -147,7 +153,7 @@ update msg model =
             ( model, Ports.login () )
 
         LoginResult userData ->
-            ( { model | auth = LoggedIn userData }, fetchBeers userData.token )
+            ( { model | auth = LoggedIn userData }, fetchBeers model.env userData.token )
 
         Logout ->
             ( model, Ports.logout () )

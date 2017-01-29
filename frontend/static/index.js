@@ -1,6 +1,6 @@
 (function() {
     var token = localStorage.getItem('cellar_login_token');
-    var app = Elm.Main.fullscreen();
+    var app = Elm.Main.fullscreen({ "location" : window.location.host });
 
     var lock = new Auth0Lock('VRWeBjxOOu4TptcJNGiYw370OBcpTghq', 'cellar.eu.auth0.com');
     if (token) {
