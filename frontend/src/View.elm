@@ -31,7 +31,10 @@ view model =
 viewLoggedOut : Html Msg
 viewLoggedOut =
     div [ class "login" ]
-        [ button [ onClick Msg.Login ] [ text "Log in" ]
+        [ a [ class "button button-primary", onClick Msg.Login ]
+            [ i [ class "icon-beer" ] []
+            , text " Log in"
+            ]
         ]
 
 
