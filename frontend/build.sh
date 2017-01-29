@@ -3,13 +3,46 @@
 # Bash script for running `elm make` every time a file is changed.
 # Requires `inotifytools` or `fswatch` to be installed.
 
-function main() {
-  build
+DEBUG=false
+WATCH=false
 
-  if [[ "$1" == "watch" ]]; then
-    watch_build
-  fi
+function print_help() {
+  echo "Usage: $0 [--debug] [--watch] [--help]"
+  echo
+  echo "  --debug     Build Elm app with debug activated"
+  echo "  --watch     Rebuild application on changes"
+  echo "  --help      Prints this message"
 }
+
+# idiomatic parameter and option handling in sh
+while test $# -gt 0
+do
+    case "$1" in
+        --debug) 
+          DEBUG=true
+          ;;
+        --watch) 
+          WATCH=true
+          ;;
+        --help)
+          print_help
+          exit 0
+          ;;
+        --*) 
+          echo "Unexpected option: $1"
+          echo
+          print_help
+          exit 1
+          ;;
+        *) 
+          echo "Unexpected argument: $1"
+          echo
+          print_help
+          exit 1
+          ;;
+    esac
+    shift
+done
 
 function watch_build() {
   function log_test_run {
@@ -38,8 +71,19 @@ function build {
   echo "Running 'elm format'"
   elm format src/ --yes
   echo "Running 'elm make'"
-  elm make src/Main.elm --output dist/app.js --debug --warn
+  if ${DEBUG} ; then
+    elm make src/Main.elm --output dist/app.js --debug --warn
+  else
+    elm make src/Main.elm --output dist/app.js --warn
+  fi
   echo -e "Done.\n"
 }
 
-main "$@"
+
+## Main
+
+build
+
+if ${WATCH} ; then
+  watch_build
+fi
