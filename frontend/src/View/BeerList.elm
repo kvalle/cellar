@@ -5,7 +5,7 @@ import Model.Beer exposing (Beer)
 import Model.Filter exposing (Filters)
 import Update.Beer as Beer
 import Html exposing (..)
-import Html.Attributes exposing (class, placeholder, type_, value)
+import Html.Attributes exposing (class, placeholder, type_, value, colspan)
 import Html.Events exposing (onClick, onInput)
 
 
@@ -16,13 +16,24 @@ viewBeerList filters beers =
             tr [] <| List.map (\name -> th [] [ text name ]) [ "#", "Brewery", "Beer", "Style", "" ]
 
         rows =
-            List.map viewBeerRow <| Beer.filtered filters beers
+            if List.isEmpty beers then
+                [ viewEmptyTableRow ]
+            else
+                List.map viewBeerRow <| Beer.filtered filters beers
     in
         table [] <| heading :: rows
 
 
 
 -- UNEXPOSED FUNCTIONS
+
+
+viewEmptyTableRow : Html Msg
+viewEmptyTableRow =
+    tr [ class "empty-beer-list" ]
+        [ td [ colspan 5 ]
+            [ text "Your cellar appears to be empty. Try adding a few beers!" ]
+        ]
 
 
 viewBeerRow : Beer -> Html Msg

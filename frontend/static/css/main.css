@@ -120,6 +120,10 @@ tr.zero-row {
 	color: #ccc;
 }
 
+tr.empty-beer-list {
+	font-style: italic;
+}
+
 /* Save status */
 
 .save-status {
