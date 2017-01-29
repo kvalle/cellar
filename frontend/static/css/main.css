@@ -140,6 +140,7 @@ tr.empty-beer-list {
 
 .action.disabled {
 	cursor: default;
+	color: #ccc;
 }
 
 .action:hover {
@@ -147,6 +148,6 @@ tr.empty-beer-list {
 }
 
 .action.disabled:hover {
-	color: gray;
+	color: #ccc;
 }
 
