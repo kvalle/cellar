@@ -113,6 +113,30 @@
       "css": "trash",
       "code": 59407,
       "src": "elusive"
+    },
+    {
+      "uid": "f5999a012fc3752386635ec02a858447",
+      "css": "download",
+      "code": 61677,
+      "src": "fontawesome"
+    },
+    {
+      "uid": "de2fc7a5c986ab8c622f63455d7cf814",
+      "css": "upload",
+      "code": 61678,
+      "src": "fontawesome"
+    },
+    {
+      "uid": "bc71f4c6e53394d5ba46b063040014f1",
+      "css": "cw",
+      "code": 59406,
+      "src": "fontawesome"
+    },
+    {
+      "uid": "f9c3205df26e7778abac86183aefdc99",
+      "css": "ccw",
+      "code": 59408,
+      "src": "fontawesome"
     }
   ]
 }

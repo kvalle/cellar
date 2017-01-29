@@ -54,17 +54,19 @@ viewLoggedIn : Model -> Html Msg
 viewLoggedIn model =
     div [ class "container" ]
         [ div [ class "row" ]
-            [ div [ class "header twelve columns" ]
+            [ div [ class "header seven columns" ]
+                [ viewTitle ]
+            , div [ class "header five columns" ]
                 [ viewHeader model.auth ]
             ]
         , div [ class "row" ]
             [ div [ class "main twelve columns" ]
-                [ viewTitle ]
+                []
             ]
         , div [ class "row" ]
             [ div [ class "main seven columns" ]
-                [ viewBeerList model.filters model.beers
-                , viewSaveButton model
+                [ viewSaveState model.state
+                , viewBeerList model.filters model.beers
                 , viewErrors model.error
                 ]
             , div [ class "sidebar five columns" ]
@@ -93,12 +95,15 @@ viewErrors error =
                 [ text error ]
 
 
-viewSaveButton : Model -> Html Msg
-viewSaveButton model =
+viewSaveState : State.State -> Html Msg
+viewSaveState state =
     div []
-        [ Utils.buttonWithIcon "Save" "floppy" Msg.SaveBeers "button-primary"
+        [ span [ class "action", onClick Msg.SaveBeers ]
+            [ i [ class "icon-floppy" ] []
+            , text "Save"
+            ]
         , span [ class "save-status" ] <|
-            case model.state of
+            case state of
                 State.Saved ->
                     [ text "" ]
 
