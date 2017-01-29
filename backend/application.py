@@ -45,7 +45,7 @@ def ping():
     return "pong"
 
 
-@application.route("/api/beers", methods=['GET', 'POST'])
+@application.route("/beers", methods=['GET', 'POST'])
 @cross_origin(headers=['Content-Type', 'Authorization'])
 @requires_auth
 def beers():
