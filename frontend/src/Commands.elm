@@ -11,7 +11,8 @@ fetchBeers : String -> Cmd Msg
 fetchBeers token =
     let
         url =
-            "http://localhost:9000/api/beers"
+            --"http://localhost:9000/api/beers"
+            "https://test.api.cellar.kjetilvalle.com/api/beers"
     in
         Http.send RetrievedBeerList (request "GET" url Http.emptyBody beerListDecoder token)
 
@@ -20,7 +21,8 @@ saveBeers : String -> List Beer -> Cmd Msg
 saveBeers token beers =
     let
         url =
-            "http://localhost:9000/api/beers"
+            --"http://localhost:9000/api/beers"
+            "https://test.api.cellar.kjetilvalle.com/api/beers"
 
         body =
             Encode.list <| List.map beerEncoder beers
