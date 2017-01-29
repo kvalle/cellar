@@ -20,7 +20,6 @@ FILE_PATH = SERVER_DIR+"/data/beers.json"
 
 def load():
     try:
-        print "Loading from %s" % FILE_PATH
         with open(FILE_PATH, "r") as f:
             return "".join(f.readlines())
     except IOError:
@@ -50,16 +49,13 @@ def ping():
 @cross_origin(headers=['Content-Type', 'Authorization'])
 @requires_auth
 def beers():
-    print "Got request."
     if request.method == 'POST':
-        print "It's a POST!"
         data = request.get_json()
         if data is None:
             return bad_request()
         store(json.dumps(data))
         time.sleep(2)
 
-    print "Returning."
     return Response(response=load(), status=200, mimetype="application/json")
 
 
