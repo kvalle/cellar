@@ -13,6 +13,16 @@ import MultiSelect
 viewFilter : Filters -> List Beer -> Html Msg
 viewFilter filters beers =
     div [ class "filter-form" ]
+        [ textFilter filters beers
+        , ageFilter filters beers
+        , styleFilter filters beers
+        , clearButton
+        ]
+
+
+textFilter : Filters -> List Beer -> Html Msg
+textFilter filters beers =
+    div []
         [ label [ for "text-filter-input" ] [ text "Matching text" ]
         , input
             [ type_ "search"
@@ -22,7 +32,13 @@ viewFilter filters beers =
             , class "u-full-width"
             ]
             []
-        , label [ for "age-filter-input" ] [ text <| "Made in " ++ (toString filters.olderThan) ++ " or earlier" ]
+        ]
+
+
+ageFilter : Filters -> List Beer -> Html Msg
+ageFilter filters beers =
+    div []
+        [ label [ for "age-filter-input" ] [ text <| "Made in " ++ (toString filters.olderThan) ++ " or earlier" ]
         , input
             [ type_ "range"
             , id "age-filter-input"
@@ -33,7 +49,13 @@ viewFilter filters beers =
             , onInput (\val -> (UpdateFilter (OlderThan val)))
             ]
             []
-        , label [ for "style-filter-input" ] [ text "With style" ]
+        ]
+
+
+styleFilter : Filters -> List Beer -> Html Msg
+styleFilter filters beers =
+    div []
+        [ label [ for "style-filter-input" ] [ text "With style" ]
         , MultiSelect.multiSelect
             (let
                 options =
@@ -49,8 +71,12 @@ viewFilter filters beers =
             )
             [ class "u-full-width" ]
             filters.styles
-        , button [ onClick ClearFilter ]
-            [ text "Clear filters"
-            , i [ class "icon-cancel" ] []
-            ]
+        ]
+
+
+clearButton : Html Msg
+clearButton =
+    button [ onClick ClearFilter ]
+        [ text "Clear filters"
+        , i [ class "icon-cancel" ] []
         ]
