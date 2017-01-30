@@ -42,8 +42,31 @@ tableConfig =
             , Table.stringColumn "Name" .name
             , Table.intColumn "Year" .year
             , Table.stringColumn "Style" .style
+            , actionColumn ""
             ]
         }
+
+
+actionColumn : String -> Table.Column Beer Msg
+actionColumn name =
+    Table.veryCustomColumn
+        { name = name
+        , viewData = viewActions
+        , sorter = Table.unsortable
+        }
+
+
+viewActions : Beer -> Table.HtmlDetails Msg
+viewActions beer =
+    Table.HtmlDetails []
+        [ viewIncrementAction beer
+        , viewDecrementAction beer
+        , viewDeleteAction beer
+        ]
+
+
+
+-- SNIP
 
 
 viewEmptyTableRow : Html Msg
