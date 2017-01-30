@@ -67,6 +67,12 @@ button i {
 	cursor: pointer;
 }
 
+/* Filter form */
+
+.filter-form select {
+	height: 100px;
+}
+
 /* Tabs */
 
 .tabs {

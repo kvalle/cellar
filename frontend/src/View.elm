@@ -69,7 +69,7 @@ viewLoggedIn model =
                 , div [ class "content" ]
                     [ case model.tab of
                         Tab.FilterTab ->
-                            viewFilter model.filters
+                            viewFilter model.filters model.beers
 
                         Tab.AddBeerTab ->
                             viewBeerForm model.beerForm

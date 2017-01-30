@@ -61,10 +61,13 @@ matches filters beer =
         textMatch string =
             String.contains (String.toLower filters.textMatch) (String.toLower string)
 
-        isTextMatch =
+        matchesText =
             textMatch beer.name || textMatch beer.brewery || textMatch beer.style || textMatch (toString beer.year)
 
         isInYearRange =
             beer.year <= filters.olderThan
+
+        matchesStyles =
+            List.isEmpty filters.styles || List.member beer.style filters.styles
     in
-        isTextMatch && isInYearRange
+        matchesText && isInYearRange && matchesStyles

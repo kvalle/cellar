@@ -5,12 +5,15 @@ import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (onClick, onInput)
 import Model.Filter exposing (Filters, FilterValue(..))
+import Model.Beer exposing (Beer)
+import Set
+import MultiSelect
 
 
-viewFilter : Filters -> Html Msg
-viewFilter filters =
+viewFilter : Filters -> List Beer -> Html Msg
+viewFilter filters beers =
     div [ class "filter-form" ]
-        [ label [ for "text-filter-input" ] [ text "Text filter" ]
+        [ label [ for "text-filter-input" ] [ text "Matching text" ]
         , input
             [ type_ "search"
             , id "text-filter"
@@ -30,6 +33,22 @@ viewFilter filters =
             , onInput (\val -> (UpdateFilter (OlderThan val)))
             ]
             []
+        , label [ for "style-filter-input" ] [ text "With style" ]
+        , MultiSelect.multiSelect
+            (let
+                options =
+                    MultiSelect.defaultOptions (\styles -> (UpdateFilter (Styles styles)))
+
+                toItem text =
+                    { value = text, text = text, enabled = True }
+
+                styles =
+                    beers |> Set.toList << Set.fromList << List.map .style
+             in
+                { options | items = List.map toItem styles }
+            )
+            [ class "u-full-width" ]
+            filters.styles
         , button [ onClick ClearFilter ]
             [ text "Clear filters"
             , i [ class "icon-cancel" ] []

@@ -6,7 +6,7 @@ import Model.Beer exposing (Beer)
 
 empty : Filters
 empty =
-    Filters "" 0 ( 0, 0 ) False
+    Filters "" 0 [] ( 0, 0 ) False
 
 
 setContext : List Beer -> Filters -> Filters
@@ -35,3 +35,6 @@ setValue filters value =
 
         TextMatches text ->
             { filters | active = True, textMatch = text }
+
+        Styles styles ->
+            { filters | active = True, styles = styles }
