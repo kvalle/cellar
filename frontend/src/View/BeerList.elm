@@ -42,15 +42,15 @@ tableConfig =
             , Table.stringColumn "Name" .name
             , Table.intColumn "Year" .year
             , Table.stringColumn "Style" .style
-            , actionColumn ""
+            , actionColumn
             ]
         }
 
 
-actionColumn : String -> Table.Column Beer Msg
-actionColumn name =
+actionColumn : Table.Column Beer Msg
+actionColumn =
     Table.veryCustomColumn
-        { name = name
+        { name = ""
         , viewData = viewActions
         , sorter = Table.unsortable
         }
