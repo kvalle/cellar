@@ -62,7 +62,7 @@ viewLoggedIn model =
                     ]
                 , viewStatus model
                 , viewErrors model.error
-                , viewBeerList model.filters model.beers
+                , viewBeerList model.filters model.beers model.tableState
                 ]
             , div [ class "sidebar five columns" ]
                 [ viewTabs model.tab

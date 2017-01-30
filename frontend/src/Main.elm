@@ -12,6 +12,7 @@ import Update
 import Update.Filter as Filter
 import Update.BeerForm as BeerForm
 import Html
+import Table
 
 
 main : Program Flags Model Msg
@@ -26,7 +27,7 @@ main =
 
 init : Flags -> ( Model, Cmd Msg )
 init flags =
-    ( Model [] BeerForm.empty Filter.empty Nothing FilterTab Unchanged Idle LoggedOut (envFromLocation flags.location)
+    ( Model [] BeerForm.empty Filter.empty Nothing FilterTab Unchanged Idle LoggedOut (envFromLocation flags.location) (Table.initialSort "Brewery")
     , Cmd.none
     )
 

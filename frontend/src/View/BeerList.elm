@@ -8,25 +8,42 @@ import Update.Beer as Beer
 import Html exposing (..)
 import Html.Attributes exposing (class, placeholder, type_, value, colspan)
 import Html.Events exposing (onClick, onInput)
+import Table
 
 
-viewBeerList : Filters -> List Beer -> Html Msg
-viewBeerList filters beers =
+viewBeerList : Filters -> List Beer -> Table.State -> Html Msg
+viewBeerList filters beers tableState =
     let
-        heading =
-            tr [] <| List.map (\name -> th [] [ text name ]) [ "#", "Brewery", "Beer", "Style", "" ]
+        filteredBeers =
+            Beer.filtered filters beers
 
         rows =
             if List.isEmpty beers then
                 [ viewEmptyTableRow ]
             else
-                List.map viewBeerRow <| Beer.filtered filters beers
+                List.map viewBeerRow filteredBeers
     in
-        table [ class "beer-list" ] <| heading :: rows
+        Table.view tableConfig tableState filteredBeers
 
 
 
 -- UNEXPOSED FUNCTIONS
+
+
+tableConfig : Table.Config Beer Msg
+tableConfig =
+    Table.config
+        { -- FIXME: Should be .id not .name
+          toId = .name
+        , toMsg = SetTableState
+        , columns =
+            [ Table.intColumn "#" .count
+            , Table.stringColumn "Brewery" .brewery
+            , Table.stringColumn "Name" .name
+            , Table.intColumn "Year" .year
+            , Table.stringColumn "Style" .style
+            ]
+        }
 
 
 viewEmptyTableRow : Html Msg

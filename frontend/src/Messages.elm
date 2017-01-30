@@ -6,6 +6,7 @@ import Model.Beer exposing (Beer)
 import Model.BeerForm exposing (BeerInput)
 import Model.Auth exposing (UserData)
 import Http
+import Table
 
 
 type Msg
@@ -21,6 +22,7 @@ type Msg
     | DeleteBeer Beer
     | SaveBeers
     | LoadBeers
+    | SetTableState Table.State
       -- AddBeerForm
     | UpdateBeerForm BeerInput
     | SubmitBeerForm

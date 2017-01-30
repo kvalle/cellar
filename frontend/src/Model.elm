@@ -7,6 +7,7 @@ import Model.BeerForm
 import Model.Tab
 import Model.Filter
 import Model.Environment
+import Table
 
 
 type alias Model =
@@ -19,4 +20,5 @@ type alias Model =
     , network : Model.State.Network
     , auth : Model.Auth.AuthStatus
     , env : Model.Environment.Environment
+    , tableState : Table.State
     }

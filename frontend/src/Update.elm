@@ -123,3 +123,6 @@ update msg model =
 
         LogoutResult _ ->
             ( { model | auth = LoggedOut, beers = [] }, Cmd.none )
+
+        SetTableState newState ->
+            ( { model | tableState = newState }, Cmd.none )
