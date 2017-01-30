@@ -69,12 +69,17 @@ update msg model =
             )
 
         DeleteBeer beer ->
-            ( { model
-                | beers = Beer.delete beer model.beers
-                , changes = Changed
-              }
-            , Cmd.none
-            )
+            let
+                newBeers =
+                    Beer.delete beer model.beers
+            in
+                ( { model
+                    | beers = newBeers
+                    , changes = Changed
+                    , filters = Filter.setContext newBeers model.filters
+                  }
+                , Cmd.none
+                )
 
         SaveBeers ->
             ( { model | network = Saving }, saveBeers model.env model.auth model.beers )
