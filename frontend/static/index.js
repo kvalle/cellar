@@ -2,7 +2,16 @@
     var token = localStorage.getItem('cellar_login_token');
     var app = Elm.Main.fullscreen({ "location" : window.location.host });
 
-    var lock = new Auth0Lock('VRWeBjxOOu4TptcJNGiYw370OBcpTghq', 'cellar.eu.auth0.com');
+    var lock = new Auth0Lock('VRWeBjxOOu4TptcJNGiYw370OBcpTghq', 'cellar.eu.auth0.com', {
+        theme: {
+            logo: "logo.png",
+            primaryColor: '#33C3F0'
+        },
+        languageDictionary: {
+            title: "Log into Cellar"
+        },
+    });
+
     if (token) {
         console.log("Found token, logging in.");
         getUserInfo({
