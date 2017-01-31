@@ -30,7 +30,10 @@ tableConfig =
             Table.defaultCustomizations
 
         customizations =
-            { default | tableAttrs = [ class "beer-list" ] }
+            { default
+                | tableAttrs = [ class "beer-list" ]
+                , rowAttrs = beerRowAttributes
+            }
     in
         Table.customConfig
             { -- FIXME: Should be .id not .name
@@ -66,8 +69,14 @@ viewActions beer =
         ]
 
 
-
--- SNIP
+beerRowAttributes : Beer -> List (Attribute msg)
+beerRowAttributes beer =
+    [ class <|
+        if beer.count < 1 then
+            "zero-row"
+        else
+            ""
+    ]
 
 
 viewEmptyMessage : Html Msg
@@ -77,6 +86,10 @@ viewEmptyMessage =
         , span [ onClick (ChangeTab Tab.AddBeerTab), class "action" ] [ text "adding" ]
         , text " a few beers!"
         ]
+
+
+
+-- SNIP
 
 
 viewBeerRow : Beer -> Html Msg
