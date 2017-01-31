@@ -4,10 +4,10 @@ import Messages exposing (Msg(..))
 import Commands
 import Ports
 import Model exposing (Model)
-import Model.State exposing (Network(..), withNetwork, withChanges, withNoChanges, withError)
+import Model.State as State exposing (Network(..))
 import Model.Auth exposing (AuthStatus(..))
-import Model.BeerForm exposing (markSubmitted, setInput, toBeer)
-import Model.Filter exposing (setContext, setValue)
+import Model.BeerForm as BeerForm
+import Model.Filter as Filter
 import Update.Beer
 
 
@@ -18,8 +18,8 @@ update msg model =
             ( { model
                 | state =
                     model.state
-                        |> withError "Unable to load beer list"
-                        |> withNetwork Idle
+                        |> State.withError "Unable to load beer list"
+                        |> State.withNetwork Idle
               }
             , Cmd.none
             )
@@ -27,11 +27,11 @@ update msg model =
         RetrievedBeerList (Ok beers) ->
             ( { model
                 | beers = beers
-                , filters = model.filters |> setContext beers
+                , filters = model.filters |> Filter.setContext beers
                 , state =
                     model.state
-                        |> withNetwork Idle
-                        |> withNoChanges
+                        |> State.withNetwork Idle
+                        |> State.withNoChanges
               }
             , Cmd.none
             )
@@ -40,8 +40,8 @@ update msg model =
             ( { model
                 | state =
                     model.state
-                        |> withNetwork Idle
-                        |> withNoChanges
+                        |> State.withNetwork Idle
+                        |> State.withNoChanges
               }
             , Cmd.none
             )
@@ -50,8 +50,8 @@ update msg model =
             ( { model
                 | state =
                     model.state
-                        |> withError "Unable to store beer list"
-                        |> withNetwork Idle
+                        |> State.withError "Unable to store beer list"
+                        |> State.withNetwork Idle
               }
             , Cmd.none
             )
@@ -60,15 +60,15 @@ update msg model =
             ( { model | tab = tab }, Cmd.none )
 
         ClearFilter ->
-            ( { model | filters = Model.Filter.empty model.beers }, Cmd.none )
+            ( { model | filters = Filter.empty model.beers }, Cmd.none )
 
         UpdateFilter value ->
-            ( { model | filters = model.filters |> setValue value }, Cmd.none )
+            ( { model | filters = model.filters |> Filter.setValue value }, Cmd.none )
 
         DecrementBeer beer ->
             ( { model
                 | beers = Update.Beer.decrement beer model.beers
-                , state = model.state |> withChanges
+                , state = model.state |> State.withChanges
               }
             , Cmd.none
             )
@@ -76,7 +76,7 @@ update msg model =
         IncrementBeer beer ->
             ( { model
                 | beers = Update.Beer.increment beer model.beers
-                , state = model.state |> withChanges
+                , state = model.state |> State.withChanges
               }
             , Cmd.none
             )
@@ -88,27 +88,27 @@ update msg model =
             in
                 ( { model
                     | beers = newBeers
-                    , state = model.state |> withChanges
-                    , filters = model.filters |> setContext newBeers
+                    , state = model.state |> State.withChanges
+                    , filters = model.filters |> Filter.setContext newBeers
                   }
                 , Cmd.none
                 )
 
         SaveBeers ->
-            ( { model | state = withNetwork Saving model.state }
+            ( { model | state = State.withNetwork Saving model.state }
             , Commands.saveBeers model.env model.auth model.beers
             )
 
         LoadBeers ->
-            ( { model | state = withNetwork Loading model.state }
+            ( { model | state = State.withNetwork Loading model.state }
             , Commands.fetchBeers model.env model.auth
             )
 
         UpdateBeerForm input ->
-            ( { model | beerForm = model.beerForm |> setInput input }, Cmd.none )
+            ( { model | beerForm = model.beerForm |> BeerForm.setInput input }, Cmd.none )
 
         SubmitBeerForm ->
-            case toBeer model.beerForm of
+            case BeerForm.toBeer model.beerForm of
                 Just beer ->
                     let
                         newBeers =
@@ -116,18 +116,18 @@ update msg model =
                     in
                         ( { model
                             | beers = newBeers
-                            , beerForm = Model.BeerForm.empty
-                            , filters = model.filters |> setContext newBeers
-                            , state = model.state |> withChanges
+                            , beerForm = BeerForm.empty
+                            , filters = model.filters |> Filter.setContext newBeers
+                            , state = model.state |> State.withChanges
                           }
                         , Cmd.none
                         )
 
                 Nothing ->
-                    ( { model | beerForm = markSubmitted model.beerForm }, Cmd.none )
+                    ( { model | beerForm = BeerForm.markSubmitted model.beerForm }, Cmd.none )
 
         ClearBeerForm ->
-            ( { model | beerForm = Model.BeerForm.empty }, Cmd.none )
+            ( { model | beerForm = BeerForm.empty }, Cmd.none )
 
         Login ->
             ( model
