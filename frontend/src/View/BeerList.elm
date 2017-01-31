@@ -32,19 +32,27 @@ viewBeerList filters beers tableState =
 
 tableConfig : Table.Config Beer Msg
 tableConfig =
-    Table.config
-        { -- FIXME: Should be .id not .name
-          toId = .name
-        , toMsg = SetTableState
-        , columns =
-            [ Table.intColumn "#" .count
-            , Table.stringColumn "Brewery" .brewery
-            , Table.stringColumn "Name" .name
-            , Table.intColumn "Year" .year
-            , Table.stringColumn "Style" .style
-            , actionColumn
-            ]
-        }
+    let
+        default =
+            Table.defaultCustomizations
+
+        customizations =
+            { default | tableAttrs = [ class "beer-list" ] }
+    in
+        Table.customConfig
+            { -- FIXME: Should be .id not .name
+              toId = .name
+            , toMsg = SetTableState
+            , columns =
+                [ Table.intColumn "#" .count
+                , Table.stringColumn "Brewery" .brewery
+                , Table.stringColumn "Name" .name
+                , Table.intColumn "Year" .year
+                , Table.stringColumn "Style" .style
+                , actionColumn
+                ]
+            , customizations = customizations
+            }
 
 
 actionColumn : Table.Column Beer Msg
