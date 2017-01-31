@@ -8,11 +8,6 @@ type alias State =
     }
 
 
-init : State
-init =
-    State Unchanged Idle Nothing
-
-
 type Changes
     = Changed
     | Unchanged
@@ -22,6 +17,11 @@ type Network
     = Saving
     | Loading
     | Idle
+
+
+init : State
+init =
+    State Unchanged Idle Nothing
 
 
 withError : String -> State -> State

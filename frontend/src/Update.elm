@@ -2,6 +2,7 @@ module Update exposing (update)
 
 import Messages exposing (Msg(..))
 import Commands
+import Ports
 import Model exposing (Model)
 import Model.State exposing (Network(..), withNetwork, withChanges, withNoChanges, withError)
 import Model.Auth exposing (AuthStatus(..))
@@ -10,7 +11,6 @@ import Model.Filter
 import Update.Beer
 import Update.Filter
 import Update.BeerForm
-import Ports
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
