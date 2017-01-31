@@ -1,4 +1,4 @@
-module Update.Beer exposing (filtered, decrement, increment, delete, add)
+module Model.BeerList exposing (filtered, decrement, increment, delete, add)
 
 import Model.Filter exposing (Filters)
 import Model.Beer exposing (Beer)

@@ -8,7 +8,7 @@ import Model.State as State exposing (Network(..))
 import Model.Auth exposing (AuthStatus(..))
 import Model.BeerForm as BeerForm
 import Model.Filter as Filter
-import Update.Beer
+import Model.BeerList
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -67,7 +67,7 @@ update msg model =
 
         DecrementBeer beer ->
             ( { model
-                | beers = Update.Beer.decrement beer model.beers
+                | beers = Model.BeerList.decrement beer model.beers
                 , state = model.state |> State.withChanges
               }
             , Cmd.none
@@ -75,7 +75,7 @@ update msg model =
 
         IncrementBeer beer ->
             ( { model
-                | beers = Update.Beer.increment beer model.beers
+                | beers = Model.BeerList.increment beer model.beers
                 , state = model.state |> State.withChanges
               }
             , Cmd.none
@@ -84,7 +84,7 @@ update msg model =
         DeleteBeer beer ->
             let
                 newBeers =
-                    Update.Beer.delete beer model.beers
+                    Model.BeerList.delete beer model.beers
             in
                 ( { model
                     | beers = newBeers
@@ -112,7 +112,7 @@ update msg model =
                 Just beer ->
                     let
                         newBeers =
-                            Update.Beer.add beer model.beers
+                            Model.BeerList.add beer model.beers
                     in
                         ( { model
                             | beers = newBeers
