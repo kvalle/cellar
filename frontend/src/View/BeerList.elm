@@ -13,17 +13,10 @@ import Table
 
 viewBeerList : Filters -> List Beer -> Table.State -> Html Msg
 viewBeerList filters beers tableState =
-    let
-        filteredBeers =
-            Beer.filtered filters beers
-
-        rows =
-            if List.isEmpty beers then
-                [ viewEmptyTableRow ]
-            else
-                List.map viewBeerRow filteredBeers
-    in
-        Table.view tableConfig tableState filteredBeers
+    if List.isEmpty beers then
+        viewEmptyMessage
+    else
+        Table.view tableConfig tableState <| Beer.filtered filters beers
 
 
 
@@ -77,14 +70,12 @@ viewActions beer =
 -- SNIP
 
 
-viewEmptyTableRow : Html Msg
-viewEmptyTableRow =
-    tr [ class "empty-beer-list" ]
-        [ td [ colspan 5 ]
-            [ text "Your cellar appears to be empty. Try "
-            , span [ onClick (ChangeTab Tab.AddBeerTab), class "action" ] [ text "adding" ]
-            , text " a few beers!"
-            ]
+viewEmptyMessage : Html Msg
+viewEmptyMessage =
+    span [ class "empty-beer-list" ]
+        [ text "Your cellar appears to be empty. Try "
+        , span [ onClick (ChangeTab Tab.AddBeerTab), class "action" ] [ text "adding" ]
+        , text " a few beers!"
         ]
 
 
