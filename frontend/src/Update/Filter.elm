@@ -1,12 +1,7 @@
-module Update.Filter exposing (setContext, setValue, empty)
+module Update.Filter exposing (setContext, setValue)
 
 import Model.Filter exposing (Filters, FilterValue(..))
 import Model.Beer exposing (Beer)
-
-
-empty : Filters
-empty =
-    Filters "" 0 [] ( 0, 0 ) False
 
 
 setContext : List Beer -> Filters -> Filters

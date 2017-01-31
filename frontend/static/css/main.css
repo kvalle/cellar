@@ -156,7 +156,7 @@ tr.zero-row {
 /* Info and error messages */
 
 .status-info {
-	height: 1.5em;
+	height: 2em;
 	font-style: italic;
 	color: #33C3F0;
 }

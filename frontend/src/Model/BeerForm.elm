@@ -21,3 +21,13 @@ type alias BeerForm =
     , year : BeerFormField
     , submitted : Bool
     }
+
+
+empty : BeerForm
+empty =
+    BeerForm
+        { value = "", error = Nothing }
+        { value = "", error = Nothing }
+        { value = "", error = Nothing }
+        { value = "", error = Nothing }
+        False

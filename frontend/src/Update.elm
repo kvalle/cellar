@@ -5,6 +5,8 @@ import Commands exposing (fetchBeers, saveBeers)
 import Model exposing (Model)
 import Model.State exposing (Changes(..), Network(..))
 import Model.Auth exposing (AuthStatus(..))
+import Model.BeerForm
+import Model.Filter
 import Update.Beer as Beer
 import Update.Filter as Filter
 import Update.BeerForm as BeerForm
@@ -47,7 +49,7 @@ update msg model =
             ( { model | tab = tab }, Cmd.none )
 
         ClearFilter ->
-            ( { model | filters = Filter.setContext model.beers Filter.empty }, Cmd.none )
+            ( { model | filters = Filter.setContext model.beers Model.Filter.empty }, Cmd.none )
 
         UpdateFilter value ->
             ( { model | filters = Filter.setValue model.filters value }, Cmd.none )
@@ -99,7 +101,7 @@ update msg model =
                     in
                         ( { model
                             | beers = newBeers
-                            , beerForm = BeerForm.empty
+                            , beerForm = Model.BeerForm.empty
                             , filters = Filter.setContext newBeers model.filters
                             , changes = Changed
                           }
@@ -110,7 +112,7 @@ update msg model =
                     ( { model | beerForm = BeerForm.markSubmitted model.beerForm }, Cmd.none )
 
         ClearBeerForm ->
-            ( { model | beerForm = BeerForm.empty }, Cmd.none )
+            ( { model | beerForm = Model.BeerForm.empty }, Cmd.none )
 
         Login ->
             ( model, Ports.login () )

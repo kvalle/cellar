@@ -1,6 +1,4 @@
-module Model.Filter exposing (..)
-
-import Model.Beer exposing (Beer)
+module Model.Filter exposing (FilterValue(..), Filters, empty)
 
 
 type FilterValue
@@ -16,3 +14,8 @@ type alias Filters =
     , yearRange : ( Int, Int )
     , active : Bool
     }
+
+
+empty : Filters
+empty =
+    Filters "" 0 [] ( 0, 0 ) False

@@ -1,17 +1,7 @@
-module Update.BeerForm exposing (empty, markSubmitted, setInput, toBeer)
+module Update.BeerForm exposing (markSubmitted, setInput, toBeer)
 
 import Model.BeerForm exposing (BeerForm, BeerInput(..), BeerFormField)
 import Model.Beer exposing (Beer)
-
-
-empty : BeerForm
-empty =
-    BeerForm
-        (newInput "" validateNotEmpty)
-        (newInput "" validateNotEmpty)
-        (newInput "" validateNotEmpty)
-        (newInput "" validateYear)
-        False
 
 
 toBeer : BeerForm -> Maybe Beer
