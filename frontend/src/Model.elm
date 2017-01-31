@@ -29,7 +29,7 @@ init env =
         Model.Auth.LoggedOut
         []
         (Table.initialSort "Brewery")
-        Model.BeerForm.empty
+        Model.BeerForm.init
         Model.Filter.init
         Model.Tab.FilterTab
         Model.State.init

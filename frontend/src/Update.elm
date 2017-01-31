@@ -6,10 +6,9 @@ import Ports
 import Model exposing (Model)
 import Model.State exposing (Network(..), withNetwork, withChanges, withNoChanges, withError)
 import Model.Auth exposing (AuthStatus(..))
-import Model.BeerForm
+import Model.BeerForm exposing (markSubmitted, setInput, toBeer)
 import Model.Filter exposing (setContext, setValue)
 import Update.Beer
-import Update.BeerForm
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -106,10 +105,10 @@ update msg model =
             )
 
         UpdateBeerForm input ->
-            ( { model | beerForm = Update.BeerForm.setInput input model.beerForm }, Cmd.none )
+            ( { model | beerForm = model.beerForm |> setInput input }, Cmd.none )
 
         SubmitBeerForm ->
-            case Update.BeerForm.toBeer model.beerForm of
+            case toBeer model.beerForm of
                 Just beer ->
                     let
                         newBeers =
@@ -125,7 +124,7 @@ update msg model =
                         )
 
                 Nothing ->
-                    ( { model | beerForm = Update.BeerForm.markSubmitted model.beerForm }, Cmd.none )
+                    ( { model | beerForm = markSubmitted model.beerForm }, Cmd.none )
 
         ClearBeerForm ->
             ( { model | beerForm = Model.BeerForm.empty }, Cmd.none )

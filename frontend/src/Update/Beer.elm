@@ -6,7 +6,7 @@ import Model.Beer exposing (Beer)
 
 filtered : Filters -> List Beer -> List Beer
 filtered filters beers =
-    List.filter (matches filters) beers
+    List.filter (\beer -> Model.Filter.matches beer filters) beers
 
 
 decrement : Beer -> List Beer -> List Beer
@@ -53,21 +53,3 @@ updateBeer fn original beers =
                 beer
     in
         List.map update beers
-
-
-matches : Filters -> Beer -> Bool
-matches filters beer =
-    let
-        textMatch string =
-            String.contains (String.toLower filters.textMatch) (String.toLower string)
-
-        matchesText =
-            textMatch beer.name || textMatch beer.brewery || textMatch beer.style || textMatch (toString beer.year)
-
-        isInYearRange =
-            beer.year <= filters.olderThan
-
-        matchesStyles =
-            List.isEmpty filters.styles || List.member beer.style filters.styles
-    in
-        matchesText && isInYearRange && matchesStyles

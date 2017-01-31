@@ -1,4 +1,4 @@
-module Model.Filter exposing (FilterValue(..), Filters, init, empty, setValue, setContext)
+module Model.Filter exposing (FilterValue(..), Filters, init, empty, setValue, setContext, matches)
 
 import Model.Beer exposing (Beer)
 
@@ -57,3 +57,21 @@ setContext beers filters =
                 filters.olderThan
     in
         { filters | yearRange = ( lower, upper ), olderThan = newOlderThan }
+
+
+matches : Beer -> Filters -> Bool
+matches beer filters =
+    let
+        textMatch string =
+            String.contains (String.toLower filters.textMatch) (String.toLower string)
+
+        matchesText =
+            textMatch beer.name || textMatch beer.brewery || textMatch beer.style || textMatch (toString beer.year)
+
+        isInYearRange =
+            beer.year <= filters.olderThan
+
+        matchesStyles =
+            List.isEmpty filters.styles || List.member beer.style filters.styles
+    in
+        matchesText && isInYearRange && matchesStyles
