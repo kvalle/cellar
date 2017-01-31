@@ -7,9 +7,8 @@ import Model exposing (Model)
 import Model.State exposing (Network(..), withNetwork, withChanges, withNoChanges, withError)
 import Model.Auth exposing (AuthStatus(..))
 import Model.BeerForm
-import Model.Filter
+import Model.Filter exposing (setContext, setValue)
 import Update.Beer
-import Update.Filter
 import Update.BeerForm
 
 
@@ -29,7 +28,7 @@ update msg model =
         RetrievedBeerList (Ok beers) ->
             ( { model
                 | beers = beers
-                , filters = Update.Filter.setContext beers model.filters
+                , filters = model.filters |> setContext beers
                 , state =
                     model.state
                         |> withNetwork Idle
@@ -62,10 +61,10 @@ update msg model =
             ( { model | tab = tab }, Cmd.none )
 
         ClearFilter ->
-            ( { model | filters = Update.Filter.setContext model.beers Model.Filter.empty }, Cmd.none )
+            ( { model | filters = Model.Filter.empty model.beers }, Cmd.none )
 
         UpdateFilter value ->
-            ( { model | filters = Update.Filter.setValue model.filters value }, Cmd.none )
+            ( { model | filters = model.filters |> setValue value }, Cmd.none )
 
         DecrementBeer beer ->
             ( { model
@@ -91,7 +90,7 @@ update msg model =
                 ( { model
                     | beers = newBeers
                     , state = model.state |> withChanges
-                    , filters = Update.Filter.setContext newBeers model.filters
+                    , filters = model.filters |> setContext newBeers
                   }
                 , Cmd.none
                 )
@@ -119,7 +118,7 @@ update msg model =
                         ( { model
                             | beers = newBeers
                             , beerForm = Model.BeerForm.empty
-                            , filters = Update.Filter.setContext newBeers model.filters
+                            , filters = model.filters |> setContext newBeers
                             , state = model.state |> withChanges
                           }
                         , Cmd.none

@@ -30,6 +30,6 @@ init env =
         []
         (Table.initialSort "Brewery")
         Model.BeerForm.empty
-        Model.Filter.empty
+        Model.Filter.init
         Model.Tab.FilterTab
         Model.State.init
