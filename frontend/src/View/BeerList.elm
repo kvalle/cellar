@@ -19,25 +19,14 @@ viewBeerList filters beers tableState =
         Table.view tableConfig tableState <| Beer.filtered filters beers
 
 
-
--- UNEXPOSED FUNCTIONS
-
-
 tableConfig : Table.Config Beer Msg
 tableConfig =
     let
         default =
             Table.defaultCustomizations
-
-        customizations =
-            { default
-                | tableAttrs = [ class "beer-list" ]
-                , rowAttrs = beerRowAttributes
-            }
     in
         Table.customConfig
-            { -- FIXME: Should be .id not .name
-              toId = .name
+            { toId = .id >> (Maybe.withDefault 0) >> toString
             , toMsg = SetTableState
             , columns =
                 [ Table.intColumn "#" .count
@@ -47,7 +36,11 @@ tableConfig =
                 , Table.stringColumn "Style" .style
                 , actionColumn
                 ]
-            , customizations = customizations
+            , customizations =
+                { default
+                    | tableAttrs = [ class "beer-list" ]
+                    , rowAttrs = beerRowAttributes
+                }
             }
 
 
@@ -86,36 +79,6 @@ viewEmptyMessage =
         , span [ onClick (ChangeTab Tab.AddBeerTab), class "action" ] [ text "adding" ]
         , text " a few beers!"
         ]
-
-
-
--- SNIP
-
-
-viewBeerRow : Beer -> Html Msg
-viewBeerRow beer =
-    let
-        trClass =
-            if beer.count < 1 then
-                "zero-row"
-            else
-                ""
-    in
-        tr
-            [ class trClass ]
-            [ td [ class "beer-count" ] [ text <| toString beer.count ]
-            , td [] [ text beer.brewery ]
-            , td []
-                [ text beer.name
-                , span [ class "beer-year" ] [ text <| "(" ++ (toString beer.year) ++ ")" ]
-                ]
-            , td [ class "beer-style" ] [ text beer.style ]
-            , td []
-                [ viewIncrementAction beer
-                , viewDecrementAction beer
-                , viewDeleteAction beer
-                ]
-            ]
 
 
 viewIncrementAction : Beer -> Html Msg
