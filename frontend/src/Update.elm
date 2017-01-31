@@ -18,8 +18,10 @@ update msg model =
     case msg of
         RetrievedBeerList (Err _) ->
             ( { model
-                | error = Just "Unable to load beer list"
-                , network = Idle
+                | state =
+                    model.state
+                        |> Model.State.withError "Unable to load beer list"
+                        |> Model.State.withNetwork Idle
               }
             , Cmd.none
             )
@@ -28,19 +30,30 @@ update msg model =
             ( { model
                 | beers = beers
                 , filters = Filter.setContext beers model.filters
-                , changes = Unchanged
-                , network = Idle
+                , state =
+                    model.state
+                        |> Model.State.withNetwork Idle
+                        |> Model.State.withNoChanges
               }
             , Cmd.none
             )
 
         SavedBeerList (Ok _) ->
-            ( { model | changes = Unchanged, network = Idle }, Cmd.none )
+            ( { model
+                | state =
+                    model.state
+                        |> Model.State.withNetwork Idle
+                        |> Model.State.withNoChanges
+              }
+            , Cmd.none
+            )
 
         SavedBeerList (Err _) ->
             ( { model
-                | error = Just "Unable to store beer list"
-                , network = Idle
+                | state =
+                    model.state
+                        |> Model.State.withError "Unable to store beer list"
+                        |> Model.State.withNetwork Idle
               }
             , Cmd.none
             )
@@ -57,7 +70,7 @@ update msg model =
         DecrementBeer beer ->
             ( { model
                 | beers = Beer.decrement beer model.beers
-                , changes = Changed
+                , state = model.state |> Model.State.withChanges
               }
             , Cmd.none
             )
@@ -65,7 +78,7 @@ update msg model =
         IncrementBeer beer ->
             ( { model
                 | beers = Beer.increment beer model.beers
-                , changes = Changed
+                , state = model.state |> Model.State.withChanges
               }
             , Cmd.none
             )
@@ -77,17 +90,21 @@ update msg model =
             in
                 ( { model
                     | beers = newBeers
-                    , changes = Changed
+                    , state = model.state |> Model.State.withChanges
                     , filters = Filter.setContext newBeers model.filters
                   }
                 , Cmd.none
                 )
 
         SaveBeers ->
-            ( { model | network = Saving }, saveBeers model.env model.auth model.beers )
+            ( { model | state = Model.State.withNetwork Saving model.state }
+            , saveBeers model.env model.auth model.beers
+            )
 
         LoadBeers ->
-            ( { model | network = Loading }, fetchBeers model.env model.auth )
+            ( { model | state = Model.State.withNetwork Loading model.state }
+            , fetchBeers model.env model.auth
+            )
 
         UpdateBeerForm input ->
             ( { model | beerForm = BeerForm.setInput input model.beerForm }, Cmd.none )
@@ -103,7 +120,7 @@ update msg model =
                             | beers = newBeers
                             , beerForm = Model.BeerForm.empty
                             , filters = Filter.setContext newBeers model.filters
-                            , changes = Changed
+                            , state = model.state |> Model.State.withChanges
                           }
                         , Cmd.none
                         )
@@ -115,13 +132,19 @@ update msg model =
             ( { model | beerForm = Model.BeerForm.empty }, Cmd.none )
 
         Login ->
-            ( model, Ports.login () )
+            ( model
+            , Ports.login ()
+            )
 
         LoginResult userData ->
-            ( { model | auth = LoggedIn userData }, fetchBeers model.env <| LoggedIn userData )
+            ( { model | auth = LoggedIn userData }
+            , fetchBeers model.env <| LoggedIn userData
+            )
 
         Logout ->
-            ( model, Ports.logout () )
+            ( model
+            , Ports.logout ()
+            )
 
         LogoutResult _ ->
             ( { model | auth = LoggedOut, beers = [] }, Cmd.none )

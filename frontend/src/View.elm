@@ -54,14 +54,14 @@ viewLoggedIn model =
         , div [ class "row" ]
             [ div [ class "main seven columns" ]
                 [ div [ class "buttons" ]
-                    [ viewButton "Save" "floppy" Msg.SaveBeers (model.changes == State.Changed)
-                    , viewButton "Reset" "ccw" Msg.LoadBeers (model.changes == State.Changed)
+                    [ viewButton "Save" "floppy" Msg.SaveBeers (model.state.changes == State.Changed)
+                    , viewButton "Reset" "ccw" Msg.LoadBeers (model.state.changes == State.Changed)
                     , viewButton "Clear filters" "cancel" Msg.ClearFilter model.filters.active
                     , viewDisabledButton "Download" "download"
                     , viewDisabledButton "Upload" "upload"
                     ]
                 , viewStatus model
-                , viewErrors model.error
+                , viewErrors model.state.error
                 , viewBeerList model.filters model.beers model.tableState
                 ]
             , div [ class "sidebar five columns" ]
@@ -131,7 +131,7 @@ viewStatus : Model -> Html Msg
 viewStatus model =
     div [ class "status-info" ]
         [ span [] <|
-            case model.network of
+            case model.state.network of
                 State.Saving ->
                     [ i [ class "icon-spinner animate-spin" ] []
                     , text "Saving…"
@@ -143,7 +143,7 @@ viewStatus model =
                     ]
 
                 State.Idle ->
-                    case model.changes of
+                    case model.state.changes of
                         State.Unchanged ->
                             [ text "" ]
 
