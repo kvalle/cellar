@@ -48,7 +48,7 @@ viewLoggedIn model =
             ]
         , div [ class "row" ]
             [ div [ class "main seven columns" ]
-                [ div [ class "buttons" ]
+                [ div [ class "menu-actions" ]
                     [ viewButton "Add beer" "beer" Msg.ShowAddBeerForm True
                     , viewButton "Save" "floppy" Msg.SaveBeers (model.state.changes == State.Changed)
                     , viewButton "Reset" "ccw" Msg.LoadBeers (model.state.changes == State.Changed)

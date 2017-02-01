@@ -22,11 +22,16 @@ button i {
 	padding-left: 5px;
 }
 
-.spinner {
-	height: 1.2em;
+.buttion.button-disabled, 
+.buttion.button-disabled:hover, 
+button.button-disabled, 
+button.button-disabled:hover {
+    color: #ccc;
+    border-color: #ccc;
+	background-color: white; 
 }
 
-/* Page centered login button */
+/* Login button */
 
 .login {
 	align-items: center;
@@ -35,14 +40,13 @@ button i {
 	height: 100%;
 }
 
-/* Buttons */
+/* Menu */
 
-.buttons span {
+.menu-actions span {
 	margin-right: 15px;
 }
 
 /* Header */
-
 
 .user-info {
 	float: right;
@@ -73,67 +77,6 @@ button i {
 	height: 100px;
 }
 
-/* Tabs */
-
-.tabs {
-    text-align: left;
-    list-style: none;
-    padding: 0;
-    line-height: 34px;
-    height: 36px;
-    overflow: hidden;
-    font-family: verdana;
-    position: relative;
-    font-size: 1.2em;
-}
-.tabs li:first-child {
-	margin-left: 25px;
-}
-.tabs li {
-	color: #999;
-    display: inline-block;
-    position: relative;
-    z-index: 0;
-    border-top-left-radius: 6px;
-    border-top-right-radius: 6px;
-    margin: 0 0px;
-    padding: 0 30px;
-    cursor: pointer;
-}
-.tabs li.selected {
-	color: #333;
-    background: white; 
-    z-index: 2;
-    border: 1px solid #ccc;
-    border-bottom-color: white;
-}
-.tabs:before {
-    position: absolute;
-    content: " ";
-    width: 100%;
-    bottom: 0;
-    left: 0;
-    border-bottom: 1px solid #ccc;
-    z-index: 1;
-}
-
-
-/* Add beer form */
-
-
-.add-beer-form button:not(:first-child) {
-	margin-left: 5px;
-}
-
-.add-beer-form input {
-	margin-bottom: 0.2em;
-}
-
-.add-beer-form .error {
-	color: red;
-	height: 1em;
-	margin-bottom: 1em;
-}
 
 /* Edit beer form */
 
@@ -154,6 +97,10 @@ button i {
     padding: 5px 20px 13px 20px;
     border-radius: 5px;
     background: white;
+}
+
+.beer-form button:not(:first-child) {
+	margin-left: 5px;
 }
 
 

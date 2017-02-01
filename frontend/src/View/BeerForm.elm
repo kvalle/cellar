@@ -17,7 +17,7 @@ viewBeerForm model =
 
         Just beer ->
             div [ class "beer-form-modal", onClick Msg.HideBeerForm ]
-                [ div [ class "add-beer-form", onClickNoPropagation (Msg.ShowEditBeerForm beer) ]
+                [ div [ class "beer-form", onClickNoPropagation (Msg.ShowEditBeerForm beer) ]
                     [ h3 []
                         [ case beer.id of
                             Nothing ->
@@ -31,8 +31,8 @@ viewBeerForm model =
                     , fieldwithLabel "Beer Style" "style" (\val -> Msg.UpdateBeerForm (StyleInput val)) beer.style
                     , fieldwithLabel "Production year" "year" (\val -> Msg.UpdateBeerForm (YearInput val)) (toString beer.year)
                     , br [] []
-                    , div []
-                        [ let
+                    , div [] <|
+                        let
                             name =
                                 case beer.id of
                                     Nothing ->
@@ -40,10 +40,22 @@ viewBeerForm model =
 
                                     Just _ ->
                                         "Save"
-                          in
-                            buttonWithIcon name "beer" Msg.SubmitBeerForm "button-primary"
-                        , buttonWithIcon "Cancel" "cancel" Msg.HideBeerForm ""
-                        ]
+
+                            attributes =
+                                if Model.BeerForm.isValid beer then
+                                    [ onClickNoPropagation Msg.SubmitBeerForm, class "button-primary" ]
+                                else
+                                    [ class "button-disabled" ]
+                        in
+                            [ button attributes
+                                [ text name
+                                , i [ class "icon-beer" ] []
+                                ]
+                            , button [ onClickNoPropagation Msg.HideBeerForm, class "" ]
+                                [ text "Cancel"
+                                , i [ class "icon-cancel" ] []
+                                ]
+                            ]
                     ]
                 ]
 
@@ -65,8 +77,8 @@ fieldwithLabel labelText tag msg val =
         ]
 
 
-buttonWithIcon : String -> String -> msg -> String -> Html msg
-buttonWithIcon buttonText icon msg classes =
+buttonWithIcon : String -> String -> msg -> String -> Bool -> Html msg
+buttonWithIcon buttonText icon msg classes active =
     button [ onClickNoPropagation msg, class classes ]
         [ text buttonText
         , i [ class <| "icon-" ++ icon ] []
