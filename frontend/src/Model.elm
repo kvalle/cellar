@@ -5,6 +5,7 @@ import Model.Auth
 import Model.Filter
 import Model.BeerList
 import Model.BeerForm
+import Model.Table
 import Model.Environment exposing (Environment)
 import Table
 
@@ -25,8 +26,8 @@ init env =
     Model
         env
         Model.Auth.LoggedOut
-        []
-        (Table.initialSort "Brewery")
-        Nothing
+        Model.BeerList.init
+        Model.Table.init
+        Model.BeerForm.init
         Model.Filter.init
         Model.State.init

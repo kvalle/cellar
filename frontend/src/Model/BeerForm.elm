@@ -1,4 +1,4 @@
-module Model.BeerForm exposing (BeerForm, BeerInput(..), withInput, isValid, showInt)
+module Model.BeerForm exposing (BeerForm, BeerInput(..), init, withInput, isValid, showInt)
 
 import Model.Beer exposing (Beer)
 
@@ -13,6 +13,11 @@ type BeerInput
     | StyleInput String
     | YearInput String
     | CountInput String
+
+
+init : BeerForm
+init =
+    Nothing
 
 
 withInput : BeerInput -> BeerForm -> BeerForm

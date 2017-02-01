@@ -1,4 +1,4 @@
-module Model.BeerList exposing (BeerList, filtered, decrement, increment, delete, addOrUpdate)
+module Model.BeerList exposing (BeerList, init, filtered, decrement, increment, delete, addOrUpdate)
 
 import Model.Filter exposing (Filters)
 import Model.Beer exposing (Beer)
@@ -6,6 +6,11 @@ import Model.Beer exposing (Beer)
 
 type alias BeerList =
     List Beer
+
+
+init : BeerList
+init =
+    []
 
 
 filtered : Filters -> BeerList -> BeerList
