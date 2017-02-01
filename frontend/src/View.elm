@@ -5,7 +5,7 @@ import Model exposing (Model)
 import Model.State as State
 import Model.Auth as Auth
 import View.BeerList exposing (viewBeerList)
-import View.Filter exposing (viewFilter)
+import View.Filter exposing (viewFilters)
 import View.BeerForm exposing (viewBeerForm)
 import Html exposing (..)
 import Html.Events exposing (onClick, onInput, onWithOptions, defaultOptions)
@@ -52,7 +52,7 @@ viewLoggedIn model =
                     [ viewButton "Add beer" "beer" Msg.ShowAddBeerForm True
                     , viewButton "Save" "floppy" Msg.SaveBeers (model.state.changes == State.Changed)
                     , viewButton "Reset" "ccw" Msg.LoadBeers (model.state.changes == State.Changed)
-                    , viewButton "Clear filters" "cancel" Msg.ClearFilter model.filters.active
+                    , viewButton "Clear filters" "cancel" Msg.ClearFilters model.filters.active
                     , viewDisabledButton "Download" "download"
                     , viewDisabledButton "Upload" "upload"
                     ]
@@ -62,7 +62,7 @@ viewLoggedIn model =
                 ]
             , div [ class "sidebar five columns" ]
                 [ h2 [] [ text "Filters" ]
-                , viewFilter model.filters model.beers
+                , viewFilters model.filters model.beers
                 ]
             ]
         ]

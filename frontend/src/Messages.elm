@@ -12,8 +12,8 @@ type Msg
     = RetrievedBeerList (Result Http.Error (List Beer))
     | SavedBeerList (Result Http.Error (List Beer))
       -- Filter
-    | ClearFilter
-    | UpdateFilter FilterValue
+    | ClearFilters
+    | UpdateFilters FilterValue
       -- BeerList
     | IncrementBeer Beer
     | DecrementBeer Beer

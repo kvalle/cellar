@@ -88,10 +88,10 @@ update msg model =
             , Commands.fetchBeers model.env model.auth
             )
 
-        ClearFilter ->
+        ClearFilters ->
             ( { model | filters = Filter.empty model.beers }, Cmd.none )
 
-        UpdateFilter value ->
+        UpdateFilters value ->
             ( { model | filters = model.filters |> Filter.setValue value }, Cmd.none )
 
         DecrementBeer beer ->
@@ -124,19 +124,13 @@ update msg model =
                 )
 
         ShowAddBeerForm ->
-            ( { model | editBeer = Just Beer.empty }
-            , Cmd.none
-            )
+            ( { model | editBeer = Just Beer.empty }, Cmd.none )
 
         ShowEditBeerForm beer ->
-            ( { model | editBeer = Just beer }
-            , Cmd.none
-            )
+            ( { model | editBeer = Just beer }, Cmd.none )
 
         HideBeerForm ->
-            ( { model | editBeer = Nothing }
-            , Cmd.none
-            )
+            ( { model | editBeer = Nothing }, Cmd.none )
 
         UpdateBeerForm input ->
             ( { model | editBeer = model.editBeer |> BeerForm.withInput input }, Cmd.none )

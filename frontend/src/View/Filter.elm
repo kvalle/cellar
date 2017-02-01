@@ -1,4 +1,4 @@
-module View.Filter exposing (viewFilter)
+module View.Filter exposing (viewFilters)
 
 import Messages exposing (Msg(..))
 import Html exposing (..)
@@ -10,8 +10,8 @@ import Set
 import MultiSelect
 
 
-viewFilter : Filters -> List Beer -> Html Msg
-viewFilter filters beers =
+viewFilters : Filters -> List Beer -> Html Msg
+viewFilters filters beers =
     div [ class "filter-form" ]
         [ textFilter filters beers
         , ageFilter filters beers
@@ -27,7 +27,7 @@ textFilter filters beers =
         , input
             [ type_ "search"
             , id "text-filter"
-            , onInput (\val -> (UpdateFilter (TextMatches val)))
+            , onInput (\val -> (UpdateFilters (TextMatches val)))
             , value filters.textMatch
             , class "u-full-width"
             ]
@@ -46,7 +46,7 @@ ageFilter filters beers =
             , Html.Attributes.min <| toString <| Tuple.first filters.yearRange
             , Html.Attributes.max <| toString <| Tuple.second filters.yearRange
             , value <| toString filters.olderThan
-            , onInput (\val -> (UpdateFilter (OlderThan val)))
+            , onInput (\val -> (UpdateFilters (OlderThan val)))
             ]
             []
         ]
@@ -59,7 +59,7 @@ styleFilter filters beers =
         , MultiSelect.multiSelect
             (let
                 options =
-                    MultiSelect.defaultOptions (\styles -> (UpdateFilter (Styles styles)))
+                    MultiSelect.defaultOptions (\styles -> (UpdateFilters (Styles styles)))
 
                 toItem text =
                     { value = text, text = text, enabled = True }
@@ -76,7 +76,7 @@ styleFilter filters beers =
 
 clearButton : Html Msg
 clearButton =
-    button [ onClick ClearFilter ]
+    button [ onClick ClearFilters ]
         [ text "Clear filters"
         , i [ class "icon-cancel" ] []
         ]
