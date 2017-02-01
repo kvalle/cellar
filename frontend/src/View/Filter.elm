@@ -16,7 +16,7 @@ viewFilters filters beers =
         [ textFilter filters beers
         , ageFilter filters beers
         , styleFilter filters beers
-        , clearButton
+        , clearButton filters
         ]
 
 
@@ -74,9 +74,16 @@ styleFilter filters beers =
         ]
 
 
-clearButton : Html Msg
-clearButton =
-    button [ onClick ClearFilters ]
-        [ text "Clear filters"
-        , i [ class "icon-cancel" ] []
-        ]
+clearButton : Filters -> Html Msg
+clearButton filters =
+    let
+        attributes =
+            if filters.active then
+                [ onClick ClearFilters, class "button-primary" ]
+            else
+                [ class "button-disabled" ]
+    in
+        button attributes
+            [ text "Clear filters"
+            , i [ class "icon-cancel" ] []
+            ]

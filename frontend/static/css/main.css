@@ -28,7 +28,8 @@ button.button-disabled,
 button.button-disabled:hover {
     color: #ccc;
     border-color: #ccc;
-	background-color: white; 
+	background-color: white;
+	cursor: default;
 }
 
 /* For debug */
