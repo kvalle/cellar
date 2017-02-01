@@ -1,6 +1,10 @@
-module Model.BeerForm exposing (BeerInput(..), withInput, isValid, showInt)
+module Model.BeerForm exposing (BeerForm, BeerInput(..), withInput, isValid, showInt)
 
 import Model.Beer exposing (Beer)
+
+
+type alias BeerForm =
+    Maybe Beer
 
 
 type BeerInput
@@ -11,7 +15,7 @@ type BeerInput
     | CountInput String
 
 
-withInput : BeerInput -> Maybe Beer -> Maybe Beer
+withInput : BeerInput -> BeerForm -> BeerForm
 withInput input maybeBeer =
     case maybeBeer of
         Nothing ->

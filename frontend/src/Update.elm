@@ -124,19 +124,19 @@ update msg model =
                 )
 
         ShowAddBeerForm ->
-            ( { model | editBeer = Just Beer.empty }, Cmd.none )
+            ( { model | beerForm = Just Beer.empty }, Cmd.none )
 
         ShowEditBeerForm beer ->
-            ( { model | editBeer = Just beer }, Cmd.none )
+            ( { model | beerForm = Just beer }, Cmd.none )
 
         HideBeerForm ->
-            ( { model | editBeer = Nothing }, Cmd.none )
+            ( { model | beerForm = Nothing }, Cmd.none )
 
         UpdateBeerForm input ->
-            ( { model | editBeer = model.editBeer |> BeerForm.withInput input }, Cmd.none )
+            ( { model | beerForm = model.beerForm |> BeerForm.withInput input }, Cmd.none )
 
         SubmitBeerForm ->
-            case model.editBeer of
+            case model.beerForm of
                 Nothing ->
                     ( model, Cmd.none )
 
@@ -147,7 +147,7 @@ update msg model =
                     in
                         ( { model
                             | beers = newBeers
-                            , editBeer = Nothing
+                            , beerForm = Nothing
                             , state = model.state |> State.withChanges
                             , filters = model.filters |> Filter.setContext newBeers
                           }

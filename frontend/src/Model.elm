@@ -4,6 +4,7 @@ import Model.State
 import Model.Auth
 import Model.Filter
 import Model.Beer
+import Model.BeerForm
 import Model.Environment exposing (Environment)
 import Table
 
@@ -13,7 +14,7 @@ type alias Model =
     , auth : Model.Auth.AuthStatus
     , beers : List Model.Beer.Beer
     , tableState : Table.State
-    , editBeer : Maybe Model.Beer.Beer
+    , beerForm : Model.BeerForm.BeerForm
     , filters : Model.Filter.Filters
     , state : Model.State.State
     }

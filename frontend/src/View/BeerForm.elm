@@ -11,7 +11,7 @@ import Json.Decode
 
 viewBeerForm : Model -> Html Msg
 viewBeerForm model =
-    case model.editBeer of
+    case model.beerForm of
         Nothing ->
             text ""
 
