@@ -3,7 +3,7 @@ module Model exposing (..)
 import Model.State
 import Model.Auth
 import Model.Filter
-import Model.Beer
+import Model.BeerList
 import Model.BeerForm
 import Model.Environment exposing (Environment)
 import Table
@@ -12,7 +12,7 @@ import Table
 type alias Model =
     { env : Model.Environment.Environment
     , auth : Model.Auth.AuthStatus
-    , beers : List Model.Beer.Beer
+    , beers : Model.BeerList.BeerList
     , tableState : Table.State
     , beerForm : Model.BeerForm.BeerForm
     , filters : Model.Filter.Filters

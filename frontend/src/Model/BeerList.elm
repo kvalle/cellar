@@ -1,31 +1,35 @@
-module Model.BeerList exposing (filtered, decrement, increment, delete, add)
+module Model.BeerList exposing (BeerList, filtered, decrement, increment, delete, addOrUpdate)
 
 import Model.Filter exposing (Filters)
 import Model.Beer exposing (Beer)
 
 
-filtered : Filters -> List Beer -> List Beer
+type alias BeerList =
+    List Beer
+
+
+filtered : Filters -> BeerList -> BeerList
 filtered filters beers =
     List.filter (\beer -> Model.Filter.matches beer filters) beers
 
 
-decrement : Beer -> List Beer -> List Beer
+decrement : Beer -> BeerList -> BeerList
 decrement =
     updateBeer (\beer -> { beer | count = beer.count - 1 })
 
 
-increment : Beer -> List Beer -> List Beer
+increment : Beer -> BeerList -> BeerList
 increment =
     updateBeer (\beer -> { beer | count = beer.count + 1 })
 
 
-delete : Beer -> List Beer -> List Beer
+delete : Beer -> BeerList -> BeerList
 delete beer =
     List.filter (\b -> b.id /= beer.id)
 
 
-add : Beer -> List Beer -> List Beer
-add beer beers =
+addOrUpdate : Beer -> BeerList -> BeerList
+addOrUpdate beer beers =
     case beer.id of
         Nothing ->
             { beer | id = Just <| nextAvailableId beers } :: beers
@@ -38,7 +42,7 @@ add beer beers =
 -- UNEXPOSED FUNCTIONS
 
 
-nextAvailableId : List Beer -> Int
+nextAvailableId : BeerList -> Int
 nextAvailableId beers =
     case List.filterMap .id beers |> List.maximum of
         Nothing ->
@@ -48,7 +52,7 @@ nextAvailableId beers =
             n + 1
 
 
-updateBeer : (Beer -> Beer) -> Beer -> List Beer -> List Beer
+updateBeer : (Beer -> Beer) -> Beer -> BeerList -> BeerList
 updateBeer fn original beers =
     let
         update beer =

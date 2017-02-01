@@ -143,7 +143,7 @@ update msg model =
                 Just beer ->
                     let
                         newBeers =
-                            Model.BeerList.add beer model.beers
+                            Model.BeerList.addOrUpdate beer model.beers
                     in
                         ( { model
                             | beers = newBeers
