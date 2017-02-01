@@ -8,6 +8,7 @@ type BeerInput
     | NameInput String
     | StyleInput String
     | YearInput String
+    | CountInput String
 
 
 withInput : BeerInput -> Maybe Beer -> Maybe Beer
@@ -39,18 +40,27 @@ withInput input maybeBeer =
                                         val
                         }
 
+                CountInput count ->
+                    Just
+                        { beer
+                            | count =
+                                case String.toInt count of
+                                    Err _ ->
+                                        beer.count
+
+                                    Ok val ->
+                                        val
+                        }
+
 
 isValid : Beer -> Bool
 isValid beer =
     let
         notEmpty =
             not << String.isEmpty
-
-        positive =
-            (>) 0
     in
         notEmpty beer.brewery
             && notEmpty beer.name
             && notEmpty beer.style
-            && positive beer.year
-            && positive beer.count
+            && (beer.year > 0)
+            && (beer.count > 0)

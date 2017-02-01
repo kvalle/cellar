@@ -30,6 +30,7 @@ viewBeerForm model =
                     , fieldwithLabel "Beer Name" "name" (\val -> Msg.UpdateBeerForm (NameInput val)) beer.name
                     , fieldwithLabel "Beer Style" "style" (\val -> Msg.UpdateBeerForm (StyleInput val)) beer.style
                     , fieldwithLabel "Production year" "year" (\val -> Msg.UpdateBeerForm (YearInput val)) (toString beer.year)
+                    , fieldwithLabel "Number of bottles (or cans)" "count" (\val -> Msg.UpdateBeerForm (CountInput val)) (toString beer.count)
                     , br [] []
                     , div [] <|
                         let
