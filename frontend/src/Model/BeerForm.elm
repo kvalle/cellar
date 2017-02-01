@@ -1,4 +1,4 @@
-module Model.BeerForm exposing (BeerInput(..), withInput, isValid)
+module Model.BeerForm exposing (BeerInput(..), withInput, isValid, showInt)
 
 import Model.Beer exposing (Beer)
 
@@ -29,28 +29,26 @@ withInput input maybeBeer =
                     Just { beer | style = style }
 
                 YearInput year ->
-                    Just
-                        { beer
-                            | year =
-                                case String.toInt year of
-                                    Err _ ->
-                                        beer.year
-
-                                    Ok val ->
-                                        val
-                        }
+                    Just { beer | year = toInt year beer.year }
 
                 CountInput count ->
-                    Just
-                        { beer
-                            | count =
-                                case String.toInt count of
-                                    Err _ ->
-                                        beer.count
+                    Just { beer | count = toInt count beer.count }
 
-                                    Ok val ->
-                                        val
-                        }
+
+showInt : Int -> String
+showInt num =
+    if num == 0 then
+        ""
+    else
+        toString num
+
+
+toInt : String -> Int -> Int
+toInt str default =
+    if str == "" then
+        0
+    else
+        String.toInt str |> Result.withDefault default
 
 
 isValid : Beer -> Bool
