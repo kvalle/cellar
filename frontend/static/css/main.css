@@ -135,6 +135,28 @@ button i {
 	margin-bottom: 1em;
 }
 
+/* Edit beer form */
+
+.beer-form-modal {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    background: rgba(0, 0, 0, 0.8);
+    z-index: 5;
+}
+
+.beer-form-modal > div {
+    width: 500px;
+    position: relative;
+    margin: 10% auto;
+    padding: 5px 20px 13px 20px;
+    border-radius: 5px;
+    background: white;
+}
+
+
 /* Beer list view */
 
 table.beer-list {

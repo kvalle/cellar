@@ -3,10 +3,9 @@ module View.BeerList exposing (viewBeerList)
 import Messages exposing (Msg(..))
 import Model.Beer exposing (Beer)
 import Model.Filter exposing (Filters)
-import Model.Tab as Tab
 import Model.BeerList as BeerList
 import Html exposing (..)
-import Html.Attributes exposing (class, placeholder, type_, value, colspan)
+import Html.Attributes exposing (class, placeholder, type_, value, colspan, title)
 import Html.Events exposing (onClick, onInput)
 import Table
 
@@ -59,6 +58,7 @@ viewActions beer =
         [ viewIncrementAction beer
         , viewDecrementAction beer
         , viewDeleteAction beer
+        , viewEditAction beer
         ]
 
 
@@ -76,14 +76,14 @@ viewEmptyMessage : Html Msg
 viewEmptyMessage =
     span [ class "empty-beer-list" ]
         [ text "Your cellar appears to be empty. Try "
-        , span [ onClick (ChangeTab Tab.AddBeerTab), class "action" ] [ text "adding" ]
+        , span [ onClick ShowAddBeerForm, class "action" ] [ text "adding" ]
         , text " a few beers!"
         ]
 
 
 viewIncrementAction : Beer -> Html Msg
 viewIncrementAction beer =
-    i [ onClick (IncrementBeer beer), class "action icon-plus" ] []
+    i [ onClick (IncrementBeer beer), class "action icon-plus", title "Add 1" ] []
 
 
 viewDecrementAction : Beer -> Html Msg
@@ -91,9 +91,14 @@ viewDecrementAction beer =
     if beer.count < 1 then
         i [ class "action icon-minus disabled" ] []
     else
-        i [ onClick (DecrementBeer beer), class "action icon-minus" ] []
+        i [ onClick (DecrementBeer beer), class "action icon-minus", title "Remove 1" ] []
 
 
 viewDeleteAction : Beer -> Html Msg
 viewDeleteAction beer =
-    i [ onClick (DeleteBeer beer), class "action icon-trash" ] []
+    i [ onClick (DeleteBeer beer), class "action icon-trash", title "Delete" ] []
+
+
+viewEditAction : Beer -> Html Msg
+viewEditAction beer =
+    i [ onClick (ShowEditBeerForm beer), class "action icon-pencil-2", title "Edit" ] []

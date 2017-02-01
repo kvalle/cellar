@@ -9,11 +9,33 @@ import Model.Auth exposing (AuthStatus(..))
 import Model.BeerForm as BeerForm
 import Model.Filter as Filter
 import Model.BeerList
+import Model.Beer as Beer
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
+        Login ->
+            ( model
+            , Ports.login ()
+            )
+
+        LoginResult userData ->
+            ( { model | auth = LoggedIn userData }
+            , Commands.fetchBeers model.env <| LoggedIn userData
+            )
+
+        Logout ->
+            ( model
+            , Ports.logout ()
+            )
+
+        LogoutResult _ ->
+            ( { model | auth = LoggedOut, beers = [] }, Cmd.none )
+
+        SetTableState newState ->
+            ( { model | tableState = newState }, Cmd.none )
+
         RetrievedBeerList (Err _) ->
             ( { model
                 | state =
@@ -56,8 +78,15 @@ update msg model =
             , Cmd.none
             )
 
-        ChangeTab tab ->
-            ( { model | tab = tab }, Cmd.none )
+        SaveBeers ->
+            ( { model | state = State.withNetwork Saving model.state }
+            , Commands.saveBeers model.env model.auth model.beers
+            )
+
+        LoadBeers ->
+            ( { model | state = State.withNetwork Loading model.state }
+            , Commands.fetchBeers model.env model.auth
+            )
 
         ClearFilter ->
             ( { model | filters = Filter.empty model.beers }, Cmd.none )
@@ -94,21 +123,29 @@ update msg model =
                 , Cmd.none
                 )
 
-        SaveBeers ->
-            ( { model | state = State.withNetwork Saving model.state }
-            , Commands.saveBeers model.env model.auth model.beers
+        ShowAddBeerForm ->
+            ( { model | editBeer = Just Beer.empty }
+            , Cmd.none
             )
 
-        LoadBeers ->
-            ( { model | state = State.withNetwork Loading model.state }
-            , Commands.fetchBeers model.env model.auth
+        ShowEditBeerForm beer ->
+            ( { model | editBeer = Just beer }
+            , Cmd.none
+            )
+
+        HideBeerForm ->
+            ( { model | editBeer = Nothing }
+            , Cmd.none
             )
 
         UpdateBeerForm input ->
-            ( { model | beerForm = model.beerForm |> BeerForm.setInput input }, Cmd.none )
+            ( { model | editBeer = model.editBeer |> BeerForm.withInput input }, Cmd.none )
 
         SubmitBeerForm ->
-            case BeerForm.toBeer model.beerForm of
+            case model.editBeer of
+                Nothing ->
+                    ( model, Cmd.none )
+
                 Just beer ->
                     let
                         newBeers =
@@ -116,36 +153,9 @@ update msg model =
                     in
                         ( { model
                             | beers = newBeers
-                            , beerForm = BeerForm.empty
-                            , filters = model.filters |> Filter.setContext newBeers
+                            , editBeer = Nothing
                             , state = model.state |> State.withChanges
+                            , filters = model.filters |> Filter.setContext newBeers
                           }
                         , Cmd.none
                         )
-
-                Nothing ->
-                    ( { model | beerForm = BeerForm.markSubmitted model.beerForm }, Cmd.none )
-
-        ClearBeerForm ->
-            ( { model | beerForm = BeerForm.empty }, Cmd.none )
-
-        Login ->
-            ( model
-            , Ports.login ()
-            )
-
-        LoginResult userData ->
-            ( { model | auth = LoggedIn userData }
-            , Commands.fetchBeers model.env <| LoggedIn userData
-            )
-
-        Logout ->
-            ( model
-            , Ports.logout ()
-            )
-
-        LogoutResult _ ->
-            ( { model | auth = LoggedOut, beers = [] }, Cmd.none )
-
-        SetTableState newState ->
-            ( { model | tableState = newState }, Cmd.none )

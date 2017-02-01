@@ -1,4 +1,4 @@
-module Model.Beer exposing (Beer)
+module Model.Beer exposing (Beer, empty)
 
 
 type alias Beer =
@@ -9,3 +9,8 @@ type alias Beer =
     , year : Int
     , count : Int
     }
+
+
+empty : Beer
+empty =
+    Beer Nothing "" "" "" 2017 1

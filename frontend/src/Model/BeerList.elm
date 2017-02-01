@@ -26,7 +26,12 @@ delete beer =
 
 add : Beer -> List Beer -> List Beer
 add beer beers =
-    { beer | id = Just <| nextAvailableId beers } :: beers
+    case beer.id of
+        Nothing ->
+            { beer | id = Just <| nextAvailableId beers } :: beers
+
+        Just _ ->
+            updateBeer (\_ -> beer) beer beers
 
 
 
