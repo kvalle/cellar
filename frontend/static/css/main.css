@@ -31,6 +31,12 @@ button.button-disabled:hover {
 	background-color: white; 
 }
 
+/* For debug */
+
+.elm-overlay {
+	z-index: 1000;
+}
+
 /* Login button */
 
 .login {
