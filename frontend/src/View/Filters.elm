@@ -83,7 +83,7 @@ styleFilter filters beers =
                     { value = text, text = text, enabled = True }
 
                 styles =
-                    beers |> Set.toList << Set.fromList << List.map .style
+                    beers |> List.map .style |> Set.fromList |> Set.toList
              in
                 { options | items = List.map toItem styles }
             )
