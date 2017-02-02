@@ -5,6 +5,7 @@ type alias State =
     { changes : Changes
     , network : Network
     , error : Maybe String
+    , jsonModal : DisplayState
     }
 
 
@@ -19,9 +20,19 @@ type Network
     | Idle
 
 
+type DisplayState
+    = Hidden
+    | Visible
+
+
 init : State
 init =
-    State Unchanged Idle Nothing
+    State Unchanged Idle Nothing Hidden
+
+
+withJsonModal : DisplayState -> State -> State
+withJsonModal displayState state =
+    { state | jsonModal = displayState }
 
 
 withError : String -> State -> State

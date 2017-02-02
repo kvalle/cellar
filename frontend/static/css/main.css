@@ -84,10 +84,9 @@ button.button-disabled:hover {
 	height: 100px;
 }
 
+/* Modal */
 
-/* Edit beer form */
-
-.beer-form-modal {
+.modal {
     position: fixed;
     top: 0;
     right: 0;
@@ -97,14 +96,27 @@ button.button-disabled:hover {
     z-index: 5;
 }
 
-.beer-form-modal > div {
+.modal > div {
     width: 500px;
+    max-height: 80%;
+    overflow: scroll;
     position: relative;
-    margin: 10% auto;
-    padding: 5px 20px 13px 20px;
+    margin: 50px auto;
+    padding: 20px 20px 13px 20px;
     border-radius: 5px;
     background: white;
 }
+
+
+/* JSON modal */
+
+.json  {
+	border-radius: 5px;
+	border: 1px solid #ccc;
+	background-color: #eee;
+}
+
+/* Edit beer form */
 
 .beer-form button:not(:first-child) {
 	margin-left: 5px;

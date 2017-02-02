@@ -88,6 +88,12 @@ update msg model =
             , Commands.fetchBeers model.env model.auth
             )
 
+        ShowJsonModal ->
+            ( { model | state = model.state |> State.withJsonModal State.Visible }, Cmd.none )
+
+        HideJsonModal ->
+            ( { model | state = model.state |> State.withJsonModal State.Hidden }, Cmd.none )
+
         ClearFilters ->
             ( { model | filters = Filter.empty model.beers }, Cmd.none )
 

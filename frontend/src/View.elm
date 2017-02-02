@@ -7,6 +7,7 @@ import Model.Auth as Auth
 import View.BeerList exposing (viewBeerList)
 import View.Filters exposing (viewFilters)
 import View.BeerForm exposing (viewBeerForm)
+import View.Json exposing (viewJsonModal)
 import Html exposing (..)
 import Html.Events exposing (onClick, onInput, onWithOptions, defaultOptions)
 import Html.Attributes exposing (id, class, type_, for, src, title, value)
@@ -36,6 +37,7 @@ viewLoggedIn : Model -> Html Msg
 viewLoggedIn model =
     div [ class "container" ]
         [ viewBeerForm model
+        , viewJsonModal model
         , div [ class "row" ]
             [ div [ class "header seven columns" ]
                 [ viewTitle ]
@@ -53,8 +55,7 @@ viewLoggedIn model =
                     , viewButton "Save" "floppy" Msg.SaveBeers (model.state.changes == State.Changed)
                     , viewButton "Reset" "ccw" Msg.LoadBeers (model.state.changes == State.Changed)
                     , viewButton "Clear filters" "cancel" Msg.ClearFilters model.filters.active
-                    , viewDisabledButton "Download" "download"
-                    , viewDisabledButton "Upload" "upload"
+                    , viewButton "Download JSON" "download" Msg.ShowJsonModal True
                     ]
                 , viewStatus model
                 , viewErrors model.state.error
@@ -65,14 +66,6 @@ viewLoggedIn model =
                 , viewFilters model.filters model.beers
                 ]
             ]
-        ]
-
-
-viewDisabledButton : String -> String -> Html Msg
-viewDisabledButton name icon =
-    span [ class "action disabled", title "Not implemented yet" ]
-        [ i [ class <| "icon-" ++ icon ] []
-        , text name
         ]
 
 

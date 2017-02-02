@@ -27,6 +27,9 @@ type Msg
     | HideBeerForm
     | UpdateBeerForm BeerInput
     | SubmitBeerForm
+      -- Json
+    | ShowJsonModal
+    | HideJsonModal
       -- Authentication
     | Login
     | LoginResult UserData
