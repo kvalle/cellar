@@ -1,7 +1,6 @@
 module Model.Filters exposing (FilterValue(..), Filters, init, empty, setValue, setContext, matches)
 
 import Model.Beer exposing (Beer)
-import Debug
 
 
 type FilterValue
@@ -16,10 +15,19 @@ type alias Filters =
     , yearMax : Int
     , countMin : Int
     , styles : List String
-    , yearRange : ( Int, Int )
-    , countRange : ( Int, Int )
+    , yearRange : Range
+    , countRange : Range
     , active : Bool
     }
+
+
+type alias Range =
+    ( Int, Int )
+
+
+type RangeDefault
+    = DefaultLower
+    | DefaultUpper
 
 
 init : Filters
@@ -53,42 +61,46 @@ setContext beers filters =
     filters |> setYearContext beers |> setCountContext beers
 
 
+findRange : (Beer -> Int) -> List Beer -> Range
+findRange field beers =
+    let
+        find fn =
+            List.map field beers |> fn |> Maybe.withDefault 0
+    in
+        ( find List.minimum, find List.maximum )
+
+
+inRange : Bool -> Range -> RangeDefault -> Int -> Int
+inRange active ( lower, upper ) default value =
+    if not active then
+        case default of
+            DefaultUpper ->
+                upper
+
+            DefaultLower ->
+                lower
+    else if value < lower then
+        lower
+    else if value > upper then
+        upper
+    else
+        value
+
+
 setCountContext : List Beer -> Filters -> Filters
 setCountContext beers filters =
-    let
-        countMin =
-            List.map .count beers |> List.minimum |> Maybe.withDefault 0
-
-        countMax =
-            List.map .count beers |> List.maximum |> Maybe.withDefault 0
-
-        newCountMin =
-            if not filters.active || filters.countMin < countMin then
-                countMin
-            else if filters.countMin > countMax then
-                countMax
-            else
-                filters.countMin
-    in
-        { filters | countRange = ( Debug.log "min" countMin, countMax ), countMin = newCountMin }
+    { filters
+        | countRange = findRange .count beers
+        , countMin = filters.countMin |> inRange filters.active (findRange .count beers) DefaultLower
+    }
 
 
 setYearContext : List Beer -> Filters -> Filters
 setYearContext beers filters =
-    let
-        lower =
-            List.map .year beers |> List.minimum |> Maybe.withDefault 0
-
-        upper =
-            List.map .year beers |> List.maximum |> Maybe.withDefault 0
-
-        newYearMax =
-            if not filters.active || filters.yearMax > upper || filters.yearMax < lower then
-                upper
-            else
-                filters.yearMax
-    in
-        { filters | yearRange = ( lower, upper ), yearMax = newYearMax }
+    { filters
+        | yearRange = findRange .year beers
+        , yearMax = filters.yearMax |> inRange filters.active (findRange .year beers) DefaultUpper
+    }
 
 
 matches : Beer -> Filters -> Bool
