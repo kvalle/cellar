@@ -106,19 +106,18 @@ setYearContext beers filters =
 matches : Beer -> Filters -> Bool
 matches beer filters =
     let
-        textMatch string =
-            String.contains (String.toLower filters.textMatch) (String.toLower string)
+        textMatch =
+            List.all
+                (String.contains (String.toLower filters.textMatch) << String.toLower)
+                [ beer.name, beer.brewery, beer.style ]
 
-        matchesText =
-            textMatch beer.name || textMatch beer.brewery || textMatch beer.style || textMatch (toString beer.year)
-
-        matchesYearRange =
+        yearMatch =
             beer.year <= filters.yearMax
 
-        matchesCountRange =
+        countMatch =
             beer.count >= filters.countMin
 
-        matchesStyles =
+        styleMatch =
             List.isEmpty filters.styles || List.member beer.style filters.styles
     in
-        matchesText && matchesYearRange && matchesStyles && matchesCountRange
+        textMatch && yearMatch && styleMatch && countMatch
