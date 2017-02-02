@@ -5,7 +5,7 @@ import Model exposing (Model)
 import Model.State as State
 import Model.Auth as Auth
 import View.BeerList exposing (viewBeerList)
-import View.Filter exposing (viewFilters)
+import View.Filters exposing (viewFilters)
 import View.BeerForm exposing (viewBeerForm)
 import Html exposing (..)
 import Html.Events exposing (onClick, onInput, onWithOptions, defaultOptions)

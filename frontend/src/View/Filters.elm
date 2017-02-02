@@ -1,4 +1,4 @@
-module View.Filter exposing (viewFilters)
+module View.Filters exposing (viewFilters)
 
 import Messages exposing (Msg(..))
 import Html exposing (..)
