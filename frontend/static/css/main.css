@@ -117,10 +117,6 @@ table.beer-list {
 	width: 100%;
 }
 
-tr.beer-count, tr.beer-style {
-	color: gray;
-}
-
 tr.zero-row {
 	color: #ccc;
 }
@@ -128,6 +124,14 @@ tr.zero-row {
 .empty-beer-list {
 	font-style: italic;
 }
+
+.filtered-beer-list tr td {
+	font-style: italic;
+	color: gray;
+	padding-top: 10px;
+	border-bottom: 0px;
+}
+
 
 /* Info and error messages */
 

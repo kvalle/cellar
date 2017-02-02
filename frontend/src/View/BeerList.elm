@@ -15,11 +15,18 @@ viewBeerList filters beers tableState =
     if List.isEmpty beers then
         viewEmptyMessage
     else
-        beers |> BeerList.filtered filters |> Table.view tableConfig tableState
+        let
+            filteredBeers =
+                BeerList.filtered filters beers
+        in
+            Table.view
+                (tableConfig ( List.length filteredBeers, List.length beers ))
+                tableState
+                filteredBeers
 
 
-tableConfig : Table.Config Beer Msg
-tableConfig =
+tableConfig : ( Int, Int ) -> Table.Config Beer Msg
+tableConfig showCount =
     let
         default =
             Table.defaultCustomizations
@@ -39,8 +46,33 @@ tableConfig =
                 { default
                     | tableAttrs = [ class "beer-list" ]
                     , rowAttrs = beerRowAttributes
+                    , tfoot = tableFooter showCount
                 }
             }
+
+
+tableFooter : ( Int, Int ) -> Maybe (Table.HtmlDetails msg)
+tableFooter ( showing, total ) =
+    if showing == total then
+        Nothing
+    else
+        let
+            message =
+                if showing == 0 then
+                    "All beers are hidden by filters…"
+                else
+                    "Filter active, showing "
+                        ++ (toString showing)
+                        ++ " of "
+                        ++ (toString total)
+                        ++ " beers"
+        in
+            Just <|
+                Table.HtmlDetails
+                    [ class "filtered-beer-list" ]
+                    [ tr []
+                        [ td [ colspan 6 ] [ text message ] ]
+                    ]
 
 
 actionColumn : Table.Column Beer Msg
