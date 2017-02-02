@@ -7,7 +7,7 @@ import Model exposing (Model)
 import Model.State as State exposing (Network(..))
 import Model.Auth exposing (AuthStatus(..))
 import Model.BeerForm as BeerForm
-import Model.Filter as Filter
+import Model.Filters as Filter
 import Model.BeerList
 import Model.Beer as Beer
 

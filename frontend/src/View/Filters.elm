@@ -4,7 +4,7 @@ import Messages exposing (Msg(..))
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (onClick, onInput)
-import Model.Filter exposing (Filters, FilterValue(..))
+import Model.Filters exposing (Filters, FilterValue(..))
 import Model.Beer exposing (Beer)
 import Set
 import MultiSelect

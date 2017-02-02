@@ -1,6 +1,6 @@
 module Model.BeerList exposing (BeerList, init, filtered, decrement, increment, delete, addOrUpdate)
 
-import Model.Filter exposing (Filters)
+import Model.Filters exposing (Filters)
 import Model.Beer exposing (Beer)
 
 
@@ -15,7 +15,7 @@ init =
 
 filtered : Filters -> BeerList -> BeerList
 filtered filters beers =
-    List.filter (\beer -> Model.Filter.matches beer filters) beers
+    List.filter (\beer -> Model.Filters.matches beer filters) beers
 
 
 decrement : Beer -> BeerList -> BeerList

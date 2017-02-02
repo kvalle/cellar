@@ -1,6 +1,6 @@
 module Messages exposing (Msg(..))
 
-import Model.Filter exposing (FilterValue)
+import Model.Filters exposing (FilterValue)
 import Model.Beer exposing (Beer)
 import Model.BeerForm exposing (BeerInput)
 import Model.Auth exposing (UserData)

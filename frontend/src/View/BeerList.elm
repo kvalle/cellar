@@ -2,7 +2,7 @@ module View.BeerList exposing (viewBeerList)
 
 import Messages exposing (Msg(..))
 import Model.Beer exposing (Beer)
-import Model.Filter exposing (Filters)
+import Model.Filters exposing (Filters)
 import Model.BeerList as BeerList
 import Html exposing (..)
 import Html.Attributes exposing (class, placeholder, type_, value, colspan, title)

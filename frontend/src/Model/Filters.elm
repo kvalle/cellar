@@ -1,4 +1,4 @@
-module Model.Filter exposing (FilterValue(..), Filters, init, empty, setValue, setContext, matches)
+module Model.Filters exposing (FilterValue(..), Filters, init, empty, setValue, setContext, matches)
 
 import Model.Beer exposing (Beer)
 

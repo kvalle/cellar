@@ -2,7 +2,7 @@ module Model exposing (..)
 
 import Model.State
 import Model.Auth
-import Model.Filter
+import Model.Filters
 import Model.BeerList
 import Model.BeerForm
 import Model.Table
@@ -16,7 +16,7 @@ type alias Model =
     , beers : Model.BeerList.BeerList
     , tableState : Table.State
     , beerForm : Model.BeerForm.BeerForm
-    , filters : Model.Filter.Filters
+    , filters : Model.Filters.Filters
     , state : Model.State.State
     }
 
@@ -29,5 +29,5 @@ init env =
         Model.BeerList.init
         Model.Table.init
         Model.BeerForm.init
-        Model.Filter.init
+        Model.Filters.init
         Model.State.init
