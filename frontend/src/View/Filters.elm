@@ -20,7 +20,8 @@ viewFilters model =
 
         Visible ->
             div [ class "filter-parent" ]
-                [ div [ class "filter-form" ]
+                [ div [ class "filter-overlay", onClick HideFilters ] []
+                , div [ class "filter-form" ]
                     [ textFilter model.filters model.beers
                     , yearMaxFilter model.filters model.beers
                     , styleFilter model.filters model.beers
