@@ -6,8 +6,8 @@ import Html.Attributes exposing (..)
 import Html.Events exposing (onClick, onInput)
 import Model.Filters exposing (Filters, FilterValue(..))
 import Model.Beer exposing (Beer)
-import Set
 import MultiSelect
+import List.Extra
 
 
 viewFilters : Filters -> List Beer -> Html Msg
@@ -88,11 +88,18 @@ styleFilter filters beers =
                 options =
                     MultiSelect.defaultOptions <| UpdateFilters << Styles
 
-                toItem text =
-                    { value = text, text = text, enabled = True }
+                toText style count =
+                    style ++ " (" ++ toString count ++ ")"
+
+                toItem ( count, style ) =
+                    { value = style, text = toText style count, enabled = True }
 
                 styles =
-                    beers |> List.map .style |> Set.fromList |> Set.toList
+                    beers
+                        |> List.map .style
+                        |> List.sort
+                        |> List.Extra.group
+                        |> List.map (\xs -> ( List.length xs, Maybe.withDefault "" (List.head xs) ))
              in
                 { options | items = List.map toItem styles }
             )
