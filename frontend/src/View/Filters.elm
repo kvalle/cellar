@@ -56,7 +56,16 @@ yearMaxFilter filters beers =
 countMinFilter : Filters -> List Beer -> Html Msg
 countMinFilter filters beers =
     div []
-        [ label [ for "count-min-filter-input" ] [ text <| "At least " ++ (toString filters.countMin) ++ " bottles/cans" ]
+        [ label [ for "count-min-filter-input" ]
+            [ let
+                bottles =
+                    if filters.countMin == 1 then
+                        "bottle/can"
+                    else
+                        "bottles/cans"
+              in
+                text <| "At least " ++ (toString filters.countMin) ++ " " ++ bottles
+            ]
         , input
             [ type_ "range"
             , id "count-min-filter-input"
