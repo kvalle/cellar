@@ -47,7 +47,7 @@ viewLoggedIn model =
                 []
             ]
         , div [ class "row" ]
-            [ div [ class "main seven columns" ]
+            [ div [ class "main nine columns" ]
                 [ div [ class "menu-actions" ]
                     [ viewButton "Add beer" "beer" Msg.ShowAddBeerForm True
                     , viewButton "Save" "floppy" Msg.SaveBeers (model.state.changes == State.Changed)
@@ -60,7 +60,7 @@ viewLoggedIn model =
                 , viewErrors model.state.error
                 , viewBeerList model.filters model.beers model.tableState
                 ]
-            , div [ class "sidebar five columns" ]
+            , div [ class "sidebar three columns" ]
                 [ h2 [] [ text "Filters" ]
                 , viewFilters model.filters model.beers
                 ]
