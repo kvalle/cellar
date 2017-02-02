@@ -95,20 +95,30 @@ update msg model =
             ( { model | filters = model.filters |> Filter.setValue value }, Cmd.none )
 
         DecrementBeer beer ->
-            ( { model
-                | beers = Model.BeerList.decrement beer model.beers
-                , state = model.state |> State.withChanges
-              }
-            , Cmd.none
-            )
+            let
+                newBeers =
+                    Model.BeerList.decrement beer model.beers
+            in
+                ( { model
+                    | beers = newBeers
+                    , state = model.state |> State.withChanges
+                    , filters = model.filters |> Filter.setContext newBeers
+                  }
+                , Cmd.none
+                )
 
         IncrementBeer beer ->
-            ( { model
-                | beers = Model.BeerList.increment beer model.beers
-                , state = model.state |> State.withChanges
-              }
-            , Cmd.none
-            )
+            let
+                newBeers =
+                    Model.BeerList.increment beer model.beers
+            in
+                ( { model
+                    | beers = newBeers
+                    , state = model.state |> State.withChanges
+                    , filters = model.filters |> Filter.setContext newBeers
+                  }
+                , Cmd.none
+                )
 
         DeleteBeer beer ->
             let

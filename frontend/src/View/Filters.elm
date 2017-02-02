@@ -14,8 +14,9 @@ viewFilters : Filters -> List Beer -> Html Msg
 viewFilters filters beers =
     div [ class "filter-form" ]
         [ textFilter filters beers
-        , ageFilter filters beers
+        , yearFilter filters beers
         , styleFilter filters beers
+        , countAtLeastFilter filters beers
         , clearButton filters
         ]
 
@@ -35,8 +36,8 @@ textFilter filters beers =
         ]
 
 
-ageFilter : Filters -> List Beer -> Html Msg
-ageFilter filters beers =
+yearFilter : Filters -> List Beer -> Html Msg
+yearFilter filters beers =
     div []
         [ label [ for "age-filter-input" ] [ text <| "Made in " ++ (toString filters.olderThan) ++ " or earlier" ]
         , input
@@ -47,6 +48,23 @@ ageFilter filters beers =
             , Html.Attributes.max <| toString <| Tuple.second filters.yearRange
             , value <| toString filters.olderThan
             , onInput (\val -> (UpdateFilters (OlderThan val)))
+            ]
+            []
+        ]
+
+
+countAtLeastFilter : Filters -> List Beer -> Html Msg
+countAtLeastFilter filters beers =
+    div []
+        [ label [ for "count-min-filter-input" ] [ text <| "At least " ++ (toString filters.countAtLeast) ++ " bottles/cans" ]
+        , input
+            [ type_ "range"
+            , id "count-min-filter-input"
+            , class "u-full-width"
+            , Html.Attributes.min <| toString <| Tuple.first filters.countRange
+            , Html.Attributes.max <| toString <| Tuple.second filters.countRange
+            , value <| toString filters.countAtLeast
+            , onInput (\val -> (UpdateFilters (CountAtLeast val)))
             ]
             []
         ]
