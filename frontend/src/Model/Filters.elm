@@ -6,7 +6,7 @@ import Model.Beer exposing (Beer)
 type FilterValue
     = YearMax String
     | CountMin String
-    | TextMatches String
+    | Text String
     | Styles (List String)
 
 
@@ -49,7 +49,7 @@ setValue value filters =
         YearMax years ->
             { filters | active = True, yearMax = String.toInt years |> Result.withDefault 0 }
 
-        TextMatches text ->
+        Text text ->
             { filters | active = True, textMatch = text }
 
         Styles styles ->

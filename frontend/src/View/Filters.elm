@@ -28,7 +28,7 @@ textFilter filters beers =
         , input
             [ type_ "search"
             , id "text-filter"
-            , onInput (\val -> (UpdateFilters (TextMatches val)))
+            , onInput (\val -> (UpdateFilters (Text val)))
             , value filters.textMatch
             , class "u-full-width"
             ]
