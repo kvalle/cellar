@@ -100,6 +100,12 @@ update msg model =
         UpdateFilters value ->
             ( { model | filters = model.filters |> Filter.setValue value }, Cmd.none )
 
+        ShowFilters ->
+            ( { model | state = model.state |> State.withFilters State.Visible }, Cmd.none )
+
+        HideFilters ->
+            ( { model | state = model.state |> State.withFilters State.Hidden }, Cmd.none )
+
         DecrementBeer beer ->
             let
                 newBeers =

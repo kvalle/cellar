@@ -80,6 +80,25 @@ button.button-disabled:hover {
 
 /* Filter form */
 
+.filter-action {
+	float: right;
+}
+
+.filter-parent {
+	float: right;
+	position: relative;
+}
+
+.filter-form {
+	position: absolute;
+	background-color: white;
+	border: 1px solid #ccc;
+	padding: 20px;
+	width: 250px;
+	top: 30px;
+	left: -225px;
+}
+
 .filter-form select {
 	height: 100px;
 }

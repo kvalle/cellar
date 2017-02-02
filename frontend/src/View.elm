@@ -10,7 +10,7 @@ import View.BeerForm exposing (viewBeerForm)
 import View.Json exposing (viewJsonModal)
 import Html exposing (..)
 import Html.Events exposing (onClick, onInput, onWithOptions, defaultOptions)
-import Html.Attributes exposing (id, class, type_, for, src, title, value)
+import Html.Attributes exposing (id, class, type_, for, src, title, value, style)
 
 
 view : Model -> Html Msg
@@ -49,24 +49,39 @@ viewLoggedIn model =
                 []
             ]
         , div [ class "row" ]
-            [ div [ class "main nine columns" ]
+            [ div [ class "main twelve columns" ]
                 [ div [ class "menu-actions" ]
                     [ viewButton "Add beer" "beer" Msg.ShowAddBeerForm True
                     , viewButton "Save" "floppy" Msg.SaveBeers (model.state.changes == State.Changed)
                     , viewButton "Reset" "ccw" Msg.LoadBeers (model.state.changes == State.Changed)
                     , viewButton "Clear filters" "cancel" Msg.ClearFilters model.filters.active
                     , viewButton "Download JSON" "download" Msg.ShowJsonModal True
+                    , viewFilterAction model
+                    , viewFilters model
                     ]
                 , viewStatus model
                 , viewErrors model.state.error
                 , viewBeerList model.filters model.beers model.tableState
                 ]
-            , div [ class "sidebar three columns" ]
-                [ h2 [] [ text "Filters" ]
-                , viewFilters model.filters model.beers
-                ]
             ]
         ]
+
+
+viewFilterAction : Model -> Html Msg
+viewFilterAction model =
+    let
+        attributes =
+            case model.state.filters of
+                State.Visible ->
+                    [ class "action filter-action", onClick Msg.HideFilters ]
+
+                State.Hidden ->
+                    [ class "action filter-action", onClick Msg.ShowFilters ]
+    in
+        span attributes
+            [ i [ class "icon-filter" ] []
+            , text "Filter"
+            ]
 
 
 viewButton : String -> String -> Msg -> Bool -> Html Msg

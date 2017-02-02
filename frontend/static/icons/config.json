@@ -139,22 +139,16 @@
       "src": "fontawesome"
     },
     {
-      "uid": "d35a1d35efeb784d1dc9ac18b9b6c2b6",
-      "css": "pencil-1",
-      "code": 59410,
-      "src": "fontawesome"
-    },
-    {
       "uid": "62b0580ee8edc3a3edfbf68a47c852d5",
-      "css": "pencil-2",
+      "css": "pencil",
       "code": 59411,
       "src": "elusive"
     },
     {
-      "uid": "1e77a2yvsq3owssduo2lcgsiven57iv5",
-      "css": "pencil",
-      "code": 59409,
-      "src": "typicons"
+      "uid": "4109c474ff99cad28fd5a2c38af2ec6f",
+      "css": "filter",
+      "code": 61616,
+      "src": "fontawesome"
     }
   ]
 }

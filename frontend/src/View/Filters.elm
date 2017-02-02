@@ -1,24 +1,33 @@
 module View.Filters exposing (viewFilters)
 
 import Messages exposing (Msg(..))
+import Model exposing (Model)
+import Model.Filters exposing (Filters, FilterValue(..))
+import Model.Beer exposing (Beer)
+import Model.State exposing (DisplayState(..))
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (onClick, onInput)
-import Model.Filters exposing (Filters, FilterValue(..))
-import Model.Beer exposing (Beer)
 import MultiSelect
 import List.Extra
 
 
-viewFilters : Filters -> List Beer -> Html Msg
-viewFilters filters beers =
-    div [ class "filter-form" ]
-        [ textFilter filters beers
-        , yearMaxFilter filters beers
-        , styleFilter filters beers
-        , countMinFilter filters beers
-        , clearButton filters
-        ]
+viewFilters : Model -> Html Msg
+viewFilters model =
+    case model.state.filters of
+        Hidden ->
+            text ""
+
+        Visible ->
+            div [ class "filter-parent" ]
+                [ div [ class "filter-form" ]
+                    [ textFilter model.filters model.beers
+                    , yearMaxFilter model.filters model.beers
+                    , styleFilter model.filters model.beers
+                    , countMinFilter model.filters model.beers
+                    , clearButton model.filters
+                    ]
+                ]
 
 
 textFilter : Filters -> List Beer -> Html Msg

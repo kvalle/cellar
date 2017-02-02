@@ -133,4 +133,4 @@ viewDeleteAction beer =
 
 viewEditAction : Beer -> Html Msg
 viewEditAction beer =
-    i [ onClick (ShowEditBeerForm beer), class "action icon-pencil-2", title "Edit" ] []
+    i [ onClick (ShowEditBeerForm beer), class "action icon-pencil", title "Edit" ] []

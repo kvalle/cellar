@@ -14,6 +14,8 @@ type Msg
       -- Filter
     | ClearFilters
     | UpdateFilters FilterValue
+    | ShowFilters
+    | HideFilters
       -- BeerList
     | IncrementBeer Beer
     | DecrementBeer Beer
