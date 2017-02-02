@@ -14,9 +14,9 @@ viewFilters : Filters -> List Beer -> Html Msg
 viewFilters filters beers =
     div [ class "filter-form" ]
         [ textFilter filters beers
-        , yearFilter filters beers
+        , yearMaxFilter filters beers
         , styleFilter filters beers
-        , countAtLeastFilter filters beers
+        , countMinFilter filters beers
         , clearButton filters
         ]
 
@@ -36,35 +36,35 @@ textFilter filters beers =
         ]
 
 
-yearFilter : Filters -> List Beer -> Html Msg
-yearFilter filters beers =
+yearMaxFilter : Filters -> List Beer -> Html Msg
+yearMaxFilter filters beers =
     div []
-        [ label [ for "age-filter-input" ] [ text <| "Made in " ++ (toString filters.olderThan) ++ " or earlier" ]
+        [ label [ for "age-filter-input" ] [ text <| "Made in " ++ (toString filters.yearMax) ++ " or earlier" ]
         , input
             [ type_ "range"
             , id "age-filter-input"
             , class "u-full-width"
             , Html.Attributes.min <| toString <| Tuple.first filters.yearRange
             , Html.Attributes.max <| toString <| Tuple.second filters.yearRange
-            , value <| toString filters.olderThan
-            , onInput (\val -> (UpdateFilters (OlderThan val)))
+            , value <| toString filters.yearMax
+            , onInput (\val -> (UpdateFilters (YearMax val)))
             ]
             []
         ]
 
 
-countAtLeastFilter : Filters -> List Beer -> Html Msg
-countAtLeastFilter filters beers =
+countMinFilter : Filters -> List Beer -> Html Msg
+countMinFilter filters beers =
     div []
-        [ label [ for "count-min-filter-input" ] [ text <| "At least " ++ (toString filters.countAtLeast) ++ " bottles/cans" ]
+        [ label [ for "count-min-filter-input" ] [ text <| "At least " ++ (toString filters.countMin) ++ " bottles/cans" ]
         , input
             [ type_ "range"
             , id "count-min-filter-input"
             , class "u-full-width"
             , Html.Attributes.min <| toString <| Tuple.first filters.countRange
             , Html.Attributes.max <| toString <| Tuple.second filters.countRange
-            , value <| toString filters.countAtLeast
-            , onInput (\val -> (UpdateFilters (CountAtLeast val)))
+            , value <| toString filters.countMin
+            , onInput (\val -> (UpdateFilters (CountMin val)))
             ]
             []
         ]

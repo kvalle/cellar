@@ -5,16 +5,16 @@ import Debug
 
 
 type FilterValue
-    = OlderThan String
-    | CountAtLeast String
+    = YearMax String
+    | CountMin String
     | TextMatches String
     | Styles (List String)
 
 
 type alias Filters =
     { textMatch : String
-    , olderThan : Int
-    , countAtLeast : Int
+    , yearMax : Int
+    , countMin : Int
     , styles : List String
     , yearRange : ( Int, Int )
     , countRange : ( Int, Int )
@@ -35,11 +35,11 @@ empty beers =
 setValue : FilterValue -> Filters -> Filters
 setValue value filters =
     case value of
-        CountAtLeast count ->
-            { filters | active = True, countAtLeast = String.toInt count |> Result.withDefault 0 }
+        CountMin count ->
+            { filters | active = True, countMin = String.toInt count |> Result.withDefault 0 }
 
-        OlderThan years ->
-            { filters | active = True, olderThan = String.toInt years |> Result.withDefault 0 }
+        YearMax years ->
+            { filters | active = True, yearMax = String.toInt years |> Result.withDefault 0 }
 
         TextMatches text ->
             { filters | active = True, textMatch = text }
@@ -62,33 +62,33 @@ setCountContext beers filters =
         countMax =
             List.map .count beers |> List.maximum |> Maybe.withDefault 0
 
-        newCountAtLeast =
-            if not filters.active || filters.countAtLeast < countMin then
+        newCountMin =
+            if not filters.active || filters.countMin < countMin then
                 countMin
-            else if filters.countAtLeast > countMax then
+            else if filters.countMin > countMax then
                 countMax
             else
-                filters.countAtLeast
+                filters.countMin
     in
-        { filters | countRange = ( Debug.log "min" countMin, countMax ), countAtLeast = newCountAtLeast }
+        { filters | countRange = ( Debug.log "min" countMin, countMax ), countMin = newCountMin }
 
 
 setYearContext : List Beer -> Filters -> Filters
 setYearContext beers filters =
     let
-        yearMin =
+        lower =
             List.map .year beers |> List.minimum |> Maybe.withDefault 0
 
-        yearMax =
+        upper =
             List.map .year beers |> List.maximum |> Maybe.withDefault 0
 
-        newOlderThan =
-            if not filters.active || filters.olderThan > yearMax || filters.olderThan < yearMin then
-                yearMax
+        newYearMax =
+            if not filters.active || filters.yearMax > upper || filters.yearMax < lower then
+                upper
             else
-                filters.olderThan
+                filters.yearMax
     in
-        { filters | yearRange = ( yearMin, yearMax ), olderThan = newOlderThan }
+        { filters | yearRange = ( lower, upper ), yearMax = newYearMax }
 
 
 matches : Beer -> Filters -> Bool
@@ -101,10 +101,10 @@ matches beer filters =
             textMatch beer.name || textMatch beer.brewery || textMatch beer.style || textMatch (toString beer.year)
 
         matchesYearRange =
-            beer.year <= filters.olderThan
+            beer.year <= filters.yearMax
 
         matchesCountRange =
-            beer.count >= filters.countAtLeast
+            beer.count >= filters.countMin
 
         matchesStyles =
             List.isEmpty filters.styles || List.member beer.style filters.styles
