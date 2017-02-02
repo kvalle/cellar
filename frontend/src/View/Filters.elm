@@ -28,7 +28,7 @@ textFilter filters beers =
         , input
             [ type_ "search"
             , id "text-filter"
-            , onInput (\val -> (UpdateFilters (Text val)))
+            , onInput <| UpdateFilters << Text
             , value filters.textMatch
             , class "u-full-width"
             ]
@@ -47,7 +47,7 @@ yearMaxFilter filters beers =
             , Html.Attributes.min <| toString <| Tuple.first filters.yearRange
             , Html.Attributes.max <| toString <| Tuple.second filters.yearRange
             , value <| toString filters.yearMax
-            , onInput (\val -> (UpdateFilters (YearMax val)))
+            , onInput <| UpdateFilters << YearMax
             ]
             []
         ]
@@ -64,7 +64,7 @@ countMinFilter filters beers =
             , Html.Attributes.min <| toString <| Tuple.first filters.countRange
             , Html.Attributes.max <| toString <| Tuple.second filters.countRange
             , value <| toString filters.countMin
-            , onInput (\val -> (UpdateFilters (CountMin val)))
+            , onInput <| UpdateFilters << CountMin
             ]
             []
         ]
@@ -77,7 +77,7 @@ styleFilter filters beers =
         , MultiSelect.multiSelect
             (let
                 options =
-                    MultiSelect.defaultOptions (\styles -> (UpdateFilters (Styles styles)))
+                    MultiSelect.defaultOptions <| UpdateFilters << Styles
 
                 toItem text =
                     { value = text, text = text, enabled = True }
