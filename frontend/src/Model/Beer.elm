@@ -8,9 +8,11 @@ type alias Beer =
     , style : String
     , year : Int
     , count : Int
+    , location : Maybe String
+    , shelf : Maybe String
     }
 
 
 empty : Beer
 empty =
-    Beer Nothing "" "" "" 2017 1
+    Beer Nothing "" "" "" 2017 1 Nothing Nothing

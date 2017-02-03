@@ -1,4 +1,4 @@
-module Model.BeerForm exposing (BeerForm, BeerInput(..), init, withInput, isValid, showInt)
+module Model.BeerForm exposing (BeerForm, BeerInput(..), init, withInput, isValid, showInt, showMaybeString)
 
 import Model.Beer exposing (Beer)
 
@@ -13,6 +13,8 @@ type BeerInput
     | StyleInput String
     | YearInput String
     | CountInput String
+    | LocationInput String
+    | ShelfInput String
 
 
 init : BeerForm
@@ -43,6 +45,12 @@ withInput input maybeBeer =
                 CountInput count ->
                     Just { beer | count = toInt count beer.count }
 
+                LocationInput location ->
+                    Just { beer | location = toMaybeString location beer.location }
+
+                ShelfInput shelf ->
+                    Just { beer | shelf = toMaybeString shelf beer.shelf }
+
 
 showInt : Int -> String
 showInt num =
@@ -52,12 +60,25 @@ showInt num =
         toString num
 
 
+showMaybeString : Maybe String -> String
+showMaybeString optional =
+    optional |> Maybe.withDefault ""
+
+
 toInt : String -> Int -> Int
 toInt str default =
     if str == "" then
         0
     else
         String.toInt str |> Result.withDefault default
+
+
+toMaybeString : String -> Maybe String -> Maybe String
+toMaybeString str default =
+    if str == "" then
+        Nothing
+    else
+        Just str
 
 
 isValid : Beer -> Bool

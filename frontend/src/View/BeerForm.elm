@@ -26,11 +26,13 @@ viewBeerForm model =
                             Just _ ->
                                 text "Edit beer"
                         ]
-                    , fieldwithLabel "Brewery" "brewery" (\val -> Msg.UpdateBeerForm (BreweryInput val)) beer.brewery
-                    , fieldwithLabel "Beer Name" "name" (\val -> Msg.UpdateBeerForm (NameInput val)) beer.name
-                    , fieldwithLabel "Beer Style" "style" (\val -> Msg.UpdateBeerForm (StyleInput val)) beer.style
-                    , fieldwithLabel "Production year" "year" (\val -> Msg.UpdateBeerForm (YearInput val)) (Model.BeerForm.showInt beer.year)
-                    , fieldwithLabel "Number of bottles (or cans)" "count" (\val -> Msg.UpdateBeerForm (CountInput val)) (Model.BeerForm.showInt beer.count)
+                    , fieldwithLabel "Brewery" "brewery" (Msg.UpdateBeerForm << BreweryInput) beer.brewery
+                    , fieldwithLabel "Beer Name" "name" (Msg.UpdateBeerForm << NameInput) beer.name
+                    , fieldwithLabel "Beer Style" "style" (Msg.UpdateBeerForm << StyleInput) beer.style
+                    , fieldwithLabel "Production year" "year" (Msg.UpdateBeerForm << YearInput) (Model.BeerForm.showInt beer.year)
+                    , fieldwithLabel "Number of bottles (or cans)" "count" (Msg.UpdateBeerForm << CountInput) (Model.BeerForm.showInt beer.count)
+                    , fieldwithLabel "Location" "location" (Msg.UpdateBeerForm << LocationInput) (Model.BeerForm.showMaybeString beer.location)
+                    , fieldwithLabel "Shelf" "shelf" (Msg.UpdateBeerForm << ShelfInput) (Model.BeerForm.showMaybeString beer.shelf)
                     , br [] []
                     , div [] <|
                         let

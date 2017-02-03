@@ -10,6 +10,7 @@ import Model.BeerForm as BeerForm
 import Model.Filters as Filter
 import Model.BeerList
 import Model.Beer as Beer
+import Debug
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -36,11 +37,11 @@ update msg model =
         SetTableState newState ->
             ( { model | tableState = newState }, Cmd.none )
 
-        RetrievedBeerList (Err _) ->
+        RetrievedBeerList (Err err) ->
             ( { model
                 | state =
                     model.state
-                        |> State.withError "Unable to load beer list"
+                        |> State.withError ("Unable to load beer list" ++ (Debug.log "err" (toString err)))
                         |> State.withNetwork Idle
               }
             , Cmd.none

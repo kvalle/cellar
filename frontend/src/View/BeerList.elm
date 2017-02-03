@@ -40,6 +40,8 @@ tableConfig showCount =
                 , Table.stringColumn "Name" .name
                 , Table.intColumn "Year" .year
                 , Table.stringColumn "Style" .style
+                , Table.stringColumn "Location" <| .location >> Maybe.withDefault ""
+                , Table.stringColumn "Shelf" <| .shelf >> Maybe.withDefault ""
                 , actionColumn
                 ]
             , customizations =
