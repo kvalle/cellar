@@ -1,11 +1,11 @@
-module Messages.BeerForm exposing (BeerInput(..))
+module Messages.BeerForm exposing (..)
 
 
-type BeerInput
-    = BreweryInput String
-    | NameInput String
-    | StyleInput String
-    | YearInput String
-    | CountInput String
-    | LocationInput String
-    | ShelfInput String
+type Field
+    = Brewery
+    | Name
+    | Style
+    | Year
+    | Count
+    | Location
+    | Shelf

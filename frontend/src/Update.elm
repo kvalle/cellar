@@ -168,8 +168,12 @@ update msg model =
             , Cmd.none
             )
 
-        UpdateBeerForm input ->
-            ( { model | beerForm = model.beerForm |> BeerForm.withInput input }, Cmd.none )
+        UpdateBeerForm field input ->
+            ( { model
+                | beerForm = model.beerForm |> BeerForm.withInput field input
+              }
+            , Cmd.none
+            )
 
         SubmitBeerForm ->
             let

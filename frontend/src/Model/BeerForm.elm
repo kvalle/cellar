@@ -1,6 +1,6 @@
 module Model.BeerForm exposing (BeerForm, empty, init, from, withInput, isValid, showInt, showMaybeString)
 
-import Messages.BeerForm exposing (BeerInput(..))
+import Messages.BeerForm exposing (Field(..))
 import Model.Beer exposing (Beer)
 
 
@@ -9,19 +9,9 @@ type alias BeerForm =
     }
 
 
-type CcompleteField
-    = Brewery
-
-
-type CompleteMsg
-    = SelectValue String
-    | SetAutocompleteState Autocomplete.Msg
-
-
 from : Beer -> BeerForm
 from beer =
-    { data = beer
-    }
+    { data = beer }
 
 
 init : BeerForm
@@ -34,34 +24,34 @@ empty =
     init
 
 
-withInput : BeerInput -> BeerForm -> BeerForm
-withInput input form =
+withInput : Field -> String -> BeerForm -> BeerForm
+withInput field input form =
     let
         beer =
             form.data
 
         updatedBeer =
-            case input of
-                BreweryInput brewery ->
-                    { beer | brewery = brewery }
+            case field of
+                Brewery ->
+                    { beer | brewery = input }
 
-                NameInput name ->
-                    { beer | name = name }
+                Name ->
+                    { beer | name = input }
 
-                StyleInput style ->
-                    { beer | style = style }
+                Style ->
+                    { beer | style = input }
 
-                YearInput year ->
-                    { beer | year = toInt year beer.year }
+                Year ->
+                    { beer | year = toIntWithDefault input beer.year }
 
-                CountInput count ->
-                    { beer | count = toInt count beer.count }
+                Count ->
+                    { beer | count = toIntWithDefault input beer.count }
 
-                LocationInput location ->
-                    { beer | location = toMaybeString location beer.location }
+                Location ->
+                    { beer | location = toMaybeString input beer.location }
 
-                ShelfInput shelf ->
-                    { beer | shelf = toMaybeString shelf beer.shelf }
+                Shelf ->
+                    { beer | shelf = toMaybeString input beer.shelf }
     in
         { form | data = updatedBeer }
 
@@ -79,8 +69,8 @@ showMaybeString optional =
     optional |> Maybe.withDefault ""
 
 
-toInt : String -> Int -> Int
-toInt str default =
+toIntWithDefault : String -> Int -> Int
+toIntWithDefault str default =
     if str == "" then
         0
     else

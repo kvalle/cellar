@@ -1,6 +1,6 @@
 module Messages exposing (Msg(..))
 
-import Messages.BeerForm exposing (BeerInput)
+import Messages.BeerForm exposing (Field)
 import Model.Filters exposing (FilterValue)
 import Model.Beer exposing (Beer)
 import Model.Auth exposing (UserData)
@@ -27,7 +27,7 @@ type Msg
     | ShowEditBeerForm Beer
     | ShowAddBeerForm
     | HideBeerForm
-    | UpdateBeerForm BeerInput
+    | UpdateBeerForm Field String
     | SubmitBeerForm
       -- Json
     | ShowJsonModal

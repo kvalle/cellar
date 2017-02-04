@@ -1,9 +1,10 @@
 module View.BeerForm exposing (viewBeerForm)
 
 import Messages as Msg exposing (Msg)
+import Messages.BeerForm exposing (Field(..))
 import Model exposing (Model)
 import Model.State exposing (DisplayState(..))
-import Model.BeerForm exposing (BeerInput(..))
+import Model.BeerForm
 import View.HtmlExtra exposing (onClickNoPropagation, onEnter)
 import Html exposing (..)
 import Html.Events exposing (onClick, on, onWithOptions, onInput, defaultOptions, keyCode)
@@ -31,13 +32,13 @@ viewBeerForm model =
                                 Just _ ->
                                     text "Edit beer"
                             ]
-                        , fieldwithLabel "Brewery" "brewery" (Msg.UpdateBeerForm << BreweryInput) beer.brewery
-                        , fieldwithLabel "Beer Name" "name" (Msg.UpdateBeerForm << NameInput) beer.name
-                        , fieldwithLabel "Beer Style" "style" (Msg.UpdateBeerForm << StyleInput) beer.style
-                        , fieldwithLabel "Production year" "year" (Msg.UpdateBeerForm << YearInput) (Model.BeerForm.showInt beer.year)
-                        , fieldwithLabel "Number of bottles (or cans)" "count" (Msg.UpdateBeerForm << CountInput) (Model.BeerForm.showInt beer.count)
-                        , fieldwithLabel "Location" "location" (Msg.UpdateBeerForm << LocationInput) (Model.BeerForm.showMaybeString beer.location)
-                        , fieldwithLabel "Shelf" "shelf" (Msg.UpdateBeerForm << ShelfInput) (Model.BeerForm.showMaybeString beer.shelf)
+                        , fieldwithLabel "Brewery" "brewery" (Msg.UpdateBeerForm Brewery) beer.brewery
+                        , fieldwithLabel "Beer Name" "name" (Msg.UpdateBeerForm Name) beer.name
+                        , fieldwithLabel "Beer Style" "style" (Msg.UpdateBeerForm Style) beer.style
+                        , fieldwithLabel "Production year" "year" (Msg.UpdateBeerForm Year) (Model.BeerForm.showInt beer.year)
+                        , fieldwithLabel "Number of bottles (or cans)" "count" (Msg.UpdateBeerForm Count) (Model.BeerForm.showInt beer.count)
+                        , fieldwithLabel "Location" "location" (Msg.UpdateBeerForm Location) (Model.BeerForm.showMaybeString beer.location)
+                        , fieldwithLabel "Shelf" "shelf" (Msg.UpdateBeerForm Shelf) (Model.BeerForm.showMaybeString beer.shelf)
                         , br [] []
                         , div [] <|
                             let
