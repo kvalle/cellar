@@ -7,6 +7,7 @@ type alias State =
     , error : Maybe String
     , jsonModal : DisplayState
     , filters : DisplayState
+    , beerForm : DisplayState
     }
 
 
@@ -28,7 +29,18 @@ type DisplayState
 
 init : State
 init =
-    State Unchanged Idle Nothing Hidden Hidden
+    { changes = Unchanged
+    , network = Idle
+    , error = Nothing
+    , jsonModal = Hidden
+    , filters = Hidden
+    , beerForm = Hidden
+    }
+
+
+withBeerForm : DisplayState -> State -> State
+withBeerForm displayState state =
+    { state | beerForm = displayState }
 
 
 withJsonModal : DisplayState -> State -> State

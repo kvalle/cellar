@@ -2,6 +2,7 @@ module View.BeerForm exposing (viewBeerForm)
 
 import Messages as Msg exposing (Msg)
 import Model exposing (Model)
+import Model.State exposing (DisplayState(..))
 import Model.BeerForm exposing (BeerInput(..))
 import View.HtmlExtra exposing (onClickNoPropagation, onEnter)
 import Html exposing (..)
@@ -11,33 +12,33 @@ import Html.Attributes exposing (id, class, type_, for, src, title, value)
 
 viewBeerForm : Model -> Html Msg
 viewBeerForm model =
-    case model.beerForm of
-        Nothing ->
+    case model.state.beerForm of
+        Hidden ->
             text ""
 
-        Just beer ->
+        Visible ->
             div [ class "modal", onClick Msg.HideBeerForm ]
-                [ div [ class "beer-form", onClickNoPropagation (Msg.ShowEditBeerForm beer) ]
+                [ div [ class "beer-form", onClickNoPropagation (Msg.ShowEditBeerForm model.beerForm) ]
                     [ h3 []
-                        [ case beer.id of
+                        [ case model.beerForm.id of
                             Nothing ->
                                 text "Add beer"
 
                             Just _ ->
                                 text "Edit beer"
                         ]
-                    , fieldwithLabel "Brewery" "brewery" (Msg.UpdateBeerForm << BreweryInput) beer.brewery
-                    , fieldwithLabel "Beer Name" "name" (Msg.UpdateBeerForm << NameInput) beer.name
-                    , fieldwithLabel "Beer Style" "style" (Msg.UpdateBeerForm << StyleInput) beer.style
-                    , fieldwithLabel "Production year" "year" (Msg.UpdateBeerForm << YearInput) (Model.BeerForm.showInt beer.year)
-                    , fieldwithLabel "Number of bottles (or cans)" "count" (Msg.UpdateBeerForm << CountInput) (Model.BeerForm.showInt beer.count)
-                    , fieldwithLabel "Location" "location" (Msg.UpdateBeerForm << LocationInput) (Model.BeerForm.showMaybeString beer.location)
-                    , fieldwithLabel "Shelf" "shelf" (Msg.UpdateBeerForm << ShelfInput) (Model.BeerForm.showMaybeString beer.shelf)
+                    , fieldwithLabel "Brewery" "brewery" (Msg.UpdateBeerForm << BreweryInput) model.beerForm.brewery
+                    , fieldwithLabel "Beer Name" "name" (Msg.UpdateBeerForm << NameInput) model.beerForm.name
+                    , fieldwithLabel "Beer Style" "style" (Msg.UpdateBeerForm << StyleInput) model.beerForm.style
+                    , fieldwithLabel "Production year" "year" (Msg.UpdateBeerForm << YearInput) (Model.BeerForm.showInt model.beerForm.year)
+                    , fieldwithLabel "Number of bottles (or cans)" "count" (Msg.UpdateBeerForm << CountInput) (Model.BeerForm.showInt model.beerForm.count)
+                    , fieldwithLabel "Location" "location" (Msg.UpdateBeerForm << LocationInput) (Model.BeerForm.showMaybeString model.beerForm.location)
+                    , fieldwithLabel "Shelf" "shelf" (Msg.UpdateBeerForm << ShelfInput) (Model.BeerForm.showMaybeString model.beerForm.shelf)
                     , br [] []
                     , div [] <|
                         let
                             name =
-                                case beer.id of
+                                case model.beerForm.id of
                                     Nothing ->
                                         "Add"
 
@@ -45,7 +46,7 @@ viewBeerForm model =
                                         "Save"
 
                             attributes =
-                                if Model.BeerForm.isValid beer then
+                                if Model.BeerForm.isValid model.beerForm then
                                     [ onClickNoPropagation Msg.SubmitBeerForm, class "button-primary" ]
                                 else
                                     [ class "button-disabled" ]

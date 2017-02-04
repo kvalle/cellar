@@ -147,32 +147,41 @@ update msg model =
                 )
 
         ShowAddBeerForm ->
-            ( { model | beerForm = Just Beer.empty }, Cmd.none )
+            ( { model
+                | beerForm = Beer.empty
+                , state = model.state |> State.withBeerForm State.Visible
+              }
+            , Cmd.none
+            )
 
         ShowEditBeerForm beer ->
-            ( { model | beerForm = Just beer }, Cmd.none )
+            ( { model
+                | beerForm = beer
+                , state = model.state |> State.withBeerForm State.Visible
+              }
+            , Cmd.none
+            )
 
         HideBeerForm ->
-            ( { model | beerForm = Nothing }, Cmd.none )
+            ( { model
+                | state = model.state |> State.withBeerForm State.Hidden
+              }
+            , Cmd.none
+            )
 
         UpdateBeerForm input ->
             ( { model | beerForm = model.beerForm |> BeerForm.withInput input }, Cmd.none )
 
         SubmitBeerForm ->
-            case model.beerForm of
-                Nothing ->
-                    ( model, Cmd.none )
-
-                Just beer ->
-                    let
-                        newBeers =
-                            Model.BeerList.addOrUpdate beer model.beers
-                    in
-                        ( { model
-                            | beers = newBeers
-                            , beerForm = Nothing
-                            , state = model.state |> State.withChanges
-                            , filters = model.filters |> Filter.setContext newBeers
-                          }
-                        , Cmd.none
-                        )
+            let
+                newBeers =
+                    Model.BeerList.addOrUpdate model.beerForm model.beers
+            in
+                ( { model
+                    | beers = newBeers
+                    , beerForm = Beer.empty
+                    , state = model.state |> State.withChanges |> State.withBeerForm State.Hidden
+                    , filters = model.filters |> Filter.setContext newBeers
+                  }
+                , Cmd.none
+                )

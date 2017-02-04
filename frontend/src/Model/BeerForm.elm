@@ -4,7 +4,7 @@ import Model.Beer exposing (Beer)
 
 
 type alias BeerForm =
-    Maybe Beer
+    Beer
 
 
 type BeerInput
@@ -19,37 +19,32 @@ type BeerInput
 
 init : BeerForm
 init =
-    Nothing
+    Model.Beer.empty
 
 
 withInput : BeerInput -> BeerForm -> BeerForm
-withInput input maybeBeer =
-    case maybeBeer of
-        Nothing ->
-            Nothing
+withInput input beer =
+    case input of
+        BreweryInput brewery ->
+            { beer | brewery = brewery }
 
-        Just beer ->
-            case input of
-                BreweryInput brewery ->
-                    Just { beer | brewery = brewery }
+        NameInput name ->
+            { beer | name = name }
 
-                NameInput name ->
-                    Just { beer | name = name }
+        StyleInput style ->
+            { beer | style = style }
 
-                StyleInput style ->
-                    Just { beer | style = style }
+        YearInput year ->
+            { beer | year = toInt year beer.year }
 
-                YearInput year ->
-                    Just { beer | year = toInt year beer.year }
+        CountInput count ->
+            { beer | count = toInt count beer.count }
 
-                CountInput count ->
-                    Just { beer | count = toInt count beer.count }
+        LocationInput location ->
+            { beer | location = toMaybeString location beer.location }
 
-                LocationInput location ->
-                    Just { beer | location = toMaybeString location beer.location }
-
-                ShelfInput shelf ->
-                    Just { beer | shelf = toMaybeString shelf beer.shelf }
+        ShelfInput shelf ->
+            { beer | shelf = toMaybeString shelf beer.shelf }
 
 
 showInt : Int -> String
