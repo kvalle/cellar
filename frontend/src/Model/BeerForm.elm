@@ -38,7 +38,7 @@ from beer context =
         { data = beer
         , possibleSuggestions =
             [ ( Brewery, unique .brewery )
-            , ( Style, unique .brewery )
+            , ( Style, unique .style )
             , ( Location, uniqueMaybe .location )
             , ( Shelf, uniqueMaybe .shelf )
             ]

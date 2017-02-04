@@ -4,7 +4,7 @@ import Messages as Msg exposing (Msg)
 import Messages.BeerForm exposing (Field(..))
 import Model exposing (Model)
 import Model.State exposing (DisplayState(..))
-import Model.BeerForm
+import Model.BeerForm exposing (BeerForm)
 import View.HtmlExtra exposing (onClickNoPropagation, onEnter)
 import Html exposing (..)
 import Html.Events exposing (onClick, on, onWithOptions, onInput, defaultOptions, keyCode)
@@ -32,17 +32,13 @@ viewBeerForm model =
                                 Just _ ->
                                     text "Edit beer"
                             ]
-                        , fieldwithLabel "Brewery" "brewery" (Msg.UpdateBeerForm Brewery) form.data.brewery
-                        , suggestions Brewery <| Model.BeerForm.suggestions Brewery model.beerForm
-                        , fieldwithLabel "Beer Name" "name" (Msg.UpdateBeerForm Name) form.data.name
-                        , fieldwithLabel "Beer Style" "style" (Msg.UpdateBeerForm Style) form.data.style
-                        , suggestions Style <| Model.BeerForm.suggestions Style model.beerForm
-                        , fieldwithLabel "Production year" "year" (Msg.UpdateBeerForm Year) (Model.BeerForm.showInt form.data.year)
-                        , fieldwithLabel "Number of bottles (or cans)" "count" (Msg.UpdateBeerForm Count) (Model.BeerForm.showInt form.data.count)
-                        , fieldwithLabel "Location" "location" (Msg.UpdateBeerForm Location) (Model.BeerForm.showMaybeString form.data.location)
-                        , suggestions Location <| Model.BeerForm.suggestions Location model.beerForm
-                        , fieldwithLabel "Shelf" "shelf" (Msg.UpdateBeerForm Shelf) (Model.BeerForm.showMaybeString form.data.shelf)
-                        , suggestions Shelf <| Model.BeerForm.suggestions Shelf model.beerForm
+                        , fieldwithLabel "Brewery" "brewery" Brewery form form.data.brewery True
+                        , fieldwithLabel "Beer Name" "name" Name form form.data.name False
+                        , fieldwithLabel "Beer Style" "style" Style form form.data.style True
+                        , fieldwithLabel "Production year" "year" Year form (Model.BeerForm.showInt form.data.year) False
+                        , fieldwithLabel "Number of bottles (or cans)" "count" Count form (Model.BeerForm.showInt form.data.count) False
+                        , fieldwithLabel "Location" "location" Location form (Model.BeerForm.showMaybeString form.data.location) True
+                        , fieldwithLabel "Shelf" "shelf" Shelf form (Model.BeerForm.showMaybeString form.data.shelf) True
                         , br [] []
                         , div [] <|
                             let
@@ -82,12 +78,12 @@ suggestions field values =
             showSuggestion name =
                 li [ onClick (Msg.UpdateBeerForm field name) ] [ text name ]
         in
-            ul [] <|
+            ul [ class "auto-suggestions" ] <|
                 List.map showSuggestion values
 
 
-fieldwithLabel : String -> String -> (String -> Msg) -> String -> Html Msg
-fieldwithLabel labelText tag msg val =
+fieldwithLabel : String -> String -> Field -> BeerForm -> String -> Bool -> Html Msg
+fieldwithLabel labelText tag field form val suggestionsEnabled =
     div []
         [ label [ for <| tag ++ "-input" ]
             [ text labelText ]
@@ -96,11 +92,15 @@ fieldwithLabel labelText tag msg val =
             , class "u-full-width"
             , autocomplete False
             , id <| tag ++ "-input"
-            , onInput msg
+            , onInput (Msg.UpdateBeerForm field)
             , value val
             , onEnter Msg.SubmitBeerForm
             ]
             []
+        , if suggestionsEnabled then
+            suggestions field <| Model.BeerForm.suggestions field form
+          else
+            text ""
         ]
 
 
