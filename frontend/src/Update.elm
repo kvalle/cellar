@@ -188,3 +188,6 @@ update msg model =
                   }
                 , Cmd.none
                 )
+
+        Noop ->
+            ( model, Cmd.none )

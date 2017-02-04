@@ -11,6 +11,7 @@ import Table
 type Msg
     = RetrievedBeerList (Result Http.Error (List Beer))
     | SavedBeerList (Result Http.Error (List Beer))
+    | Noop
       -- Filter
     | ClearFilters
     | UpdateFilters FilterValue

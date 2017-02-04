@@ -23,7 +23,7 @@ viewBeerForm model =
                     model.beerForm
             in
                 div [ class "modal", onClick Msg.HideBeerForm ]
-                    [ div [ class "beer-form", onClickNoPropagation (Msg.ShowEditBeerForm form.data) ]
+                    [ div [ class "beer-form", onClickNoPropagation Msg.Noop ]
                         [ h3 []
                             [ case form.data.id of
                                 Nothing ->
@@ -33,7 +33,7 @@ viewBeerForm model =
                                     text "Edit beer"
                             ]
                         , fieldwithLabel "Brewery" "brewery" (Msg.UpdateBeerForm Brewery) form.data.brewery
-                        , suggestions form.suggestions
+                        , suggestions Brewery form.suggestions
                         , fieldwithLabel "Beer Name" "name" (Msg.UpdateBeerForm Name) form.data.name
                         , fieldwithLabel "Beer Style" "style" (Msg.UpdateBeerForm Style) form.data.style
                         , fieldwithLabel "Production year" "year" (Msg.UpdateBeerForm Year) (Model.BeerForm.showInt form.data.year)
@@ -70,9 +70,14 @@ viewBeerForm model =
                     ]
 
 
-suggestions : List String -> Html Msg
-suggestions values =
-    ul [] <| List.map (\n -> li [] [ text n ]) values
+suggestions : Field -> List String -> Html Msg
+suggestions field values =
+    let
+        showSuggestion name =
+            li [ onClick (Msg.UpdateBeerForm field name) ] [ text name ]
+    in
+        ul [] <|
+            List.map showSuggestion values
 
 
 fieldwithLabel : String -> String -> (String -> Msg) -> String -> Html Msg

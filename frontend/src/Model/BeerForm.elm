@@ -32,7 +32,13 @@ from beer context =
 
 updatedSuggestions : String -> List String -> List String
 updatedSuggestions input possible =
-    List.filter (String.contains (String.toLower input) << String.toLower) possible
+    let
+        contains suggestion =
+            String.contains (String.toLower input) suggestion
+                && (suggestion /= (String.toLower input))
+                && (input /= "")
+    in
+        List.filter (contains << String.toLower) possible
 
 
 withInput : Field -> String -> BeerForm -> BeerForm
