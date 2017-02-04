@@ -33,13 +33,16 @@ viewBeerForm model =
                                     text "Edit beer"
                             ]
                         , fieldwithLabel "Brewery" "brewery" (Msg.UpdateBeerForm Brewery) form.data.brewery
-                        , suggestions Brewery form.suggestions
+                        , suggestions Brewery <| Model.BeerForm.suggestions Brewery model.beerForm
                         , fieldwithLabel "Beer Name" "name" (Msg.UpdateBeerForm Name) form.data.name
                         , fieldwithLabel "Beer Style" "style" (Msg.UpdateBeerForm Style) form.data.style
+                        , suggestions Style <| Model.BeerForm.suggestions Style model.beerForm
                         , fieldwithLabel "Production year" "year" (Msg.UpdateBeerForm Year) (Model.BeerForm.showInt form.data.year)
                         , fieldwithLabel "Number of bottles (or cans)" "count" (Msg.UpdateBeerForm Count) (Model.BeerForm.showInt form.data.count)
                         , fieldwithLabel "Location" "location" (Msg.UpdateBeerForm Location) (Model.BeerForm.showMaybeString form.data.location)
+                        , suggestions Location <| Model.BeerForm.suggestions Location model.beerForm
                         , fieldwithLabel "Shelf" "shelf" (Msg.UpdateBeerForm Shelf) (Model.BeerForm.showMaybeString form.data.shelf)
+                        , suggestions Shelf <| Model.BeerForm.suggestions Shelf model.beerForm
                         , br [] []
                         , div [] <|
                             let
@@ -72,12 +75,15 @@ viewBeerForm model =
 
 suggestions : Field -> List String -> Html Msg
 suggestions field values =
-    let
-        showSuggestion name =
-            li [ onClick (Msg.UpdateBeerForm field name) ] [ text name ]
-    in
-        ul [] <|
-            List.map showSuggestion values
+    if List.isEmpty values then
+        text ""
+    else
+        let
+            showSuggestion name =
+                li [ onClick (Msg.UpdateBeerForm field name) ] [ text name ]
+        in
+            ul [] <|
+                List.map showSuggestion values
 
 
 fieldwithLabel : String -> String -> (String -> Msg) -> String -> Html Msg
