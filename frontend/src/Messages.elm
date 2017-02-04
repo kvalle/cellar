@@ -1,8 +1,8 @@
 module Messages exposing (Msg(..))
 
+import Messages.BeerForm exposing (BeerInput)
 import Model.Filters exposing (FilterValue)
 import Model.Beer exposing (Beer)
-import Model.BeerForm exposing (BeerInput)
 import Model.Auth exposing (UserData)
 import Http
 import Table

@@ -1,5 +1,6 @@
-module Model.BeerForm exposing (BeerForm, BeerInput(..), empty, init, from, withInput, isValid, showInt, showMaybeString)
+module Model.BeerForm exposing (BeerForm, empty, init, from, withInput, isValid, showInt, showMaybeString)
 
+import Messages.BeerForm exposing (BeerInput(..))
 import Model.Beer exposing (Beer)
 
 
@@ -8,14 +9,13 @@ type alias BeerForm =
     }
 
 
-type BeerInput
-    = BreweryInput String
-    | NameInput String
-    | StyleInput String
-    | YearInput String
-    | CountInput String
-    | LocationInput String
-    | ShelfInput String
+type CcompleteField
+    = Brewery
+
+
+type CompleteMsg
+    = SelectValue String
+    | SetAutocompleteState Autocomplete.Msg
 
 
 from : Beer -> BeerForm
