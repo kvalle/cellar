@@ -8,7 +8,7 @@ import Model.BeerForm
 import View.HtmlExtra exposing (onClickNoPropagation, onEnter)
 import Html exposing (..)
 import Html.Events exposing (onClick, on, onWithOptions, onInput, defaultOptions, keyCode)
-import Html.Attributes exposing (id, class, type_, for, src, title, value)
+import Html.Attributes exposing (id, class, type_, for, src, title, value, autocomplete)
 
 
 viewBeerForm : Model -> Html Msg
@@ -19,31 +19,32 @@ viewBeerForm model =
 
         Visible ->
             let
-                beer =
-                    model.beerForm.data
+                form =
+                    model.beerForm
             in
                 div [ class "modal", onClick Msg.HideBeerForm ]
-                    [ div [ class "beer-form", onClickNoPropagation (Msg.ShowEditBeerForm beer) ]
+                    [ div [ class "beer-form", onClickNoPropagation (Msg.ShowEditBeerForm form.data) ]
                         [ h3 []
-                            [ case beer.id of
+                            [ case form.data.id of
                                 Nothing ->
                                     text "Add beer"
 
                                 Just _ ->
                                     text "Edit beer"
                             ]
-                        , fieldwithLabel "Brewery" "brewery" (Msg.UpdateBeerForm Brewery) beer.brewery
-                        , fieldwithLabel "Beer Name" "name" (Msg.UpdateBeerForm Name) beer.name
-                        , fieldwithLabel "Beer Style" "style" (Msg.UpdateBeerForm Style) beer.style
-                        , fieldwithLabel "Production year" "year" (Msg.UpdateBeerForm Year) (Model.BeerForm.showInt beer.year)
-                        , fieldwithLabel "Number of bottles (or cans)" "count" (Msg.UpdateBeerForm Count) (Model.BeerForm.showInt beer.count)
-                        , fieldwithLabel "Location" "location" (Msg.UpdateBeerForm Location) (Model.BeerForm.showMaybeString beer.location)
-                        , fieldwithLabel "Shelf" "shelf" (Msg.UpdateBeerForm Shelf) (Model.BeerForm.showMaybeString beer.shelf)
+                        , fieldwithLabel "Brewery" "brewery" (Msg.UpdateBeerForm Brewery) form.data.brewery
+                        , suggestions form.suggestions
+                        , fieldwithLabel "Beer Name" "name" (Msg.UpdateBeerForm Name) form.data.name
+                        , fieldwithLabel "Beer Style" "style" (Msg.UpdateBeerForm Style) form.data.style
+                        , fieldwithLabel "Production year" "year" (Msg.UpdateBeerForm Year) (Model.BeerForm.showInt form.data.year)
+                        , fieldwithLabel "Number of bottles (or cans)" "count" (Msg.UpdateBeerForm Count) (Model.BeerForm.showInt form.data.count)
+                        , fieldwithLabel "Location" "location" (Msg.UpdateBeerForm Location) (Model.BeerForm.showMaybeString form.data.location)
+                        , fieldwithLabel "Shelf" "shelf" (Msg.UpdateBeerForm Shelf) (Model.BeerForm.showMaybeString form.data.shelf)
                         , br [] []
                         , div [] <|
                             let
                                 name =
-                                    case beer.id of
+                                    case form.data.id of
                                         Nothing ->
                                             "Add"
 
@@ -51,7 +52,7 @@ viewBeerForm model =
                                             "Save"
 
                                 attributes =
-                                    if Model.BeerForm.isValid beer then
+                                    if Model.BeerForm.isValid form.data then
                                         [ onClickNoPropagation Msg.SubmitBeerForm, class "button-primary" ]
                                     else
                                         [ class "button-disabled" ]
@@ -69,6 +70,11 @@ viewBeerForm model =
                     ]
 
 
+suggestions : List String -> Html Msg
+suggestions values =
+    ul [] <| List.map (\n -> li [] [ text n ]) values
+
+
 fieldwithLabel : String -> String -> (String -> Msg) -> String -> Html Msg
 fieldwithLabel labelText tag msg val =
     div []
@@ -77,6 +83,7 @@ fieldwithLabel labelText tag msg val =
         , input
             [ type_ "text"
             , class "u-full-width"
+            , autocomplete False
             , id <| tag ++ "-input"
             , onInput msg
             , value val

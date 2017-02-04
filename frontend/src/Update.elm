@@ -147,7 +147,7 @@ update msg model =
 
         ShowAddBeerForm ->
             ( { model
-                | beerForm = BeerForm.empty
+                | beerForm = BeerForm.empty model.beers
                 , state = model.state |> State.withBeerForm State.Visible
               }
             , Cmd.none
@@ -155,7 +155,7 @@ update msg model =
 
         ShowEditBeerForm beer ->
             ( { model
-                | beerForm = BeerForm.from beer
+                | beerForm = BeerForm.from beer model.beers
                 , state = model.state |> State.withBeerForm State.Visible
               }
             , Cmd.none
@@ -182,7 +182,7 @@ update msg model =
             in
                 ( { model
                     | beers = newBeers
-                    , beerForm = BeerForm.empty
+                    , beerForm = BeerForm.empty model.beers
                     , state = model.state |> State.withChanges |> State.withBeerForm State.Hidden
                     , filters = model.filters |> Filter.setContext newBeers
                   }

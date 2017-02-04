@@ -2,26 +2,37 @@ module Model.BeerForm exposing (BeerForm, empty, init, from, withInput, isValid,
 
 import Messages.BeerForm exposing (Field(..))
 import Model.Beer exposing (Beer)
+import Set
 
 
 type alias BeerForm =
     { data : Beer
+    , possibleSuggestions : List String
+    , suggestions : List String
     }
-
-
-from : Beer -> BeerForm
-from beer =
-    { data = beer }
 
 
 init : BeerForm
 init =
-    from Model.Beer.empty
+    empty []
 
 
-empty : BeerForm
-empty =
-    init
+empty : List Beer -> BeerForm
+empty context =
+    from Model.Beer.empty context
+
+
+from : Beer -> List Beer -> BeerForm
+from beer context =
+    { data = beer
+    , possibleSuggestions = context |> List.map .brewery |> Set.fromList |> Set.toList
+    , suggestions = []
+    }
+
+
+updatedSuggestions : String -> List String -> List String
+updatedSuggestions input possible =
+    List.filter (String.contains (String.toLower input) << String.toLower) possible
 
 
 withInput : Field -> String -> BeerForm -> BeerForm
@@ -29,31 +40,43 @@ withInput field input form =
     let
         beer =
             form.data
-
-        updatedBeer =
-            case field of
-                Brewery ->
-                    { beer | brewery = input }
-
-                Name ->
-                    { beer | name = input }
-
-                Style ->
-                    { beer | style = input }
-
-                Year ->
-                    { beer | year = toIntWithDefault input beer.year }
-
-                Count ->
-                    { beer | count = toIntWithDefault input beer.count }
-
-                Location ->
-                    { beer | location = toMaybeString input beer.location }
-
-                Shelf ->
-                    { beer | shelf = toMaybeString input beer.shelf }
     in
-        { form | data = updatedBeer }
+        case field of
+            Brewery ->
+                { form
+                    | data = { beer | brewery = input }
+                    , suggestions = updatedSuggestions input form.possibleSuggestions
+                }
+
+            Name ->
+                { form
+                    | data = { beer | name = input }
+                }
+
+            Style ->
+                { form
+                    | data = { beer | style = input }
+                }
+
+            Year ->
+                { form
+                    | data = { beer | year = toIntWithDefault input beer.year }
+                }
+
+            Count ->
+                { form
+                    | data = { beer | count = toIntWithDefault input beer.count }
+                }
+
+            Location ->
+                { form
+                    | data = { beer | location = toMaybeString input beer.location }
+                }
+
+            Shelf ->
+                { form
+                    | data = { beer | shelf = toMaybeString input beer.shelf }
+                }
 
 
 showInt : Int -> String
