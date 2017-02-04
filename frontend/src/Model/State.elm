@@ -34,7 +34,7 @@ init =
     , error = Nothing
     , jsonModal = Hidden
     , filters = Hidden
-    , beerForm = Hidden
+    , beerForm = Visible
     }
 
 

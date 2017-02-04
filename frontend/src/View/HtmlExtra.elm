@@ -1,4 +1,4 @@
-module View.HtmlExtra exposing (onClickNoPropagation, onEnter)
+module View.HtmlExtra exposing (onClickNoPropagation, onEnter, onTab)
 
 import Html exposing (Attribute)
 import Html.Events exposing (on, onWithOptions, defaultOptions, keyCode)
@@ -12,7 +12,19 @@ onEnter msg =
             if code == 13 then
                 Json.Decode.succeed msg
             else
-                Json.Decode.fail "not ENTER"
+                Json.Decode.fail "wrong key"
+    in
+        on "keydown" (Json.Decode.andThen isEnter keyCode)
+
+
+onTab : msg -> Attribute msg
+onTab msg =
+    let
+        isEnter code =
+            if code == 8 then
+                Json.Decode.succeed msg
+            else
+                Json.Decode.fail "wrong key"
     in
         on "keydown" (Json.Decode.andThen isEnter keyCode)
 

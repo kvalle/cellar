@@ -153,6 +153,31 @@ button.button-disabled:hover {
 }
 
 
+.beer-form .fieldset {
+	position: relative;
+}
+
+.beer-form .fieldset .auto-suggestions {
+	position: absolute;
+	background-color: white;
+	top: 66px;
+	z-index: 6;
+	border: 1px solid #ccc;
+}
+
+.auto-suggestions li {
+	list-style-type: none;
+	padding-left: 5px;
+	padding-right: 30px;
+	margin: 0;
+}
+
+.auto-suggestions li.selected, .auto-suggestions li:hover {
+	color: #33C3F0;
+}
+
+
+
 /* Beer list view */
 
 table.beer-list {

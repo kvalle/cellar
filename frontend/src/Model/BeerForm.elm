@@ -1,4 +1,4 @@
-module Model.BeerForm exposing (BeerForm, empty, init, from, withInput, isValid, showInt, showMaybeString, suggestions)
+module Model.BeerForm exposing (BeerForm, empty, init, from, withInput, isValid, showInt, showMaybeString, suggestions, selectedSuggestion)
 
 import Messages.BeerForm exposing (Field(..))
 import Model.Beer exposing (Beer)
@@ -9,11 +9,16 @@ type alias BeerForm =
     { data : Beer
     , possibleSuggestions : List ( Field, List String )
     , suggestions : List ( Field, List String )
+    , selectedSuggestions : List ( Field, Int )
     }
 
 
-type alias FieldDict =
-    List ( Field, List String )
+type alias Dict k v =
+    List ( k, v )
+
+
+type alias Suggestions =
+    Dict Field (List String)
 
 
 init : BeerForm
@@ -42,7 +47,8 @@ from beer context =
             , ( Location, uniqueMaybe .location )
             , ( Shelf, uniqueMaybe .shelf )
             ]
-        , suggestions = [ ( Brewery, [] ), ( Style, [] ), ( Location, [] ), ( Shelf, [] ) ]
+        , suggestions = [ ( Brewery, [ "Foobar", "Bar", "Baz" ] ), ( Style, [] ), ( Location, [] ), ( Shelf, [] ) ]
+        , selectedSuggestions = [ ( Brewery, 0 ), ( Style, 0 ), ( Location, 0 ), ( Shelf, 0 ) ]
         }
 
 
@@ -79,40 +85,45 @@ updateField field input beer =
             { beer | shelf = toMaybeString input beer.shelf }
 
 
-dictLookup : Field -> FieldDict -> List String
-dictLookup field dict =
+dictLookup : k -> v -> Dict k v -> v
+dictLookup key default dict =
     case
-        (List.head <| List.filter (\( f, _ ) -> f == field) dict)
+        (List.head <| List.filter (\( k, _ ) -> k == key) dict)
     of
         Nothing ->
-            []
+            default
 
-        Just ( _, values ) ->
-            values
+        Just ( _, value ) ->
+            value
 
 
-dictUpdate : Field -> List String -> FieldDict -> FieldDict
-dictUpdate key values dict =
+dictUpdate : k -> v -> Dict k v -> Dict k v
+dictUpdate key value dict =
     let
-        update ( key2, val2 ) =
-            if key2 == key then
-                ( key, values )
+        update ( k, v ) =
+            if k == key then
+                ( key, value )
             else
-                ( key2, val2 )
+                ( k, v )
     in
         List.map update dict
 
 
 suggestions : Field -> BeerForm -> List String
 suggestions field form =
-    dictLookup field form.suggestions
+    dictLookup field [] form.suggestions
 
 
-findRelevantSuggestions : String -> Field -> FieldDict -> List String
+selectedSuggestion : Field -> BeerForm -> Int
+selectedSuggestion field form =
+    dictLookup field 0 form.selectedSuggestions
+
+
+findRelevantSuggestions : String -> Field -> Suggestions -> List String
 findRelevantSuggestions input field allPossible =
     let
         possible =
-            dictLookup field allPossible
+            dictLookup field [] allPossible
 
         contains suggestion =
             String.contains (String.toLower input) suggestion

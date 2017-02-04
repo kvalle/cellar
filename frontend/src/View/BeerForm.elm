@@ -5,10 +5,10 @@ import Messages.BeerForm exposing (Field(..))
 import Model exposing (Model)
 import Model.State exposing (DisplayState(..))
 import Model.BeerForm exposing (BeerForm)
-import View.HtmlExtra exposing (onClickNoPropagation, onEnter)
+import View.HtmlExtra exposing (onClickNoPropagation, onEnter, onTab)
 import Html exposing (..)
 import Html.Events exposing (onClick, on, onWithOptions, onInput, defaultOptions, keyCode)
-import Html.Attributes exposing (id, class, type_, for, src, title, value, autocomplete)
+import Html.Attributes exposing (id, class, type_, for, src, title, value, autocomplete, classList)
 
 
 viewBeerForm : Model -> Html Msg
@@ -69,22 +69,9 @@ viewBeerForm model =
                     ]
 
 
-suggestions : Field -> List String -> Html Msg
-suggestions field values =
-    if List.isEmpty values then
-        text ""
-    else
-        let
-            showSuggestion name =
-                li [ onClick (Msg.UpdateBeerForm field name) ] [ text name ]
-        in
-            ul [ class "auto-suggestions" ] <|
-                List.map showSuggestion values
-
-
 fieldwithLabel : String -> String -> Field -> BeerForm -> String -> Bool -> Html Msg
 fieldwithLabel labelText tag field form val suggestionsEnabled =
-    div []
+    div [ class "fieldset" ]
         [ label [ for <| tag ++ "-input" ]
             [ text labelText ]
         , input
@@ -98,15 +85,31 @@ fieldwithLabel labelText tag field form val suggestionsEnabled =
             ]
             []
         , if suggestionsEnabled then
-            suggestions field <| Model.BeerForm.suggestions field form
+            suggestions field form
           else
             text ""
         ]
 
 
-buttonWithIcon : String -> String -> msg -> String -> Bool -> Html msg
-buttonWithIcon buttonText icon msg classes active =
-    button [ onClickNoPropagation msg, class classes ]
-        [ text buttonText
-        , i [ class <| "icon-" ++ icon ] []
-        ]
+suggestions : Field -> BeerForm -> Html Msg
+suggestions field form =
+    let
+        selected =
+            Model.BeerForm.selectedSuggestion field form
+
+        values =
+            Model.BeerForm.suggestions field form
+    in
+        if List.isEmpty values then
+            text ""
+        else
+            let
+                showSuggestion index name =
+                    li
+                        [ onClick (Msg.UpdateBeerForm field name)
+                        , classList [ ( "selected", index == selected ) ]
+                        ]
+                        [ text name ]
+            in
+                ul [ class "auto-suggestions" ] <|
+                    List.indexedMap showSuggestion values
