@@ -9,7 +9,6 @@ import Model.Auth exposing (AuthStatus(..))
 import Model.BeerForm as BeerForm
 import Model.Filters as Filter
 import Model.BeerList
-import Model.Beer as Beer
 import Debug
 
 
@@ -148,7 +147,7 @@ update msg model =
 
         ShowAddBeerForm ->
             ( { model
-                | beerForm = Beer.empty
+                | beerForm = BeerForm.empty
                 , state = model.state |> State.withBeerForm State.Visible
               }
             , Cmd.none
@@ -156,7 +155,7 @@ update msg model =
 
         ShowEditBeerForm beer ->
             ( { model
-                | beerForm = beer
+                | beerForm = BeerForm.from beer
                 , state = model.state |> State.withBeerForm State.Visible
               }
             , Cmd.none
@@ -175,11 +174,11 @@ update msg model =
         SubmitBeerForm ->
             let
                 newBeers =
-                    Model.BeerList.addOrUpdate model.beerForm model.beers
+                    Model.BeerList.addOrUpdate model.beerForm.data model.beers
             in
                 ( { model
                     | beers = newBeers
-                    , beerForm = Beer.empty
+                    , beerForm = BeerForm.empty
                     , state = model.state |> State.withChanges |> State.withBeerForm State.Hidden
                     , filters = model.filters |> Filter.setContext newBeers
                   }

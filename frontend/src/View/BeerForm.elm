@@ -17,51 +17,55 @@ viewBeerForm model =
             text ""
 
         Visible ->
-            div [ class "modal", onClick Msg.HideBeerForm ]
-                [ div [ class "beer-form", onClickNoPropagation (Msg.ShowEditBeerForm model.beerForm) ]
-                    [ h3 []
-                        [ case model.beerForm.id of
-                            Nothing ->
-                                text "Add beer"
+            let
+                beer =
+                    model.beerForm.data
+            in
+                div [ class "modal", onClick Msg.HideBeerForm ]
+                    [ div [ class "beer-form", onClickNoPropagation (Msg.ShowEditBeerForm beer) ]
+                        [ h3 []
+                            [ case beer.id of
+                                Nothing ->
+                                    text "Add beer"
 
-                            Just _ ->
-                                text "Edit beer"
-                        ]
-                    , fieldwithLabel "Brewery" "brewery" (Msg.UpdateBeerForm << BreweryInput) model.beerForm.brewery
-                    , fieldwithLabel "Beer Name" "name" (Msg.UpdateBeerForm << NameInput) model.beerForm.name
-                    , fieldwithLabel "Beer Style" "style" (Msg.UpdateBeerForm << StyleInput) model.beerForm.style
-                    , fieldwithLabel "Production year" "year" (Msg.UpdateBeerForm << YearInput) (Model.BeerForm.showInt model.beerForm.year)
-                    , fieldwithLabel "Number of bottles (or cans)" "count" (Msg.UpdateBeerForm << CountInput) (Model.BeerForm.showInt model.beerForm.count)
-                    , fieldwithLabel "Location" "location" (Msg.UpdateBeerForm << LocationInput) (Model.BeerForm.showMaybeString model.beerForm.location)
-                    , fieldwithLabel "Shelf" "shelf" (Msg.UpdateBeerForm << ShelfInput) (Model.BeerForm.showMaybeString model.beerForm.shelf)
-                    , br [] []
-                    , div [] <|
-                        let
-                            name =
-                                case model.beerForm.id of
-                                    Nothing ->
-                                        "Add"
-
-                                    Just _ ->
-                                        "Save"
-
-                            attributes =
-                                if Model.BeerForm.isValid model.beerForm then
-                                    [ onClickNoPropagation Msg.SubmitBeerForm, class "button-primary" ]
-                                else
-                                    [ class "button-disabled" ]
-                        in
-                            [ button attributes
-                                [ text name
-                                , i [ class "icon-beer" ] []
-                                ]
-                            , button [ onClickNoPropagation Msg.HideBeerForm, class "" ]
-                                [ text "Cancel"
-                                , i [ class "icon-cancel" ] []
-                                ]
+                                Just _ ->
+                                    text "Edit beer"
                             ]
+                        , fieldwithLabel "Brewery" "brewery" (Msg.UpdateBeerForm << BreweryInput) beer.brewery
+                        , fieldwithLabel "Beer Name" "name" (Msg.UpdateBeerForm << NameInput) beer.name
+                        , fieldwithLabel "Beer Style" "style" (Msg.UpdateBeerForm << StyleInput) beer.style
+                        , fieldwithLabel "Production year" "year" (Msg.UpdateBeerForm << YearInput) (Model.BeerForm.showInt beer.year)
+                        , fieldwithLabel "Number of bottles (or cans)" "count" (Msg.UpdateBeerForm << CountInput) (Model.BeerForm.showInt beer.count)
+                        , fieldwithLabel "Location" "location" (Msg.UpdateBeerForm << LocationInput) (Model.BeerForm.showMaybeString beer.location)
+                        , fieldwithLabel "Shelf" "shelf" (Msg.UpdateBeerForm << ShelfInput) (Model.BeerForm.showMaybeString beer.shelf)
+                        , br [] []
+                        , div [] <|
+                            let
+                                name =
+                                    case beer.id of
+                                        Nothing ->
+                                            "Add"
+
+                                        Just _ ->
+                                            "Save"
+
+                                attributes =
+                                    if Model.BeerForm.isValid beer then
+                                        [ onClickNoPropagation Msg.SubmitBeerForm, class "button-primary" ]
+                                    else
+                                        [ class "button-disabled" ]
+                            in
+                                [ button attributes
+                                    [ text name
+                                    , i [ class "icon-beer" ] []
+                                    ]
+                                , button [ onClickNoPropagation Msg.HideBeerForm, class "" ]
+                                    [ text "Cancel"
+                                    , i [ class "icon-cancel" ] []
+                                    ]
+                                ]
+                        ]
                     ]
-                ]
 
 
 fieldwithLabel : String -> String -> (String -> Msg) -> String -> Html Msg

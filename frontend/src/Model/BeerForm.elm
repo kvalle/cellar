@@ -1,10 +1,11 @@
-module Model.BeerForm exposing (BeerForm, BeerInput(..), init, withInput, isValid, showInt, showMaybeString)
+module Model.BeerForm exposing (BeerForm, BeerInput(..), empty, init, from, withInput, isValid, showInt, showMaybeString)
 
 import Model.Beer exposing (Beer)
 
 
 type alias BeerForm =
-    Beer
+    { data : Beer
+    }
 
 
 type BeerInput
@@ -17,34 +18,52 @@ type BeerInput
     | ShelfInput String
 
 
+from : Beer -> BeerForm
+from beer =
+    { data = beer
+    }
+
+
 init : BeerForm
 init =
-    Model.Beer.empty
+    from Model.Beer.empty
+
+
+empty : BeerForm
+empty =
+    init
 
 
 withInput : BeerInput -> BeerForm -> BeerForm
-withInput input beer =
-    case input of
-        BreweryInput brewery ->
-            { beer | brewery = brewery }
+withInput input form =
+    let
+        beer =
+            form.data
 
-        NameInput name ->
-            { beer | name = name }
+        updatedBeer =
+            case input of
+                BreweryInput brewery ->
+                    { beer | brewery = brewery }
 
-        StyleInput style ->
-            { beer | style = style }
+                NameInput name ->
+                    { beer | name = name }
 
-        YearInput year ->
-            { beer | year = toInt year beer.year }
+                StyleInput style ->
+                    { beer | style = style }
 
-        CountInput count ->
-            { beer | count = toInt count beer.count }
+                YearInput year ->
+                    { beer | year = toInt year beer.year }
 
-        LocationInput location ->
-            { beer | location = toMaybeString location beer.location }
+                CountInput count ->
+                    { beer | count = toInt count beer.count }
 
-        ShelfInput shelf ->
-            { beer | shelf = toMaybeString shelf beer.shelf }
+                LocationInput location ->
+                    { beer | location = toMaybeString location beer.location }
+
+                ShelfInput shelf ->
+                    { beer | shelf = toMaybeString shelf beer.shelf }
+    in
+        { form | data = updatedBeer }
 
 
 showInt : Int -> String
