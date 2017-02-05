@@ -1,6 +1,7 @@
 module Update exposing (update)
 
 import Messages exposing (Msg(..))
+import Messages.BeerForm exposing (SuggestionMsg(..))
 import Commands
 import Ports
 import Model exposing (Model)
@@ -170,7 +171,17 @@ update msg model =
 
         UpdateBeerForm field input ->
             ( { model
-                | beerForm = model.beerForm |> BeerForm.withInput field input
+                | beerForm =
+                    model.beerForm
+                        |> BeerForm.updateInput field input
+                        |> BeerForm.updateSuggestions field Refresh
+              }
+            , Cmd.none
+            )
+
+        UpdateSuggestions field msg ->
+            ( { model
+                | beerForm = model.beerForm |> BeerForm.updateSuggestions field msg
               }
             , Cmd.none
             )

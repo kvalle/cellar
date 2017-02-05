@@ -1,7 +1,7 @@
 module View.BeerForm exposing (viewBeerForm)
 
 import Messages as Msg exposing (Msg)
-import Messages.BeerForm exposing (Field(..))
+import Messages.BeerForm exposing (Field(..), SuggestionMsg(..))
 import Model exposing (Model)
 import Model.State exposing (DisplayState(..))
 import Model.BeerForm exposing (BeerForm)
@@ -32,13 +32,13 @@ viewBeerForm model =
                                 Just _ ->
                                     text "Edit beer"
                             ]
-                        , fieldwithLabel "Brewery" "brewery" Brewery form form.data.brewery True
-                        , fieldwithLabel "Beer Name" "name" Name form form.data.name False
-                        , fieldwithLabel "Beer Style" "style" Style form form.data.style True
-                        , fieldwithLabel "Production year" "year" Year form (Model.BeerForm.showInt form.data.year) False
-                        , fieldwithLabel "Number of bottles (or cans)" "count" Count form (Model.BeerForm.showInt form.data.count) False
-                        , fieldwithLabel "Location" "location" Location form (Model.BeerForm.showMaybeString form.data.location) True
-                        , fieldwithLabel "Shelf" "shelf" Shelf form (Model.BeerForm.showMaybeString form.data.shelf) True
+                        , fieldwithLabel "Brewery" "brewery" Brewery form True
+                        , fieldwithLabel "Beer Name" "name" Name form False
+                        , fieldwithLabel "Beer Style" "style" Style form True
+                        , fieldwithLabel "Production year" "year" Year form False
+                        , fieldwithLabel "Number of bottles (or cans)" "count" Count form False
+                        , fieldwithLabel "Location" "location" Location form True
+                        , fieldwithLabel "Shelf" "shelf" Shelf form True
                         , br [] []
                         , div [] <|
                             let
@@ -51,7 +51,7 @@ viewBeerForm model =
                                             "Save"
 
                                 attributes =
-                                    if Model.BeerForm.isValid form.data then
+                                    if Model.BeerForm.isValid form then
                                         [ onClickNoPropagation Msg.SubmitBeerForm, class "button-primary" ]
                                     else
                                         [ class "button-disabled" ]
@@ -69,8 +69,8 @@ viewBeerForm model =
                     ]
 
 
-fieldwithLabel : String -> String -> Field -> BeerForm -> String -> Bool -> Html Msg
-fieldwithLabel labelText tag field form val suggestionsEnabled =
+fieldwithLabel : String -> String -> Field -> BeerForm -> Bool -> Html Msg
+fieldwithLabel labelText tag field form suggestionsEnabled =
     div [ class "fieldset" ]
         [ label [ for <| tag ++ "-input" ]
             [ text labelText ]
@@ -80,8 +80,11 @@ fieldwithLabel labelText tag field form val suggestionsEnabled =
             , autocomplete False
             , id <| tag ++ "-input"
             , onInput (Msg.UpdateBeerForm field)
-            , value val
-            , onEnter Msg.SubmitBeerForm
+            , value <| Model.BeerForm.show field form
+            , onEnter <| Msg.UpdateSuggestions field Select
+              --, onBlur Msg.BeerFormSuggestions field Clear
+              --, onArrowUp Msg.BeerFormSuggestions field Next
+              --, onArrowDown Msg.BeerFormSuggestions field Previous
             ]
             []
         , if suggestionsEnabled then

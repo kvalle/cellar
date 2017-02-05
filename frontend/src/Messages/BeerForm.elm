@@ -1,6 +1,13 @@
 module Messages.BeerForm exposing (..)
 
 
+type SuggestionMsg
+    = Next
+    | Previous
+    | Select
+    | Refresh
+
+
 type Field
     = Brewery
     | Name
