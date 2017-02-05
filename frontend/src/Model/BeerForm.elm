@@ -3,7 +3,6 @@ module Model.BeerForm exposing (BeerForm, empty, init, from, updateInput, update
 import Messages.BeerForm exposing (Field(..), SuggestionMsg(..))
 import Model.Beer exposing (Beer)
 import Set
-import Debug
 
 
 type alias BeerForm =
@@ -103,7 +102,19 @@ updateSuggestions field msg form =
             form
 
         Select ->
-            form
+            let
+                index =
+                    dictLookup field 0 form.selectedSuggestions
+
+                suggestion =
+                    suggestions field form
+                        |> List.drop index
+                        |> List.head
+                        |> Maybe.withDefault ""
+            in
+                form
+                    |> updateInput field suggestion
+                    |> updateSuggestions field Refresh
 
         Refresh ->
             let
