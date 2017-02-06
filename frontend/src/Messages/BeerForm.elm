@@ -6,6 +6,7 @@ type SuggestionMsg
     | Previous
     | Select
     | Refresh
+    | Clear
 
 
 type Field

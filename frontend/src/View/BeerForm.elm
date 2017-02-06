@@ -7,7 +7,7 @@ import Model.State exposing (DisplayState(..))
 import Model.BeerForm exposing (BeerForm)
 import View.HtmlExtra exposing (onClickNoPropagation, onEnter, onTab)
 import Html exposing (..)
-import Html.Events exposing (onClick, on, onWithOptions, onInput, defaultOptions, keyCode)
+import Html.Events exposing (onClick, on, onWithOptions, onInput, defaultOptions, keyCode, onBlur)
 import Html.Attributes exposing (id, class, type_, for, src, title, value, autocomplete, classList)
 
 
@@ -82,7 +82,7 @@ fieldwithLabel labelText tag field form suggestionsEnabled =
             , onInput (Msg.UpdateBeerForm field)
             , value <| Model.BeerForm.show field form
             , onEnter <| Msg.UpdateSuggestions field Select
-              --, onBlur Msg.BeerFormSuggestions field Clear
+            , onBlur <| Msg.UpdateSuggestions field Clear
               --, onArrowUp Msg.BeerFormSuggestions field Next
               --, onArrowDown Msg.BeerFormSuggestions field Previous
             ]

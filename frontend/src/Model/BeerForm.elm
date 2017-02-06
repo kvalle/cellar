@@ -101,6 +101,9 @@ updateSuggestions field msg form =
         Previous ->
             form
 
+        Clear ->
+            { form | suggestions = dictUpdate field [] form.suggestions }
+
         Select ->
             let
                 index =
