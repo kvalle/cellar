@@ -33,10 +33,10 @@ update msg model =
         LogoutResult _ ->
             ( { model | auth = LoggedOut, beers = [] }, Cmd.none )
 
-        SetTableState newState ->
-            ( { model | tableState = newState }, Cmd.none )
+        SetTableState state ->
+            ( { model | tableState = state }, Cmd.none )
 
-        RetrievedBeerList (Err err) ->
+        LoadedBeerList (Err err) ->
             ( { model
                 | state =
                     model.state
@@ -46,7 +46,7 @@ update msg model =
             , Cmd.none
             )
 
-        RetrievedBeerList (Ok beers) ->
+        LoadedBeerList (Ok beers) ->
             ( { model
                 | beers = beers
                 , filters = model.filters |> Filter.setContext beers
@@ -145,15 +145,7 @@ update msg model =
                 , Cmd.none
                 )
 
-        ShowAddBeerForm ->
-            ( { model
-                | beerForm = BeerForm.empty model.beers
-                , state = model.state |> State.withBeerForm State.Visible
-              }
-            , Cmd.none
-            )
-
-        ShowEditBeerForm beer ->
+        ShowForm beer ->
             ( { model
                 | beerForm = BeerForm.from beer model.beers
                 , state = model.state |> State.withBeerForm State.Visible
@@ -161,14 +153,14 @@ update msg model =
             , Cmd.none
             )
 
-        HideBeerForm ->
+        HideForm ->
             ( { model
                 | state = model.state |> State.withBeerForm State.Hidden
               }
             , Cmd.none
             )
 
-        UpdateBeerForm field input ->
+        UpdateFormInput field input ->
             ( { model
                 | beerForm =
                     model.beerForm
@@ -178,14 +170,14 @@ update msg model =
             , Cmd.none
             )
 
-        UpdateSuggestions field msg ->
+        UpdateFormSuggestions field msg ->
             ( { model
                 | beerForm = model.beerForm |> BeerForm.updateSuggestions field msg
               }
             , Cmd.none
             )
 
-        SubmitBeerForm ->
+        SubmitForm ->
             let
                 newBeers =
                     Model.BeerList.addOrUpdate model.beerForm.data model.beers

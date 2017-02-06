@@ -22,7 +22,7 @@ viewBeerForm model =
                 form =
                     model.beerForm
             in
-                div [ class "modal", onClick Msg.HideBeerForm ]
+                div [ class "modal", onClick Msg.HideForm ]
                     [ div [ class "beer-form", onClickNoPropagation Msg.Noop ]
                         [ formTitle form
                         , fieldwithLabel "Brewery" "brewery" Brewery form True
@@ -63,7 +63,7 @@ formControlButtons form =
 
         attributes =
             if Model.BeerForm.isValid form then
-                [ onClickNoPropagation Msg.SubmitBeerForm, class "button-primary" ]
+                [ onClickNoPropagation Msg.SubmitForm, class "button-primary" ]
             else
                 [ class "button-disabled" ]
     in
@@ -72,7 +72,7 @@ formControlButtons form =
                 [ text name
                 , i [ class "icon-beer" ] []
                 ]
-            , button [ onClickNoPropagation Msg.HideBeerForm, class "" ]
+            , button [ onClickNoPropagation Msg.HideForm, class "" ]
                 [ text "Cancel"
                 , i [ class "icon-cancel" ] []
                 ]
@@ -89,15 +89,15 @@ fieldwithLabel labelText tag field form suggestionsEnabled =
             , class "u-full-width"
             , autocomplete False
             , id <| tag ++ "-input"
-            , onInput (Msg.UpdateBeerForm field)
+            , onInput (Msg.UpdateFormInput field)
             , value <| Model.BeerForm.show field form
-            , onBlur <| Msg.UpdateSuggestions field Clear
+            , onBlur <| Msg.UpdateFormSuggestions field Clear
             , onKeysWithOptions
                 { defaultOptions | preventDefault = True }
-                [ ( keys.enter, Msg.UpdateSuggestions field Select )
-                , ( keys.arrowUp, Msg.UpdateSuggestions field Previous )
-                , ( keys.arrowDown, Msg.UpdateSuggestions field Next )
-                , ( keys.escape, Msg.UpdateSuggestions field Clear )
+                [ ( keys.enter, Msg.UpdateFormSuggestions field Select )
+                , ( keys.arrowUp, Msg.UpdateFormSuggestions field Previous )
+                , ( keys.arrowDown, Msg.UpdateFormSuggestions field Next )
+                , ( keys.escape, Msg.UpdateFormSuggestions field Clear )
                 ]
             ]
             []
@@ -123,7 +123,7 @@ suggestions field form =
             let
                 showSuggestion index name =
                     li
-                        [ onClick (Msg.UpdateBeerForm field name)
+                        [ onClick (Msg.UpdateFormInput field name)
                         , classList [ ( "selected", index == selectedIndex ) ]
                         ]
                         [ text name ]

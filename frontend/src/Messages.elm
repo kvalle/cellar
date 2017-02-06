@@ -9,28 +9,27 @@ import Table
 
 
 type Msg
-    = RetrievedBeerList (Result Http.Error (List Beer))
-    | SavedBeerList (Result Http.Error (List Beer))
-    | Noop
+    = Noop
       -- Filter
     | ClearFilters
     | UpdateFilters FilterValue
     | ShowFilters
     | HideFilters
-      -- BeerList
+      -- Beer list
+    | SaveBeers
+    | SavedBeerList (Result Http.Error (List Beer))
+    | LoadBeers
+    | LoadedBeerList (Result Http.Error (List Beer))
     | IncrementBeer Beer
     | DecrementBeer Beer
     | DeleteBeer Beer
-    | SaveBeers
-    | LoadBeers
     | SetTableState Table.State
       -- Beer form
-    | ShowEditBeerForm Beer
-    | ShowAddBeerForm
-    | HideBeerForm
-    | UpdateBeerForm Field String
-    | UpdateSuggestions Field SuggestionMsg
-    | SubmitBeerForm
+    | ShowForm Beer
+    | HideForm
+    | UpdateFormInput Field String
+    | UpdateFormSuggestions Field SuggestionMsg
+    | SubmitForm
       -- Json
     | ShowJsonModal
     | HideJsonModal

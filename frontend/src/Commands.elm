@@ -17,7 +17,7 @@ fetchBeers env auth =
 
         LoggedIn userData ->
             Http.send
-                RetrievedBeerList
+                LoadedBeerList
                 (request "GET" (url env) Http.emptyBody beerListDecoder userData.token)
 
 

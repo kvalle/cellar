@@ -110,7 +110,7 @@ viewEmptyMessage : Html Msg
 viewEmptyMessage =
     span [ class "empty-beer-list" ]
         [ text "Your cellar appears to be empty. Try "
-        , span [ onClick ShowAddBeerForm, class "action" ] [ text "adding" ]
+        , span [ onClick <| ShowForm Model.Beer.empty, class "action" ] [ text "adding" ]
         , text " a few beers!"
         ]
 
@@ -135,4 +135,4 @@ viewDeleteAction beer =
 
 viewEditAction : Beer -> Html Msg
 viewEditAction beer =
-    i [ onClick (ShowEditBeerForm beer), class "action icon-pencil", title "Edit" ] []
+    i [ onClick (ShowForm beer), class "action icon-pencil", title "Edit" ] []
