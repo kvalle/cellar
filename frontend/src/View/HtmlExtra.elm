@@ -1,42 +1,32 @@
-module View.HtmlExtra exposing (onClickNoPropagation, onEnter, onTab, onKey, arrowUp, arrowDown, enter, tab)
+module View.HtmlExtra exposing (onClickNoPropagation, onKey, onKeys, keys)
 
 import Html exposing (Attribute)
 import Html.Events exposing (on, onWithOptions, defaultOptions, keyCode)
 import Json.Decode
-import Debug
 
 
 type alias Key =
     Int
 
 
-enter : Key
-enter =
-    13
+keys :
+    { arrowDown : Key
+    , arrowUp : Key
+    , enter : Key
+    , escape : Key
+    , tab : Key
+    }
+keys =
+    { enter = 13
+    , tab = 8
+    , arrowDown = 40
+    , arrowUp = 38
+    , escape = 27
+    }
 
 
-tab : Key
-tab =
-    8
-
-
-arrowDown : Key
-arrowDown =
-    40
-
-
-arrowUp : Key
-arrowUp =
-    38
-
-
-escape : Key
-escape =
-    27
-
-
-onKey : List ( Key, msg ) -> Attribute msg
-onKey mappings =
+onKeys : List ( Key, msg ) -> Attribute msg
+onKeys mappings =
     let
         isKey mappings code =
             case List.head mappings of
@@ -44,7 +34,7 @@ onKey mappings =
                     Json.Decode.fail "wrong key"
 
                 Just ( key, msg ) ->
-                    if Debug.log "key: " code == key then
+                    if code == key then
                         Json.Decode.succeed msg
                     else
                         case List.tail mappings of
@@ -57,14 +47,9 @@ onKey mappings =
         on "keydown" (Json.Decode.andThen (isKey mappings) keyCode)
 
 
-onEnter : msg -> Attribute msg
-onEnter msg =
-    onKey [ ( enter, msg ) ]
-
-
-onTab : msg -> Attribute msg
-onTab msg =
-    onKey [ ( tab, msg ) ]
+onKey : Key -> msg -> Attribute msg
+onKey key msg =
+    onKeys [ ( key, msg ) ]
 
 
 onClickNoPropagation : msg -> Attribute msg
