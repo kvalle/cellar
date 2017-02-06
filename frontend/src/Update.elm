@@ -10,7 +10,6 @@ import Model.Auth exposing (AuthStatus(..))
 import Model.BeerForm as BeerForm
 import Model.Filters as Filter
 import Model.BeerList
-import Debug
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -41,7 +40,7 @@ update msg model =
             ( { model
                 | state =
                     model.state
-                        |> State.withError ("Unable to load beer list" ++ (Debug.log "err" (toString err)))
+                        |> State.withError ("Unable to load beer list" ++ (toString err))
                         |> State.withNetwork Idle
               }
             , Cmd.none

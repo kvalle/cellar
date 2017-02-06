@@ -116,7 +116,7 @@ updateSuggestions field msg form =
         Previous ->
             let
                 index =
-                    Debug.log "lol" dictLookup field 0 form.selectedSuggestions
+                    dictLookup field 0 form.selectedSuggestions
 
                 numberOfSuggestions =
                     suggestions field form |> List.length
@@ -130,7 +130,7 @@ updateSuggestions field msg form =
                         index - 1
             in
                 { form
-                    | selectedSuggestions = dictUpdate field (Debug.log "index: " newIndex) form.selectedSuggestions
+                    | selectedSuggestions = dictUpdate field newIndex form.selectedSuggestions
                 }
 
         Clear ->
