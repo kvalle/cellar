@@ -5,7 +5,7 @@ import Messages.BeerForm exposing (Field(..), SuggestionMsg(..))
 import Model exposing (Model)
 import Model.State exposing (DisplayState(..))
 import Model.BeerForm exposing (BeerForm)
-import View.HtmlExtra exposing (onClickNoPropagation, onEnter, onTab)
+import View.HtmlExtra exposing (onClickNoPropagation, onKey, enter, tab, arrowDown, arrowUp)
 import Html exposing (..)
 import Html.Events exposing (onClick, on, onWithOptions, onInput, defaultOptions, keyCode, onBlur)
 import Html.Attributes exposing (id, class, type_, for, src, title, value, autocomplete, classList)
@@ -81,10 +81,13 @@ fieldwithLabel labelText tag field form suggestionsEnabled =
             , id <| tag ++ "-input"
             , onInput (Msg.UpdateBeerForm field)
             , value <| Model.BeerForm.show field form
-            , onEnter <| Msg.UpdateSuggestions field Select
             , onBlur <| Msg.UpdateSuggestions field Clear
-              --, onArrowUp Msg.BeerFormSuggestions field Next
-              --, onArrowDown Msg.BeerFormSuggestions field Previous
+            , onKey
+                [ ( enter, Msg.UpdateSuggestions field Select )
+                , ( arrowUp, Msg.UpdateSuggestions field Previous )
+                , ( arrowDown, Msg.UpdateSuggestions field Next )
+                , ( arrowDown, Msg.UpdateSuggestions field Clear )
+                ]
             ]
             []
         , if suggestionsEnabled then

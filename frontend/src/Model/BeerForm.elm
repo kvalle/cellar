@@ -96,10 +96,42 @@ updateSuggestions : Field -> SuggestionMsg -> BeerForm -> BeerForm
 updateSuggestions field msg form =
     case msg of
         Next ->
-            form
+            let
+                index =
+                    dictLookup field 0 form.selectedSuggestions
+
+                numberOfSuggestions =
+                    suggestions field form |> List.length
+
+                newIndex =
+                    if numberOfSuggestions == 0 then
+                        0
+                    else
+                        (index + 1) % numberOfSuggestions
+            in
+                { form
+                    | selectedSuggestions = dictUpdate field newIndex form.selectedSuggestions
+                }
 
         Previous ->
-            form
+            let
+                index =
+                    Debug.log "lol" dictLookup field 0 form.selectedSuggestions
+
+                numberOfSuggestions =
+                    suggestions field form |> List.length
+
+                newIndex =
+                    if numberOfSuggestions == 0 then
+                        0
+                    else if index == 0 then
+                        numberOfSuggestions - 1
+                    else
+                        index - 1
+            in
+                { form
+                    | selectedSuggestions = dictUpdate field (Debug.log "index: " newIndex) form.selectedSuggestions
+                }
 
         Clear ->
             { form | suggestions = dictUpdate field [] form.suggestions }
