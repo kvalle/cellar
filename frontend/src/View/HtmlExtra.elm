@@ -1,4 +1,4 @@
-module View.HtmlExtra exposing (onClickNoPropagation, onKey, onKeys, keys)
+module View.HtmlExtra exposing (onClickNoPropagation, onKey, onKeys, onKeysWithOptions, keys)
 
 import Html exposing (Attribute)
 import Html.Events exposing (on, onWithOptions, defaultOptions, keyCode)
@@ -25,10 +25,10 @@ keys =
     }
 
 
-onKeys : List ( Key, msg ) -> Attribute msg
-onKeys mappings =
+onKeysWithOptions : Html.Events.Options -> List ( Key, msg ) -> Attribute msg
+onKeysWithOptions options mappings =
     let
-        isKey mappings code =
+        decoder mappings code =
             case List.head mappings of
                 Nothing ->
                     Json.Decode.fail "wrong key"
@@ -37,20 +37,17 @@ onKeys mappings =
                     if code == key then
                         Json.Decode.succeed msg
                     else
-                        case List.tail mappings of
-                            Nothing ->
-                                Json.Decode.fail "wrong key"
-
-                            Just tail ->
-                                isKey tail code
+                        decoder (List.drop 1 mappings) code
     in
         onWithOptions
             "keydown"
-            { defaultOptions
-                | stopPropagation = True
-                , preventDefault = True
-            }
-            (Json.Decode.andThen (isKey mappings) keyCode)
+            options
+            (keyCode |> Json.Decode.andThen (decoder mappings))
+
+
+onKeys : List ( Key, msg ) -> Attribute msg
+onKeys mappings =
+    onKeysWithOptions defaultOptions mappings
 
 
 onKey : Key -> msg -> Attribute msg
