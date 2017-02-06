@@ -44,7 +44,13 @@ onKeys mappings =
                             Just tail ->
                                 isKey tail code
     in
-        on "keydown" (Json.Decode.andThen (isKey mappings) keyCode)
+        onWithOptions
+            "keydown"
+            { defaultOptions
+                | stopPropagation = True
+                , preventDefault = True
+            }
+            (Json.Decode.andThen (isKey mappings) keyCode)
 
 
 onKey : Key -> msg -> Attribute msg
