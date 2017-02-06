@@ -5,20 +5,16 @@ import Model.Beer exposing (Beer)
 import Set
 
 
-type alias BeerForm =
-    { data : Beer
-    , possibleSuggestions : List ( Field, List String )
-    , suggestions : List ( Field, List String )
-    , selectedSuggestions : List ( Field, Int )
-    }
-
-
 type alias Dict k v =
     List ( k, v )
 
 
-type alias Suggestions =
-    Dict Field (List String)
+type alias BeerForm =
+    { data : Beer
+    , possibleSuggestions : Dict Field (List String)
+    , suggestions : Dict Field (List String)
+    , selectedSuggestions : Dict Field Int
+    }
 
 
 
@@ -97,53 +93,26 @@ updateSuggestions field msg form =
     case msg of
         Next ->
             let
-                index =
-                    dictLookup field 0 form.selectedSuggestions
-
-                numberOfSuggestions =
-                    suggestions field form |> List.length
-
                 newIndex =
-                    if numberOfSuggestions == 0 then
-                        0
-                    else
-                        (index + 1) % numberOfSuggestions
+                    updateIndex ((+) 1) field form
             in
-                { form
-                    | selectedSuggestions = dictUpdate field newIndex form.selectedSuggestions
-                }
+                { form | selectedSuggestions = form.selectedSuggestions |> dictUpdate field newIndex }
 
         Previous ->
             let
-                index =
-                    dictLookup field 0 form.selectedSuggestions
-
-                numberOfSuggestions =
-                    suggestions field form |> List.length
-
                 newIndex =
-                    if numberOfSuggestions == 0 then
-                        0
-                    else if index == 0 then
-                        numberOfSuggestions - 1
-                    else
-                        index - 1
+                    updateIndex (\n -> n - 1) field form
             in
-                { form
-                    | selectedSuggestions = dictUpdate field newIndex form.selectedSuggestions
-                }
+                { form | selectedSuggestions = form.selectedSuggestions |> dictUpdate field newIndex }
 
         Clear ->
             { form | suggestions = dictUpdate field [] form.suggestions }
 
         Select ->
             let
-                index =
-                    dictLookup field 0 form.selectedSuggestions
-
                 suggestion =
                     suggestions field form
-                        |> List.drop index
+                        |> List.drop (dictLookup field 0 form.selectedSuggestions)
                         |> List.head
                         |> Maybe.withDefault ""
             in
@@ -152,17 +121,10 @@ updateSuggestions field msg form =
                     |> updateSuggestions field Refresh
 
         Refresh ->
-            let
-                input =
-                    form |> show field
-            in
-                { form
-                    | suggestions =
-                        dictUpdate
-                            field
-                            (findRelevantSuggestions input field form.possibleSuggestions)
-                            form.suggestions
-                }
+            { form
+                | suggestions =
+                    form.suggestions |> dictUpdate field (findRelevantSuggestions field form)
+            }
 
 
 
@@ -245,18 +207,18 @@ dictUpdate key value dict =
         List.map update dict
 
 
-findRelevantSuggestions : String -> Field -> Suggestions -> List String
-findRelevantSuggestions input field allPossible =
+findRelevantSuggestions : Field -> BeerForm -> List String
+findRelevantSuggestions field form =
     let
-        possible =
-            dictLookup field [] allPossible
+        input =
+            show field form
 
         contains suggestion =
             String.contains (String.toLower input) suggestion
                 && (suggestion /= (String.toLower input))
                 && (input /= "")
     in
-        List.filter (contains << String.toLower) possible
+        List.filter (contains << String.toLower) <| dictLookup field [] form.possibleSuggestions
 
 
 showInt : Int -> String
@@ -286,3 +248,22 @@ toMaybeString str default =
         Nothing
     else
         Just str
+
+
+updateIndex : (Int -> Int) -> Field -> BeerForm -> Int
+updateIndex fn field form =
+    let
+        numberOfSuggestions =
+            suggestions field form |> List.length
+
+        index =
+            fn <| dictLookup field 0 form.selectedSuggestions
+    in
+        if numberOfSuggestions == 0 then
+            0
+        else if index < 0 then
+            numberOfSuggestions - 1
+        else if index >= numberOfSuggestions then
+            0
+        else
+            index
