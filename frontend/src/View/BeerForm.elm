@@ -24,14 +24,7 @@ viewBeerForm model =
             in
                 div [ class "modal", onClick Msg.HideBeerForm ]
                     [ div [ class "beer-form", onClickNoPropagation Msg.Noop ]
-                        [ h3 []
-                            [ case form.data.id of
-                                Nothing ->
-                                    text "Add beer"
-
-                                Just _ ->
-                                    text "Edit beer"
-                            ]
+                        [ formTitle form
                         , fieldwithLabel "Brewery" "brewery" Brewery form True
                         , fieldwithLabel "Beer Name" "name" Name form False
                         , fieldwithLabel "Beer Style" "style" Style form True
@@ -40,33 +33,50 @@ viewBeerForm model =
                         , fieldwithLabel "Location" "location" Location form True
                         , fieldwithLabel "Shelf" "shelf" Shelf form True
                         , br [] []
-                        , div [] <|
-                            let
-                                name =
-                                    case form.data.id of
-                                        Nothing ->
-                                            "Add"
-
-                                        Just _ ->
-                                            "Save"
-
-                                attributes =
-                                    if Model.BeerForm.isValid form then
-                                        [ onClickNoPropagation Msg.SubmitBeerForm, class "button-primary" ]
-                                    else
-                                        [ class "button-disabled" ]
-                            in
-                                [ button attributes
-                                    [ text name
-                                    , i [ class "icon-beer" ] []
-                                    ]
-                                , button [ onClickNoPropagation Msg.HideBeerForm, class "" ]
-                                    [ text "Cancel"
-                                    , i [ class "icon-cancel" ] []
-                                    ]
-                                ]
+                        , formControlButtons model.beerForm
                         ]
                     ]
+
+
+formTitle : BeerForm -> Html Msg
+formTitle form =
+    h3 []
+        [ case form.data.id of
+            Nothing ->
+                text "Add beer"
+
+            Just _ ->
+                text "Edit beer"
+        ]
+
+
+formControlButtons : BeerForm -> Html Msg
+formControlButtons form =
+    let
+        name =
+            case form.data.id of
+                Nothing ->
+                    "Add"
+
+                Just _ ->
+                    "Save"
+
+        attributes =
+            if Model.BeerForm.isValid form then
+                [ onClickNoPropagation Msg.SubmitBeerForm, class "button-primary" ]
+            else
+                [ class "button-disabled" ]
+    in
+        div []
+            [ button attributes
+                [ text name
+                , i [ class "icon-beer" ] []
+                ]
+            , button [ onClickNoPropagation Msg.HideBeerForm, class "" ]
+                [ text "Cancel"
+                , i [ class "icon-cancel" ] []
+                ]
+            ]
 
 
 fieldwithLabel : String -> String -> Field -> BeerForm -> Bool -> Html Msg
@@ -100,7 +110,7 @@ fieldwithLabel labelText tag field form suggestionsEnabled =
 suggestions : Field -> BeerForm -> Html Msg
 suggestions field form =
     let
-        selected =
+        selectedIndex =
             Model.BeerForm.selectedSuggestion field form
 
         values =
@@ -113,7 +123,7 @@ suggestions field form =
                 showSuggestion index name =
                     li
                         [ onClick (Msg.UpdateBeerForm field name)
-                        , classList [ ( "selected", index == selected ) ]
+                        , classList [ ( "selected", index == selectedIndex ) ]
                         ]
                         [ text name ]
             in
