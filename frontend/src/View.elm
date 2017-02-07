@@ -62,7 +62,7 @@ viewLoggedIn model =
                     ]
                 , viewStatus model
                 , viewErrors model.state.error
-                , viewBeerList model.filters model.beers model.tableState
+                , viewBeerList model
                 ]
             ]
         ]

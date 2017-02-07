@@ -1,8 +1,8 @@
 module View.BeerList exposing (viewBeerList)
 
 import Messages exposing (Msg(..))
+import Model exposing (Model)
 import Model.Beer exposing (Beer)
-import Model.Filters exposing (Filters)
 import Model.BeerList as BeerList
 import Html exposing (..)
 import Html.Attributes exposing (class, placeholder, type_, value, colspan, title)
@@ -10,19 +10,21 @@ import Html.Events exposing (onClick, onInput)
 import Table
 
 
-viewBeerList : Filters -> List Beer -> Table.State -> Html Msg
-viewBeerList filters beers tableState =
-    if List.isEmpty beers then
-        viewEmptyMessage
-    else
+viewBeerList : Model -> Html Msg
+viewBeerList model =
+    if model.beers |> not << List.isEmpty then
         let
             filteredBeers =
-                BeerList.filtered filters beers
+                BeerList.filtered model.filters model.beers
         in
             Table.view
-                (tableConfig ( List.length filteredBeers, List.length beers ))
-                tableState
+                (tableConfig ( List.length filteredBeers, List.length model.beers ))
+                model.tableState
                 filteredBeers
+    else if model.state.error == Nothing then
+        viewEmptyMessage
+    else
+        text ""
 
 
 tableConfig : ( Int, Int ) -> Table.Config Beer Msg
