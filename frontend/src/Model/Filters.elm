@@ -107,7 +107,7 @@ matches : Beer -> Filters -> Bool
 matches beer filters =
     let
         textMatch =
-            List.all
+            List.any
                 (String.contains (String.toLower filters.textMatch) << String.toLower)
                 [ beer.name, beer.brewery, beer.style ]
 
