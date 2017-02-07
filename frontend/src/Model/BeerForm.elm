@@ -116,9 +116,12 @@ updateSuggestions field msg form =
                         |> List.head
                         |> Maybe.withDefault ""
             in
-                form
-                    |> updateInput field suggestion
-                    |> updateSuggestions field Refresh
+                if suggestion == "" then
+                    form
+                else
+                    form
+                        |> updateInput field suggestion
+                        |> updateSuggestions field Refresh
 
         Refresh ->
             { form
