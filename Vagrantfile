@@ -14,4 +14,9 @@ SCRIPT
   config.vm.network "forwarded_port", guest: 8000, host: 8000
   config.vm.network "forwarded_port", guest: 9000, host: 9000
   config.vm.synced_folder "", "/home/vagrant/cellar"
+
+  config.vm.provider :virtualbox do |v|
+    # Set the timesync threshold to 10 seconds, instead of the default 20 minutes.
+    v.customize ["guestproperty", "set", :id, "/VirtualBox/GuestAdd/VBoxService/--timesync-set-threshold", 10000]
+  end
 end
