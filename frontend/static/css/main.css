@@ -184,6 +184,26 @@ table.beer-list {
 	width: 100%;
 }
 
+.beer-list .count {
+	min-width: 25px;
+}
+
+.beer-list .year {
+	min-width: 45px;
+}
+
+.beer-list .location {
+	min-width: 70px;
+}
+
+.beer-list .shelf {
+	min-width: 45px;
+}
+
+.beer-list .actions {
+	min-width: 90px;
+}
+
 tr.zero-row {
 	color: #ccc;
 }

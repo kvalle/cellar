@@ -35,13 +35,13 @@ tableConfig showCount =
             { toId = .id >> (Maybe.withDefault 0) >> toString
             , toMsg = SetTableState
             , columns =
-                [ Table.intColumn "#" .count
-                , Table.stringColumn "Brewery" .brewery
-                , Table.stringColumn "Name" .name
-                , Table.intColumn "Year" .year
-                , Table.stringColumn "Style" .style
-                , Table.stringColumn "Location" <| .location >> Maybe.withDefault ""
-                , Table.stringColumn "Shelf" <| .shelf >> Maybe.withDefault ""
+                [ intColumnWithClasses "count" "#" .count
+                , stringColumnWithClasses "brewery" "Brewery" .brewery
+                , stringColumnWithClasses "name" "Name" .name
+                , intColumnWithClasses "year" "Year" .year
+                , stringColumnWithClasses "style" "Style" .style
+                , stringColumnWithClasses "location" "Location" (.location >> Maybe.withDefault "")
+                , stringColumnWithClasses "shelf" "Shelf" (.shelf >> Maybe.withDefault "")
                 , actionColumn
                 ]
             , customizations =
@@ -53,47 +53,43 @@ tableConfig showCount =
             }
 
 
-tableFooter : ( Int, Int ) -> Maybe (Table.HtmlDetails msg)
-tableFooter ( showing, total ) =
-    if showing == total then
-        Nothing
-    else
-        let
-            message =
-                if showing == 0 then
-                    "All beers are hidden by filters…"
-                else
-                    "Filter active, showing "
-                        ++ (toString showing)
-                        ++ " of "
-                        ++ (toString total)
-                        ++ " beers"
-        in
-            Just <|
+columnWithClasses : String -> String -> (a -> comparable) -> (a -> String) -> Table.Column a Msg
+columnWithClasses classes name asComparable asString =
+    Table.veryCustomColumn
+        { name = name
+        , viewData =
+            \a ->
                 Table.HtmlDetails
-                    [ class "filtered-beer-list" ]
-                    [ tr []
-                        [ td [ colspan 6 ] [ text message ] ]
-                    ]
+                    [ class classes ]
+                    [ (text << asString) a ]
+        , sorter = Table.decreasingOrIncreasingBy asComparable
+        }
+
+
+stringColumnWithClasses : String -> String -> (a -> String) -> Table.Column a Msg
+stringColumnWithClasses classes name asString =
+    columnWithClasses classes name asString asString
+
+
+intColumnWithClasses : String -> String -> (a -> Int) -> Table.Column a Msg
+intColumnWithClasses classes name asInt =
+    columnWithClasses classes name asInt (toString << asInt)
 
 
 actionColumn : Table.Column Beer Msg
 actionColumn =
     Table.veryCustomColumn
         { name = ""
-        , viewData = viewActions
+        , viewData =
+            \beer ->
+                Table.HtmlDetails [ class "actions" ]
+                    [ viewIncrementAction beer
+                    , viewDecrementAction beer
+                    , viewDeleteAction beer
+                    , viewEditAction beer
+                    ]
         , sorter = Table.unsortable
         }
-
-
-viewActions : Beer -> Table.HtmlDetails Msg
-viewActions beer =
-    Table.HtmlDetails []
-        [ viewIncrementAction beer
-        , viewDecrementAction beer
-        , viewDeleteAction beer
-        , viewEditAction beer
-        ]
 
 
 beerRowAttributes : Beer -> List (Attribute msg)
@@ -136,3 +132,27 @@ viewDeleteAction beer =
 viewEditAction : Beer -> Html Msg
 viewEditAction beer =
     i [ onClick (ShowForm beer), class "action icon-pencil", title "Edit" ] []
+
+
+tableFooter : ( Int, Int ) -> Maybe (Table.HtmlDetails msg)
+tableFooter ( showing, total ) =
+    if showing == total then
+        Nothing
+    else
+        let
+            message =
+                if showing == 0 then
+                    "All beers are hidden by filters…"
+                else
+                    "Filter active, showing "
+                        ++ (toString showing)
+                        ++ " of "
+                        ++ (toString total)
+                        ++ " beers"
+        in
+            Just <|
+                Table.HtmlDetails
+                    [ class "filtered-beer-list" ]
+                    [ tr []
+                        [ td [ colspan 6 ] [ text message ] ]
+                    ]

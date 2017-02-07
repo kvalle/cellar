@@ -5,4 +5,4 @@ import Table
 
 init : Table.State
 init =
-    Table.initialSort "Brewery"
+    Table.initialSort "Year"
