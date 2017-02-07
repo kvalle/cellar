@@ -40,7 +40,7 @@ update msg model =
             ( { model
                 | state =
                     model.state
-                        |> State.withError ("Unable to load beer list" ++ (toString err))
+                        |> State.withError "Failed to load beer list :("
                         |> State.withNetwork Idle
               }
             , Cmd.none
