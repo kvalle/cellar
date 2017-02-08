@@ -15,5 +15,6 @@ type Field
     | Style
     | Year
     | Count
+    | Volume
     | Location
     | Shelf

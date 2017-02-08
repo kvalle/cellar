@@ -29,6 +29,7 @@ viewBeerForm model =
                         , fieldwithLabel "Beer Name" "name" Name form False
                         , fieldwithLabel "Beer Style" "style" Style form True
                         , fieldwithLabel "Production year" "year" Year form False
+                        , fieldwithLabel "Volume (in liters)" "volume" Volume form False
                         , fieldwithLabel "Number of bottles (or cans)" "count" Count form False
                         , fieldwithLabel "Location" "location" Location form True
                         , fieldwithLabel "Shelf" "shelf" Shelf form True
@@ -89,7 +90,7 @@ fieldwithLabel labelText tag field form suggestionsEnabled =
             , class "u-full-width"
             , autocomplete False
             , id <| tag ++ "-input"
-            , onInput (Msg.UpdateFormField field)
+            , onInput <| Msg.UpdateFormField field
             , value <| Model.BeerForm.show field form
             , onBlur <| Msg.UpdateFormSuggestions field Clear
             , onKeysWithOptions

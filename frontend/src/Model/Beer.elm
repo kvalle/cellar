@@ -8,7 +8,7 @@ type alias Beer =
     , style : String
     , year : Int
     , count : Int
-    , volume : Maybe Float
+    , volume : Float
     , location : Maybe String
     , shelf : Maybe String
     }
@@ -22,7 +22,7 @@ empty =
     , style = ""
     , year = 2017
     , count = 1
-    , volume = Nothing
+    , volume = 0
     , location = Nothing
     , shelf = Nothing
     }

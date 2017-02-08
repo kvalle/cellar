@@ -24,7 +24,7 @@ beerEncoder beer =
             , ( "style", Encode.string beer.style )
             , ( "year", Encode.int beer.year )
             , ( "count", Encode.int beer.count )
-            , ( "volume", maybeEncoder Encode.float beer.volume )
+            , ( "volume", Encode.float beer.volume )
             , ( "location", maybeEncoder Encode.string beer.location )
             , ( "shelf", maybeEncoder Encode.string beer.shelf )
             ]
@@ -44,7 +44,7 @@ beerDecoder =
         |> Pipeline.required "style" Decode.string
         |> Pipeline.required "year" Decode.int
         |> Pipeline.required "count" Decode.int
-        |> Pipeline.optional "volume" (Decode.nullable Decode.float) Nothing
+        |> Pipeline.optional "volume" Decode.float 0.0
         |> Pipeline.required "location" (Decode.nullable Decode.string)
         |> Pipeline.required "shelf" (Decode.nullable Decode.string)
 

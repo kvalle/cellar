@@ -48,6 +48,7 @@ from beer context =
             , ( Style, beer.style )
             , ( Year, toString beer.year )
             , ( Count, toString beer.count )
+            , ( Volume, toString beer.volume )
             , ( Location, beer.location |> Maybe.withDefault "" )
             , ( Shelf, beer.shelf |> Maybe.withDefault "" )
             ]
@@ -121,7 +122,7 @@ toBeer form =
     , style = form |> show Style
     , year = form |> show Year |> String.toInt |> Result.withDefault 0
     , count = form |> show Count |> String.toInt |> Result.withDefault 0
-    , volume = Just 0.0
+    , volume = form |> show Volume |> String.toFloat |> Result.withDefault 0.0
     , location = form |> show Location |> toMaybe ((/=) "")
     , shelf = form |> show Shelf |> toMaybe ((/=) "")
     }
@@ -151,6 +152,7 @@ isValid form =
             && notEmpty beer.style
             && (beer.year > 0)
             && (beer.count > 0)
+            && (beer.volume > 0.0)
 
 
 show : Field -> BeerForm -> String

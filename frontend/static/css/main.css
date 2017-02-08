@@ -192,6 +192,10 @@ table.beer-list {
 	min-width: 45px;
 }
 
+.beer-list .vol {
+	min-width: 35px;
+}
+
 .beer-list .location {
 	min-width: 70px;
 }

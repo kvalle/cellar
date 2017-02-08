@@ -40,6 +40,7 @@ tableConfig showCount =
                 [ intColumnWithClasses "count" "#" .count
                 , stringColumnWithClasses "brewery" "Brewery" .brewery
                 , stringColumnWithClasses "name" "Name" .name
+                , floatColumnWithClasses "vol" "Vol" .volume
                 , intColumnWithClasses "year" "Year" .year
                 , stringColumnWithClasses "style" "Style" .style
                 , stringColumnWithClasses "location" "Location" (.location >> Maybe.withDefault "")
@@ -76,6 +77,11 @@ stringColumnWithClasses classes name asString =
 intColumnWithClasses : String -> String -> (a -> Int) -> Table.Column a Msg
 intColumnWithClasses classes name asInt =
     columnWithClasses classes name asInt (toString << asInt)
+
+
+floatColumnWithClasses : String -> String -> (a -> Float) -> Table.Column a Msg
+floatColumnWithClasses classes name asFloat =
+    columnWithClasses classes name asFloat (toString << asFloat)
 
 
 actionColumn : Table.Column Beer Msg
