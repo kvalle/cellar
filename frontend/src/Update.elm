@@ -209,6 +209,8 @@ update msg model =
                 update LoadBeers model
             else if key == 83 && model.state.changes == State.Changed then
                 update SaveBeers model
+            else if key == 67 && model.filters.active then
+                update ClearFilters model
             else
                 ( model, Cmd.none )
 
