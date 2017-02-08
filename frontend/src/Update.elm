@@ -201,6 +201,10 @@ update msg model =
                 update ShowFilters model
             else if key == 74 && State.isClearOfModals model.state then
                 update ShowJsonModal model
+            else if key == 82 && model.state.changes == State.Changed then
+                update LoadBeers model
+            else if key == 83 && model.state.changes == State.Changed then
+                update SaveBeers model
             else
                 ( model, Cmd.none )
 
