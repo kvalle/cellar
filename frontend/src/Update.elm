@@ -11,6 +11,8 @@ import Model.BeerForm as BeerForm
 import Model.Beer as Beer
 import Model.Filters as Filter
 import Model.BeerList
+import Dom
+import Task
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -102,7 +104,9 @@ update msg model =
             ( { model | filters = model.filters |> Filter.setValue value }, Cmd.none )
 
         ShowFilters ->
-            ( { model | state = model.state |> State.withFilters State.Visible }, Cmd.none )
+            ( { model | state = model.state |> State.withFilters State.Visible }
+            , Dom.focus "text-filter" |> Task.attempt FocusResult
+            )
 
         HideFilters ->
             ( { model | state = model.state |> State.withFilters State.Hidden }, Cmd.none )
@@ -151,7 +155,7 @@ update msg model =
                 | beerForm = BeerForm.from beer model.beers
                 , state = model.state |> State.withBeerForm State.Visible
               }
-            , Cmd.none
+            , Dom.focus "brewery-input" |> Task.attempt FocusResult
             )
 
         HideForm ->
@@ -206,6 +210,16 @@ update msg model =
             else if key == 83 && model.state.changes == State.Changed then
                 update SaveBeers model
             else
+                ( model, Cmd.none )
+
+        FocusResult (Ok _) ->
+            ( model, Cmd.none )
+
+        FocusResult (Err err) ->
+            let
+                _ =
+                    Debug.log "Unable to focus: " err
+            in
                 ( model, Cmd.none )
 
         Noop ->

@@ -7,11 +7,13 @@ import Model.Auth exposing (UserData)
 import Http
 import Table
 import Keyboard
+import Dom
 
 
 type Msg
     = Noop
     | KeyPressed Keyboard.KeyCode
+    | FocusResult (Result Dom.Error ())
       -- Filter
     | ClearFilters
     | UpdateFilters FilterValue
