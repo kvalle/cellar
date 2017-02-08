@@ -195,7 +195,7 @@ update msg model =
         KeyPressed key ->
             if key == 27 then
                 ( { model | state = model.state |> State.clearModals }, Cmd.none )
-            else if key == 78 && State.isClearOfModals model.state then
+            else if key == 65 && State.isClearOfModals model.state then
                 update (ShowForm Beer.empty) model
             else if key == 70 && State.isClearOfModals model.state then
                 update ShowFilters model
