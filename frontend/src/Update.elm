@@ -98,7 +98,12 @@ update msg model =
             ( { model | state = model.state |> State.withJsonModal State.Hidden }, Cmd.none )
 
         ClearFilters ->
-            ( { model | filters = Filter.empty model.beers }, Cmd.none )
+            ( { model
+                | filters = Filter.empty model.beers
+                , state = model.state |> State.withFilters State.Hidden
+              }
+            , Cmd.none
+            )
 
         UpdateFilters value ->
             ( { model | filters = model.filters |> Filter.setValue value }, Cmd.none )
