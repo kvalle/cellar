@@ -30,6 +30,7 @@ viewBeerForm model =
                         , fieldwithLabel "Beer Style" "style" Style form True
                         , fieldwithLabel "Production year" "year" Year form False
                         , fieldwithLabel "Volume (in liters)" "volume" Volume form False
+                        , fieldwithLabel "Alcohol by volume (ABV)" "abv" Abv form False
                         , fieldwithLabel "Number of bottles (or cans)" "count" Count form False
                         , fieldwithLabel "Location" "location" Location form True
                         , fieldwithLabel "Shelf" "shelf" Shelf form True

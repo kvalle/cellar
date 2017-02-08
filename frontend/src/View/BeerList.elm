@@ -41,6 +41,7 @@ tableConfig showCount =
                 , stringColumnWithClasses "brewery" "Brewery" .brewery
                 , stringColumnWithClasses "name" "Name" .name
                 , floatColumnWithClasses "vol" "Vol" .volume
+                , floatColumnWithClasses "abv" "ABV" .abv
                 , intColumnWithClasses "year" "Year" .year
                 , stringColumnWithClasses "style" "Style" .style
                 , locationColumn

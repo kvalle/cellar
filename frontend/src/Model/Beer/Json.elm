@@ -25,6 +25,7 @@ beerEncoder beer =
             , ( "year", Encode.int beer.year )
             , ( "count", Encode.int beer.count )
             , ( "volume", Encode.float beer.volume )
+            , ( "abv", Encode.float beer.volume )
             , ( "location", maybeEncoder Encode.string beer.location )
             , ( "shelf", maybeEncoder Encode.string beer.shelf )
             ]
@@ -45,6 +46,7 @@ beerDecoder =
         |> Pipeline.required "year" Decode.int
         |> Pipeline.required "count" Decode.int
         |> Pipeline.optional "volume" Decode.float 0.0
+        |> Pipeline.optional "abv" Decode.float 0.0
         |> Pipeline.required "location" (Decode.nullable Decode.string)
         |> Pipeline.required "shelf" (Decode.nullable Decode.string)
 

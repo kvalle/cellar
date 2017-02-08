@@ -49,6 +49,7 @@ from beer context =
             , ( Year, toString beer.year )
             , ( Count, toString beer.count )
             , ( Volume, toString beer.volume )
+            , ( Abv, toString beer.abv )
             , ( Location, beer.location |> Maybe.withDefault "" )
             , ( Shelf, beer.shelf |> Maybe.withDefault "" )
             ]
@@ -123,6 +124,7 @@ toBeer form =
     , year = form |> show Year |> String.toInt |> Result.withDefault 0
     , count = form |> show Count |> String.toInt |> Result.withDefault 0
     , volume = form |> show Volume |> String.toFloat |> Result.withDefault 0.0
+    , abv = form |> show Abv |> String.toFloat |> Result.withDefault 0.0
     , location = form |> show Location |> toMaybe ((/=) "")
     , shelf = form |> show Shelf |> toMaybe ((/=) "")
     }

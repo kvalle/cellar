@@ -196,6 +196,10 @@ table.beer-list {
 	min-width: 35px;
 }
 
+.beer-list .abv {
+	min-width: 40px;
+}
+
 .beer-list .location {
 	min-width: 70px;
 }

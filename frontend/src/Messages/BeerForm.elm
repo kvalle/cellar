@@ -16,5 +16,6 @@ type Field
     | Year
     | Count
     | Volume
+    | Abv
     | Location
     | Shelf
