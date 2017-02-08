@@ -1,4 +1,4 @@
-module Model.BeerForm exposing (BeerForm, empty, init, from, updateInput, updateSuggestions, suggestions, selectedSuggestion, isValid, show)
+module Model.BeerForm exposing (BeerForm, empty, init, from, updateField, updateSuggestions, suggestions, selectedSuggestion, isValid, show, toBeer)
 
 import Messages.BeerForm exposing (Field(..), SuggestionMsg(..))
 import Model.Beer exposing (Beer)
@@ -10,7 +10,8 @@ type alias Dict k v =
 
 
 type alias BeerForm =
-    { data : Beer
+    { id : Maybe Int
+    , fields : Dict Field String
     , possibleSuggestions : Dict Field (List String)
     , suggestions : Dict Field (List String)
     , selectedSuggestions : Dict Field Int
@@ -40,7 +41,16 @@ from beer context =
         uniqueMaybe field =
             context |> List.filterMap field |> Set.fromList |> Set.toList
     in
-        { data = beer
+        { id = beer.id
+        , fields =
+            [ ( Brewery, beer.brewery )
+            , ( Name, beer.name )
+            , ( Style, beer.style )
+            , ( Year, toString beer.year )
+            , ( Count, toString beer.count )
+            , ( Location, beer.location |> Maybe.withDefault "" )
+            , ( Shelf, beer.shelf |> Maybe.withDefault "" )
+            ]
         , possibleSuggestions =
             [ ( Brewery, unique .brewery )
             , ( Style, unique .style )
@@ -52,40 +62,9 @@ from beer context =
         }
 
 
-
-{- Update form -}
-
-
-updateInput : Field -> String -> BeerForm -> BeerForm
-updateInput field input form =
-    let
-        beer =
-            form.data
-
-        updatedBeer =
-            case field of
-                Brewery ->
-                    { beer | brewery = input }
-
-                Name ->
-                    { beer | name = input }
-
-                Style ->
-                    { beer | style = input }
-
-                Year ->
-                    { beer | year = toIntWithDefault input beer.year }
-
-                Count ->
-                    { beer | count = toIntWithDefault input beer.count }
-
-                Location ->
-                    { beer | location = toMaybeString input beer.location }
-
-                Shelf ->
-                    { beer | shelf = toMaybeString input beer.shelf }
-    in
-        { form | data = updatedBeer }
+updateField : Field -> String -> BeerForm -> BeerForm
+updateField field input form =
+    { form | fields = form.fields |> dictUpdate field input }
 
 
 updateSuggestions : Field -> SuggestionMsg -> BeerForm -> BeerForm
@@ -94,14 +73,14 @@ updateSuggestions field msg form =
         Next ->
             let
                 newIndex =
-                    updateIndex ((+) 1) field form
+                    updateSuggestionIndex ((+) 1) field form
             in
                 { form | selectedSuggestions = form.selectedSuggestions |> dictUpdate field newIndex }
 
         Previous ->
             let
                 newIndex =
-                    updateIndex (\n -> n - 1) field form
+                    updateSuggestionIndex (\n -> n - 1) field form
             in
                 { form | selectedSuggestions = form.selectedSuggestions |> dictUpdate field newIndex }
 
@@ -120,7 +99,7 @@ updateSuggestions field msg form =
                     form
                 else
                     form
-                        |> updateInput field suggestion
+                        |> updateField field suggestion
                         |> updateSuggestions field Refresh
 
         Refresh ->
@@ -132,6 +111,20 @@ updateSuggestions field msg form =
 
 
 {- Getters -}
+
+
+toBeer : BeerForm -> Beer
+toBeer form =
+    { id = form.id
+    , brewery = form |> show Brewery
+    , name = form |> show Name
+    , style = form |> show Style
+    , year = form |> show Year |> String.toInt |> Result.withDefault 0
+    , count = form |> show Count |> String.toInt |> Result.withDefault 0
+    , volume = Just 0.0
+    , location = form |> show Location |> toMaybe ((/=) "")
+    , shelf = form |> show Shelf |> toMaybe ((/=) "")
+    }
 
 
 suggestions : Field -> BeerForm -> List String
@@ -147,39 +140,22 @@ selectedSuggestion field form =
 isValid : BeerForm -> Bool
 isValid form =
     let
+        beer =
+            toBeer form
+
         notEmpty =
             not << String.isEmpty
     in
-        notEmpty form.data.brewery
-            && notEmpty form.data.name
-            && notEmpty form.data.style
-            && (form.data.year > 0)
-            && (form.data.count > 0)
+        notEmpty beer.brewery
+            && notEmpty beer.name
+            && notEmpty beer.style
+            && (beer.year > 0)
+            && (beer.count > 0)
 
 
 show : Field -> BeerForm -> String
 show field form =
-    case field of
-        Brewery ->
-            form.data.brewery
-
-        Name ->
-            form.data.name
-
-        Style ->
-            form.data.style
-
-        Year ->
-            showInt form.data.year
-
-        Count ->
-            showInt form.data.count
-
-        Location ->
-            showMaybeString form.data.location
-
-        Shelf ->
-            showMaybeString form.data.shelf
+    dictLookup field "" form.fields
 
 
 
@@ -224,37 +200,16 @@ findRelevantSuggestions field form =
         List.filter (contains << String.toLower) <| dictLookup field [] form.possibleSuggestions
 
 
-showInt : Int -> String
-showInt num =
-    if num == 0 then
-        ""
+toMaybe : (a -> Bool) -> a -> Maybe a
+toMaybe pred a =
+    if pred a then
+        Just a
     else
-        toString num
-
-
-showMaybeString : Maybe String -> String
-showMaybeString optional =
-    optional |> Maybe.withDefault ""
-
-
-toIntWithDefault : String -> Int -> Int
-toIntWithDefault str default =
-    if str == "" then
-        0
-    else
-        String.toInt str |> Result.withDefault default
-
-
-toMaybeString : String -> Maybe String -> Maybe String
-toMaybeString str default =
-    if str == "" then
         Nothing
-    else
-        Just str
 
 
-updateIndex : (Int -> Int) -> Field -> BeerForm -> Int
-updateIndex fn field form =
+updateSuggestionIndex : (Int -> Int) -> Field -> BeerForm -> Int
+updateSuggestionIndex fn field form =
     let
         numberOfSuggestions =
             suggestions field form |> List.length

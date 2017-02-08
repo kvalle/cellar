@@ -27,7 +27,7 @@ type Msg
       -- Beer form
     | ShowForm Beer
     | HideForm
-    | UpdateFormInput Field String
+    | UpdateFormField Field String
     | UpdateFormSuggestions Field SuggestionMsg
     | SubmitForm
       -- Json

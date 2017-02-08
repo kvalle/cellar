@@ -40,7 +40,7 @@ update msg model =
             ( { model
                 | state =
                     model.state
-                        |> State.withError "Failed to load beer list :("
+                        |> State.withError ("Failed to load beer list :(" ++ (toString err))
                         |> State.withNetwork Idle
               }
             , Cmd.none
@@ -160,11 +160,11 @@ update msg model =
             , Cmd.none
             )
 
-        UpdateFormInput field input ->
+        UpdateFormField field input ->
             ( { model
                 | beerForm =
                     model.beerForm
-                        |> BeerForm.updateInput field input
+                        |> BeerForm.updateField field input
                         |> BeerForm.updateSuggestions field Refresh
               }
             , Cmd.none
@@ -180,7 +180,7 @@ update msg model =
         SubmitForm ->
             let
                 newBeers =
-                    Model.BeerList.addOrUpdate model.beerForm.data model.beers
+                    Model.BeerList.addOrUpdate (BeerForm.toBeer model.beerForm) model.beers
             in
                 ( { model
                     | beers = newBeers

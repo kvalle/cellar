@@ -35,21 +35,6 @@ beerListEncoder beers =
     Encode.list <| List.map beerEncoder beers
 
 
-
---beerDecoder : Decode.Decoder Beer
---beerDecoder =
---    Decode.map9 Beer
---        (Decode.nullable (Decode.field "id" Decode.int))
---        (Decode.field "brewery" Decode.string)
---        (Decode.field "name" Decode.string)
---        (Decode.field "style" Decode.string)
---        (Decode.field "year" Decode.int)
---        (Decode.field "count" Decode.int)
---        (Decode.maybe (Decode.field "volume" Decode.float))
---        (Decode.maybe (Decode.field "location" Decode.string))
---        (Decode.maybe (Decode.field "shelf" Decode.string))
-
-
 beerDecoder : Decode.Decoder Beer
 beerDecoder =
     Pipeline.decode Beer
@@ -59,7 +44,7 @@ beerDecoder =
         |> Pipeline.required "style" Decode.string
         |> Pipeline.required "year" Decode.int
         |> Pipeline.required "count" Decode.int
-        |> Pipeline.required "volume" (Decode.nullable Decode.float)
+        |> Pipeline.optional "volume" (Decode.nullable Decode.float) Nothing
         |> Pipeline.required "location" (Decode.nullable Decode.string)
         |> Pipeline.required "shelf" (Decode.nullable Decode.string)
 

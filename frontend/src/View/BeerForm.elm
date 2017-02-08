@@ -41,7 +41,7 @@ viewBeerForm model =
 formTitle : BeerForm -> Html Msg
 formTitle form =
     h3 []
-        [ case form.data.id of
+        [ case form.id of
             Nothing ->
                 text "Add beer"
 
@@ -54,7 +54,7 @@ formControlButtons : BeerForm -> Html Msg
 formControlButtons form =
     let
         name =
-            case form.data.id of
+            case form.id of
                 Nothing ->
                     "Add"
 
@@ -89,7 +89,7 @@ fieldwithLabel labelText tag field form suggestionsEnabled =
             , class "u-full-width"
             , autocomplete False
             , id <| tag ++ "-input"
-            , onInput (Msg.UpdateFormInput field)
+            , onInput (Msg.UpdateFormField field)
             , value <| Model.BeerForm.show field form
             , onBlur <| Msg.UpdateFormSuggestions field Clear
             , onKeysWithOptions
@@ -123,7 +123,7 @@ suggestions field form =
             let
                 showSuggestion index name =
                     li
-                        [ onClick (Msg.UpdateFormInput field name)
+                        [ onClick (Msg.UpdateFormField field name)
                         , classList [ ( "selected", index == selectedIndex ) ]
                         ]
                         [ text name ]
