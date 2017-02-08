@@ -8,6 +8,7 @@ import Model exposing (Model)
 import Model.State as State exposing (Network(..))
 import Model.Auth exposing (AuthStatus(..))
 import Model.BeerForm as BeerForm
+import Model.Beer as Beer
 import Model.Filters as Filter
 import Model.BeerList
 
@@ -190,6 +191,18 @@ update msg model =
                   }
                 , Cmd.none
                 )
+
+        KeyPressed key ->
+            if key == 27 then
+                ( { model | state = model.state |> State.clearModals }, Cmd.none )
+            else if key == 78 && State.isClearOfModals model.state then
+                update (ShowForm Beer.empty) model
+            else if key == 70 && State.isClearOfModals model.state then
+                update ShowFilters model
+            else if key == 74 && State.isClearOfModals model.state then
+                update ShowJsonModal model
+            else
+                ( model, Cmd.none )
 
         Noop ->
             ( model, Cmd.none )

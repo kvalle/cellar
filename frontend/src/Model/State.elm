@@ -38,6 +38,19 @@ init =
     }
 
 
+clearModals : State -> State
+clearModals state =
+    state
+        |> withBeerForm Hidden
+        |> withFilters Hidden
+        |> withJsonModal Hidden
+
+
+isClearOfModals : State -> Bool
+isClearOfModals state =
+    List.all ((==) Hidden) [ state.jsonModal, state.filters, state.beerForm ]
+
+
 withBeerForm : DisplayState -> State -> State
 withBeerForm displayState state =
     { state | beerForm = displayState }

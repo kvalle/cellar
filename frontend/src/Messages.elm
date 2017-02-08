@@ -6,10 +6,12 @@ import Model.Beer exposing (Beer)
 import Model.Auth exposing (UserData)
 import Http
 import Table
+import Keyboard
 
 
 type Msg
     = Noop
+    | KeyPressed Keyboard.KeyCode
       -- Filter
     | ClearFilters
     | UpdateFilters FilterValue
