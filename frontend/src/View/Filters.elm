@@ -5,7 +5,7 @@ import Model exposing (Model)
 import Model.Filters exposing (Filters, FilterValue(..))
 import Model.Beer exposing (Beer)
 import Model.State exposing (DisplayState(..))
-import View.HtmlExtra exposing (onKeyWithOptions, keys)
+import View.HtmlExtra exposing (onKeyWithOptions, onKey, keys)
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (onClick, onInput, defaultOptions)
@@ -22,7 +22,10 @@ viewFilters model =
         Visible ->
             div [ class "filter-parent" ]
                 [ div [ class "filter-overlay", onClick HideFilters ] []
-                , div [ class "filter-form" ]
+                , div
+                    [ class "filter-form"
+                    , onKey keys.enter HideFilters
+                    ]
                     [ textFilter model.filters model.beers
                     , yearMaxFilter model.filters model.beers
                     , styleFilter model.filters model.beers
