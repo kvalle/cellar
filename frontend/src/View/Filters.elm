@@ -27,7 +27,7 @@ viewFilters model =
                     , yearMaxFilter model.filters model.beers
                     , styleFilter model.filters model.beers
                     , countMinFilter model.filters model.beers
-                    , clearButton model.filters
+                    , buttons model.filters
                     ]
                 ]
 
@@ -120,8 +120,16 @@ styleFilter filters beers =
         ]
 
 
-clearButton : Filters -> Html Msg
-clearButton filters =
+buttons : Filters -> Html Msg
+buttons filters =
+    div []
+        [ useButton filters
+        , clearButton filters
+        ]
+
+
+useButton : Filters -> Html Msg
+useButton filters =
     let
         attributes =
             if filters.active then
@@ -130,6 +138,21 @@ clearButton filters =
                 [ class "button-disabled" ]
     in
         button attributes
-            [ text "Clear filters"
+            [ text "Use"
+            , i [ class "icon-filter" ] []
+            ]
+
+
+clearButton : Filters -> Html Msg
+clearButton filters =
+    let
+        attributes =
+            if filters.active then
+                [ onClick ClearFilters ]
+            else
+                [ class "button-disabled" ]
+    in
+        button attributes
+            [ text "Clear"
             , i [ class "icon-cancel" ] []
             ]

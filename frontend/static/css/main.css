@@ -114,6 +114,10 @@ button.button-disabled:hover {
 	height: 100px;
 }
 
+.filter-form button:not(:first-child) {
+	margin-left: 10px;
+}
+
 /* Modal */
 
 .modal {
