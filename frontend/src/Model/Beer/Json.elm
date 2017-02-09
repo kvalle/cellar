@@ -25,7 +25,7 @@ beerEncoder beer =
             , ( "year", Encode.int beer.year )
             , ( "count", Encode.int beer.count )
             , ( "volume", Encode.float beer.volume )
-            , ( "abv", Encode.float beer.volume )
+            , ( "abv", Encode.float beer.abv )
             , ( "location", maybeEncoder Encode.string beer.location )
             , ( "shelf", maybeEncoder Encode.string beer.shelf )
             ]
