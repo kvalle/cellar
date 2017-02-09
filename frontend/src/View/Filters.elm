@@ -5,9 +5,10 @@ import Model exposing (Model)
 import Model.Filters exposing (Filters, FilterValue(..))
 import Model.Beer exposing (Beer)
 import Model.State exposing (DisplayState(..))
+import View.HtmlExtra exposing (onKeyWithOptions, keys)
 import Html exposing (..)
 import Html.Attributes exposing (..)
-import Html.Events exposing (onClick, onInput)
+import Html.Events exposing (onClick, onInput, defaultOptions)
 import MultiSelect
 import List.Extra
 
@@ -39,6 +40,7 @@ textFilter filters beers =
             [ type_ "search"
             , id "text-filter"
             , onInput <| UpdateFilters << Text
+            , onKeyWithOptions { defaultOptions | preventDefault = True } keys.escape Noop
             , value filters.textMatch
             , class "u-full-width"
             ]

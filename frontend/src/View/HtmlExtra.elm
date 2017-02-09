@@ -1,4 +1,4 @@
-module View.HtmlExtra exposing (onClickNoPropagation, onKey, onKeys, onKeysWithOptions, keys)
+module View.HtmlExtra exposing (onClickNoPropagation, onKey, onKeys, onKeyWithOptions, onKeysWithOptions, keys)
 
 import Html exposing (Attribute)
 import Html.Events exposing (on, onWithOptions, defaultOptions, keyCode)
@@ -48,6 +48,11 @@ onKeysWithOptions options mappings =
 onKeys : List ( Key, msg ) -> Attribute msg
 onKeys mappings =
     onKeysWithOptions defaultOptions mappings
+
+
+onKeyWithOptions : Html.Events.Options -> Key -> msg -> Attribute msg
+onKeyWithOptions options key msg =
+    onKeysWithOptions options [ ( key, msg ) ]
 
 
 onKey : Key -> msg -> Attribute msg
