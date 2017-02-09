@@ -216,6 +216,8 @@ update msg model =
                 update SaveBeers model
             else if key == 67 && model.filters.active && State.isClearOfModals model.state then
                 update ClearFilters model
+            else if key == 191 && State.isClearOfModals model.state then
+                update ShowHelp model
             else
                 ( model, Cmd.none )
 
@@ -228,6 +230,12 @@ update msg model =
                     Debug.log "Unable to focus: " err
             in
                 ( model, Cmd.none )
+
+        HideHelp ->
+            ( { model | state = model.state |> State.withHelpDialog State.Hidden }, Cmd.none )
+
+        ShowHelp ->
+            ( { model | state = model.state |> State.withHelpDialog State.Visible }, Cmd.none )
 
         Noop ->
             ( model, Cmd.none )

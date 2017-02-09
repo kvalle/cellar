@@ -9,6 +9,7 @@ import View.BeerList exposing (viewBeerList)
 import View.Filters exposing (viewFilters)
 import View.BeerForm exposing (viewBeerForm)
 import View.Json exposing (viewJsonModal)
+import View.Help exposing (viewHelpDialog)
 import Html exposing (..)
 import Html.Events exposing (onClick, onInput, onWithOptions, defaultOptions)
 import Html.Attributes exposing (id, class, type_, for, src, title, value, style)
@@ -39,6 +40,7 @@ viewLoggedIn model =
     div [ class "container" ]
         [ viewBeerForm model
         , viewJsonModal model
+        , viewHelpDialog model
         , div [ class "row" ]
             [ div [ class "header seven columns" ]
                 [ viewTitle ]

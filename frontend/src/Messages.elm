@@ -14,6 +14,9 @@ type Msg
     = Noop
     | KeyPressed Keyboard.KeyCode
     | FocusResult (Result Dom.Error ())
+      -- Help
+    | ShowHelp
+    | HideHelp
       -- Filter
     | ClearFilters
     | UpdateFilters FilterValue

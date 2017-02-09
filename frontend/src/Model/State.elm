@@ -8,6 +8,7 @@ type alias State =
     , jsonModal : DisplayState
     , filters : DisplayState
     , beerForm : DisplayState
+    , helpDialog : DisplayState
     }
 
 
@@ -35,6 +36,7 @@ init =
     , jsonModal = Hidden
     , filters = Hidden
     , beerForm = Hidden
+    , helpDialog = Hidden
     }
 
 
@@ -44,11 +46,17 @@ clearModals state =
         |> withBeerForm Hidden
         |> withFilters Hidden
         |> withJsonModal Hidden
+        |> withHelpDialog Hidden
 
 
 isClearOfModals : State -> Bool
 isClearOfModals state =
     List.all ((==) Hidden) [ state.jsonModal, state.filters, state.beerForm ]
+
+
+withHelpDialog : DisplayState -> State -> State
+withHelpDialog displayState state =
+    { state | helpDialog = displayState }
 
 
 withBeerForm : DisplayState -> State -> State
