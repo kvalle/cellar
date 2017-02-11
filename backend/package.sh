@@ -22,4 +22,13 @@ if [ ! -f config.py ]; then
 fi
 
 echo "> Packaging app"
-zip --quiet --recurse-paths --exclude=".elasticbeanstalk/config.yml" tmp/app.zip .elasticbeanstalk/ .ebextensions/ application.py auth.py config.py requirements.txt
+zip --quiet --recurse-paths --exclude=".elasticbeanstalk/config.yml" \
+	tmp/app.zip \
+	.elasticbeanstalk/ \
+	.ebextensions/ \
+	application.py \
+	auth.py \
+	config.py \
+	data.py \
+	sync-with-s3.py \
+	requirements.txt
