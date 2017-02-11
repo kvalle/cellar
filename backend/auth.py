@@ -40,8 +40,8 @@ def requires_auth(f):
         try:
             payload = jwt.decode(
                 token,
-                config.client_secret,
-                audience=config.client_id
+                config.auth0_client_secret,
+                audience=config.auth0_client_id
             )
         except jwt.ExpiredSignature:
             return handle_error({'code': 'token_expired',
@@ -49,7 +49,7 @@ def requires_auth(f):
         except jwt.InvalidAudienceError:
             return handle_error({'code': 'invalid_audience',
                                 'description': 'incorrect audience, expected: '
-                                 + config.client_id}, 401)
+                                 + config.auth0_client_id}, 401)
         except jwt.DecodeError:
             return handle_error({'code': 'token_invalid_signature',
                                 'description':
