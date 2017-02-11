@@ -1,2 +1,5 @@
 client_secret = "FILL INN AUTH0 SECRET"
 client_id = "FILL INN AUTH0 ID"
+
+s3_access_key = "FILL INN AWS KEY"
+s3_access_secret = "FILL INN AWS SECRET"

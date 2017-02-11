@@ -1,3 +1,4 @@
 Flask
 PyJWT
 flask-cors
+boto3
