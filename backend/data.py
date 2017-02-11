@@ -3,10 +3,15 @@ import botocore
 
 import config
 
+
 s3 = boto3.Session(
    aws_access_key_id=config.s3_access_key,
-   aws_secret_access_key=config.s3_access_secret
-).resource('s3')
+   aws_secret_access_key=config.s3_access_secret,
+   region_name='eu-central-1'
+).resource(
+    's3',
+    config=botocore.client.Config(signature_version='s3v4')
+)
 
 
 def store(user_id, beers):
