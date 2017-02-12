@@ -96,10 +96,10 @@ locationColumn =
                     location
 
                 ( Just location, Just shelf ) ->
-                    location ++ " (" ++ shelf ++ ")"
+                    location ++ " / " ++ shelf
 
                 ( Nothing, Just shelf ) ->
-                    "- (" ++ shelf ++ ")"
+                    "- / " ++ shelf
     in
         stringColumnWithClasses "location" "Location" toString
 
