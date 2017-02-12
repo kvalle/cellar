@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+set -e
 
 BASEDIR=$(cd -P -- "$(dirname -- "$0")" && pwd -P)
 
