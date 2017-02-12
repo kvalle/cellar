@@ -24,5 +24,6 @@ echo "> Packaging app"
 zip --quiet --recurse-paths --exclude=".elasticbeanstalk/config.yml" dist/app.zip \
 	.elasticbeanstalk/ \
 	.ebextensions/ \
+	application.py \
 	app/ \
 	requirements.txt
