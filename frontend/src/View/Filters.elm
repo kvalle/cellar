@@ -136,7 +136,7 @@ useButton filters =
     let
         attributes =
             if filters.active then
-                [ onClick ClearFilters, class "button-primary" ]
+                [ onClick HideFilters, class "button-primary" ]
             else
                 [ class "button-disabled" ]
     in
