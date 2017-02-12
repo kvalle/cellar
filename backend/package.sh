@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
+set -e
 
 BASEDIR=$(cd -P -- "$(dirname -- "$0")" && pwd -P)
 
-# resolve symlinks
 while [ -h "$BASEDIR/$0" ]; do
     DIR=$(dirname -- "$BASEDIR/$0")
     SYM=$(readlink $BASEDIR/$0)
@@ -16,10 +16,9 @@ if [[ -f tmp/app.zip ]]; then
 	rm tmp/app.zip
 fi
 
-if [ ! -f config.py ]; then
-	echo "Config file seems to be missing. Aborting."
-	exit 1
-fi
+ENV=$(echo "$1" | sed 's/cellar-//')
+
+ansible-vault decrypt --output="config.py" "config_${ENV}.py"
 
 echo "> Packaging app"
 zip --quiet --recurse-paths --exclude=".elasticbeanstalk/config.yml" \

@@ -22,7 +22,7 @@ elif [ $(echo "$ENVS" | grep "^$1$" -c) -eq 0 ]; then
   exit 1
 fi
 
-./package.sh
+./package.sh "$1"
 
 echo "> Starting deploy"
 eb deploy "$1"

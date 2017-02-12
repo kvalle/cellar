@@ -5,6 +5,7 @@ import os.path
 import json
 from functools import wraps
 import time
+import sys
 
 import jwt
 from flask import Flask, request, jsonify, _app_ctx_stack, Response
@@ -12,6 +13,7 @@ from flask_cors import cross_origin
 
 import data
 from auth import requires_auth
+import config
 
 
 application = Flask(__name__)
@@ -46,5 +48,8 @@ def beers():
 
 
 if __name__ == "__main__":
+    if config.environment != "dev":
+        print "Current config is for '%s', not 'dev'. Aborting." % config.environment
+        sys.exit(1)
     application.debug = True
     application.run(host="0.0.0.0", port=9000, threaded=True)
