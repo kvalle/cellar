@@ -8,4 +8,4 @@ config.py
 
 # Compiled and packaged files
 *.pyc
-tmp/app.zip
+dist/app.zip

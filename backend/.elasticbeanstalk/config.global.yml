@@ -5,4 +5,4 @@ global:
   default_region: eu-central-1
   profile: cellar
 deploy:
-  artifact: tmp/app.zip
+  artifact: dist/app.zip

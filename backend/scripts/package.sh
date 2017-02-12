@@ -8,26 +8,21 @@ while [ -h "$BASEDIR/$0" ]; do
     SYM=$(readlink $BASEDIR/$0)
     BASEDIR=$(cd $DIR && cd $(dirname -- "$SYM") && pwd)
 done
-cd ${BASEDIR}
+cd ${BASEDIR}/..
 
 echo "> Preparing"
-mkdir -p tmp
-if [[ -f tmp/app.zip ]]; then
-	rm tmp/app.zip
+mkdir -p dist
+if [[ -f dist/app.zip ]]; then
+	rm dist/app.zip
 fi
 
 ENV=$(echo "$1" | sed 's/cellar-//')
 
-ansible-vault decrypt --output="config.py" "config_${ENV}.py"
+ansible-vault decrypt --output="app/config.py" "config_${ENV}.py"
 
 echo "> Packaging app"
-zip --quiet --recurse-paths --exclude=".elasticbeanstalk/config.yml" \
-	tmp/app.zip \
+zip --quiet --recurse-paths --exclude=".elasticbeanstalk/config.yml" dist/app.zip \
 	.elasticbeanstalk/ \
 	.ebextensions/ \
-	application.py \
-	auth.py \
-	config.py \
-	data.py \
-	sync-with-s3.py \
+	app/ \
 	requirements.txt

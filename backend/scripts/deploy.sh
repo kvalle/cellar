@@ -7,7 +7,7 @@ while [ -h "$BASEDIR/$0" ]; do
     SYM=$(readlink $BASEDIR/$0)
     BASEDIR=$(cd $DIR && cd $(dirname -- "$SYM") && pwd)
 done
-cd ${BASEDIR}
+cd ${BASEDIR}/..
 
 
 ENVS=$(eb list | sed 's/^\* //')
@@ -22,7 +22,7 @@ elif [ $(echo "$ENVS" | grep "^$1$" -c) -eq 0 ]; then
   exit 1
 fi
 
-./package.sh "$1"
+./scripts/package.sh "$1"
 
 echo "> Starting deploy"
 eb deploy "$1"
