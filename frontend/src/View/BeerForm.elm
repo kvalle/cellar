@@ -26,7 +26,7 @@ viewBeerForm model =
                     [ div [ class "beer-form", onClickNoPropagation Msg.Noop ]
                         [ formTitle form
                         , fieldwithLabel "Brewery" "brewery" Brewery form True
-                        , fieldwithLabel "Beer Name" "name" Name form False
+                        , fieldwithLabel "Beer Name" "name" Name form True
                         , fieldwithLabel "Beer Style" "style" Style form True
                         , fieldwithLabel "Production year" "year" Year form False
                         , fieldwithLabel "Volume (in liters)" "volume" Volume form False

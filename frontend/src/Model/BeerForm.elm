@@ -55,12 +55,13 @@ from beer context =
             ]
         , possibleSuggestions =
             [ ( Brewery, unique .brewery )
+            , ( Name, unique .name )
             , ( Style, unique .style )
             , ( Location, uniqueMaybe .location )
             , ( Shelf, uniqueMaybe .shelf )
             ]
-        , suggestions = [ ( Brewery, [] ), ( Style, [] ), ( Location, [] ), ( Shelf, [] ) ]
-        , selectedSuggestions = [ ( Brewery, 0 ), ( Style, 0 ), ( Location, 0 ), ( Shelf, 0 ) ]
+        , suggestions = dictInit [] [ Brewery, Name, Style, Location, Shelf ]
+        , selectedSuggestions = dictInit 0 [ Brewery, Name, Style, Location, Shelf ]
         }
 
 
@@ -105,10 +106,15 @@ updateSuggestions field msg form =
                         |> updateSuggestions field Refresh
 
         Refresh ->
-            { form
-                | suggestions =
-                    form.suggestions |> dictUpdate field (findRelevantSuggestions field form)
-            }
+            let
+                relevant =
+                    List.take 20 <| findRelevantSuggestions field form
+            in
+                { form
+                    | suggestions =
+                        form.suggestions
+                            |> dictUpdate field relevant
+                }
 
 
 
@@ -166,10 +172,17 @@ show field form =
 {- Helper functions -}
 
 
+dictInit : v -> List k -> Dict k v
+dictInit val =
+    List.map (\f -> ( f, val ))
+
+
 dictLookup : k -> v -> Dict k v -> v
 dictLookup key default dict =
     case
-        (List.head <| List.filter (\( k, _ ) -> k == key) dict)
+        dict
+            |> List.filter (\( k, _ ) -> k == key)
+            |> List.head
     of
         Nothing ->
             default
