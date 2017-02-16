@@ -7,11 +7,13 @@ type FilterValue
     = YearMax String
     | CountMin String
     | Text String
+    | Locations (List String)
     | Styles (List String)
 
 
 type alias Filters =
     { textMatch : String
+    , locations : List String
     , yearMax : Int
     , countMin : Int
     , styles : List String
@@ -32,7 +34,15 @@ type RangeDefault
 
 init : Filters
 init =
-    Filters "" 0 0 [] ( 0, 0 ) ( 0, 0 ) False
+    { textMatch = ""
+    , locations = []
+    , yearMax = 0
+    , countMin = 0
+    , styles = []
+    , yearRange = ( 0, 0 )
+    , countRange = ( 0, 0 )
+    , active = False
+    }
 
 
 empty : List Beer -> Filters
@@ -51,6 +61,9 @@ setValue value filters =
 
         Text text ->
             { filters | active = True, textMatch = text }
+
+        Locations locations ->
+            { filters | active = True, locations = locations }
 
         Styles styles ->
             { filters | active = True, styles = styles }
@@ -119,5 +132,13 @@ matches beer filters =
 
         styleMatch =
             List.isEmpty filters.styles || List.member beer.style filters.styles
+
+        locationsMatch =
+            case beer.location of
+                Nothing ->
+                    False
+
+                Just location ->
+                    List.isEmpty filters.locations || List.member location filters.locations
     in
-        textMatch && yearMatch && styleMatch && countMatch
+        textMatch && yearMatch && styleMatch && countMatch && locationsMatch

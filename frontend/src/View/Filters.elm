@@ -26,22 +26,23 @@ viewFilters model =
                     [ class "filter-form"
                     , onKey keys.enter HideFilters
                     ]
-                    [ textFilter model.filters model.beers
+                    [ textFilter model.filters
                     , yearMaxFilter model.filters model.beers
                     , styleFilter model.filters model.beers
                     , countMinFilter model.filters model.beers
+                    , locationsFilter model.filters model.beers
                     , buttons model.filters
                     ]
                 ]
 
 
-textFilter : Filters -> List Beer -> Html Msg
-textFilter filters beers =
+textFilter : Filters -> Html Msg
+textFilter filters =
     div []
         [ label [ for "text-filter-input" ] [ text "Matching text" ]
         , input
             [ type_ "search"
-            , id "text-filter"
+            , id "text-filter-input"
             , onInput <| UpdateFilters << Text
             , onKeyWithOptions { defaultOptions | preventDefault = True } keys.escape Noop
             , value filters.textMatch
@@ -120,6 +121,36 @@ styleFilter filters beers =
             )
             [ class "u-full-width" ]
             filters.styles
+        ]
+
+
+locationsFilter : Filters -> List Beer -> Html Msg
+locationsFilter filters beers =
+    div []
+        [ label [ for "locations-filter-input" ] [ text "Stored at" ]
+        , MultiSelect.multiSelect
+            (let
+                options =
+                    MultiSelect.defaultOptions <| UpdateFilters << Locations
+
+                toText location count =
+                    location ++ " (" ++ toString count ++ ")"
+
+                toItem ( count, location ) =
+                    { value = location, text = toText location count, enabled = True }
+
+                locations =
+                    beers
+                        |> List.map .location
+                        |> List.filterMap identity
+                        |> List.sort
+                        |> List.Extra.group
+                        |> List.map (\xs -> ( List.length xs, Maybe.withDefault "" (List.head xs) ))
+             in
+                { options | items = List.map toItem locations }
+            )
+            [ class "u-full-width" ]
+            filters.locations
         ]
 
 
