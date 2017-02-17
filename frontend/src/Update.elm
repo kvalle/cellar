@@ -110,7 +110,7 @@ update msg model =
 
         ShowFilters ->
             ( { model | state = model.state |> State.withFilters State.Visible }
-            , Dom.focus "text-filter" |> Task.attempt FocusResult
+            , Dom.focus "text-filter-input" |> Task.attempt FocusResult
             )
 
         HideFilters ->
