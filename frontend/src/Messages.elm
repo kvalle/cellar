@@ -4,15 +4,15 @@ import Messages.BeerForm exposing (Field, SuggestionMsg)
 import Model.Filters exposing (FilterValue)
 import Model.Beer exposing (Beer)
 import Model.Auth exposing (UserData)
+import Model.KeyEvent exposing (KeyEvent)
 import Http
 import Table
-import Keyboard
 import Dom
 
 
 type Msg
     = Noop
-    | KeyPressed Keyboard.KeyCode
+    | KeyPressed (Result String KeyEvent)
     | FocusResult (Result Dom.Error ())
     | ClearModals
       -- Help

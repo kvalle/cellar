@@ -52,5 +52,9 @@
         app.ports.logoutResult.send(null);
     });
 
+    document.onkeydown = function(e) {
+        app.ports.keyPressed.send(e);
+    };
+
     lock.on('authenticated', getUserInfo);
 })();

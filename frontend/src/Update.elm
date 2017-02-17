@@ -13,6 +13,7 @@ import Model.Filters as Filter
 import Model.BeerList
 import Dom
 import Task
+import Model.KeyEvent exposing (keys)
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -204,25 +205,30 @@ update msg model =
         ClearModals ->
             ( { model | state = model.state |> State.clearModals }, Cmd.none )
 
-        KeyPressed key ->
-            if key == 27 then
-                update ClearModals model
-            else if key == 65 && State.isClearOfModals model.state then
-                update (ShowForm Beer.empty) model
-            else if key == 70 && State.isClearOfModals model.state then
-                update ShowFilters model
-            else if key == 74 && State.isClearOfModals model.state then
-                update ShowJsonModal model
-            else if key == 82 && model.state.changes == State.Changed && State.isClearOfModals model.state then
-                update LoadBeers model
-            else if key == 83 && model.state.changes == State.Changed && State.isClearOfModals model.state then
-                update SaveBeers model
-            else if key == 67 && model.filters.active && State.isClearOfModals model.state then
-                update ClearFilters model
-            else if key == 191 && State.isClearOfModals model.state then
-                update ShowHelp model
-            else
-                ( model, Cmd.none )
+        KeyPressed keyResult ->
+            case keyResult of
+                Err _ ->
+                    ( model, Cmd.none )
+
+                Ok key ->
+                    if key == keys.escape then
+                        update ClearModals model
+                    else if key == keys.a && State.isClearOfModals model.state then
+                        update (ShowForm Beer.empty) model
+                    else if key == keys.f && State.isClearOfModals model.state then
+                        update ShowFilters model
+                    else if key == keys.j && State.isClearOfModals model.state then
+                        update ShowJsonModal model
+                    else if key == keys.r && model.state.changes == State.Changed && State.isClearOfModals model.state then
+                        update LoadBeers model
+                    else if key == keys.s && model.state.changes == State.Changed && State.isClearOfModals model.state then
+                        update SaveBeers model
+                    else if key == keys.c && model.filters.active && State.isClearOfModals model.state then
+                        update ClearFilters model
+                    else if key == keys.questionMark && State.isClearOfModals model.state then
+                        update ShowHelp model
+                    else
+                        ( model, Cmd.none )
 
         FocusResult (Ok _) ->
             ( model, Cmd.none )

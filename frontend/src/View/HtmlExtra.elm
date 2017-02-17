@@ -6,6 +6,9 @@ import Json.Decode
 import Json.Decode.Pipeline as Pipeline
 
 
+-- TODO: remove
+
+
 type alias KeyEvent =
     { key : Int
     , ctrl : Bool
