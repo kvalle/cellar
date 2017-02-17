@@ -33,6 +33,7 @@ keys :
     , arrowUp : KeyEvent
     , enter : KeyEvent
     , escape : KeyEvent
+    , questionMark : KeyEvent
     , tab : KeyEvent
     , a : KeyEvent
     , f : KeyEvent
@@ -40,19 +41,18 @@ keys :
     , c : KeyEvent
     , s : KeyEvent
     , r : KeyEvent
-    , questionMark : KeyEvent
     }
 keys =
-    { enter = fromKeyCode 13
-    , tab = fromKeyCode 8
-    , arrowDown = fromKeyCode 40
+    { arrowDown = fromKeyCode 40
     , arrowUp = fromKeyCode 38
+    , enter = fromKeyCode 13
+    , questionMark = fromKeyCode 191
     , escape = fromKeyCode 27
+    , tab = fromKeyCode 8
     , a = fromKeyCode 65
     , f = fromKeyCode 70
     , j = fromKeyCode 74
     , c = fromKeyCode 67
     , s = fromKeyCode 83
     , r = fromKeyCode 82
-    , questionMark = fromKeyCode 191
     }
