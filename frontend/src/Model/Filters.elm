@@ -136,7 +136,7 @@ matches beer filters =
         locationsMatch =
             case beer.location of
                 Nothing ->
-                    False
+                    List.isEmpty filters.locations
 
                 Just location ->
                     List.isEmpty filters.locations || List.member location filters.locations
