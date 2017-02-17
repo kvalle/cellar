@@ -47,8 +47,8 @@ beerDecoder =
         |> Pipeline.required "count" Decode.int
         |> Pipeline.optional "volume" Decode.float 0.0
         |> Pipeline.optional "abv" Decode.float 0.0
-        |> Pipeline.required "location" (Decode.nullable Decode.string)
-        |> Pipeline.required "shelf" (Decode.nullable Decode.string)
+        |> Pipeline.optional "location" (Decode.nullable Decode.string) Nothing
+        |> Pipeline.optional "shelf" (Decode.nullable Decode.string) Nothing
 
 
 beerListDecoder : Decode.Decoder (List Beer)
