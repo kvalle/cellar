@@ -3,59 +3,80 @@ module View.HtmlExtra exposing (onClickNoPropagation, onKey, onKeys, onKeyWithOp
 import Html exposing (Attribute)
 import Html.Events exposing (on, onWithOptions, defaultOptions, keyCode)
 import Json.Decode
+import Json.Decode.Pipeline as Pipeline
 
 
-type alias Key =
-    Int
+type alias KeyEvent =
+    { key : Int
+    , ctrl : Bool
+    , shift : Bool
+    , alt : Bool
+    , meta : Bool
+    }
+
+
+fromKeyCode : Int -> KeyEvent
+fromKeyCode code =
+    KeyEvent code False False False False
+
+
+keyEventDecoder : Json.Decode.Decoder KeyEvent
+keyEventDecoder =
+    Pipeline.decode KeyEvent
+        |> Pipeline.required "keyCode" Json.Decode.int
+        |> Pipeline.required "ctrlKey" Json.Decode.bool
+        |> Pipeline.required "shiftKey" Json.Decode.bool
+        |> Pipeline.required "altKey" Json.Decode.bool
+        |> Pipeline.required "metaKey" Json.Decode.bool
 
 
 keys :
-    { arrowDown : Key
-    , arrowUp : Key
-    , enter : Key
-    , escape : Key
-    , tab : Key
+    { arrowDown : KeyEvent
+    , arrowUp : KeyEvent
+    , enter : KeyEvent
+    , escape : KeyEvent
+    , tab : KeyEvent
     }
 keys =
-    { enter = 13
-    , tab = 8
-    , arrowDown = 40
-    , arrowUp = 38
-    , escape = 27
+    { enter = fromKeyCode 13
+    , tab = fromKeyCode 8
+    , arrowDown = fromKeyCode 40
+    , arrowUp = fromKeyCode 38
+    , escape = fromKeyCode 27
     }
 
 
-onKeysWithOptions : Html.Events.Options -> List ( Key, msg ) -> Attribute msg
+onKeysWithOptions : Html.Events.Options -> List ( KeyEvent, msg ) -> Attribute msg
 onKeysWithOptions options mappings =
     let
-        decoder mappings code =
+        decoder mappings actualEvent =
             case List.head mappings of
                 Nothing ->
                     Json.Decode.fail "wrong key"
 
-                Just ( key, msg ) ->
-                    if code == key then
+                Just ( keyEvent, msg ) ->
+                    if actualEvent == keyEvent then
                         Json.Decode.succeed msg
                     else
-                        decoder (List.drop 1 mappings) code
+                        decoder (List.drop 1 mappings) actualEvent
     in
         onWithOptions
             "keydown"
             options
-            (keyCode |> Json.Decode.andThen (decoder mappings))
+            (keyEventDecoder |> Json.Decode.andThen (decoder mappings))
 
 
-onKeys : List ( Key, msg ) -> Attribute msg
+onKeys : List ( KeyEvent, msg ) -> Attribute msg
 onKeys mappings =
     onKeysWithOptions defaultOptions mappings
 
 
-onKeyWithOptions : Html.Events.Options -> Key -> msg -> Attribute msg
+onKeyWithOptions : Html.Events.Options -> KeyEvent -> msg -> Attribute msg
 onKeyWithOptions options key msg =
     onKeysWithOptions options [ ( key, msg ) ]
 
 
-onKey : Key -> msg -> Attribute msg
+onKey : KeyEvent -> msg -> Attribute msg
 onKey key msg =
     onKeys [ ( key, msg ) ]
 
