@@ -14,6 +14,7 @@ type Msg
     = Noop
     | KeyPressed Keyboard.KeyCode
     | FocusResult (Result Dom.Error ())
+    | ClearModals
       -- Help
     | ShowHelp
     | HideHelp
