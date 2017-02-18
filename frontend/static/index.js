@@ -1,5 +1,4 @@
-(function() {
-    var token = localStorage.getItem('cellar_login_token');
+(function() {    
     var app = Elm.Main.fullscreen({ "location" : window.location.host });
 
     var lock = new Auth0Lock('VRWeBjxOOu4TptcJNGiYw370OBcpTghq', 'cellar.eu.auth0.com', {
@@ -12,13 +11,13 @@
         },
     });
 
+    var token = localStorage.getItem('cellar_login_token');
     if (token) {
-        console.log("Found token, logging in.");
-        getUserInfo({
-            idToken: token
-        });
+        console.log("Found token. Logging in!");
+        getUserInfo({ idToken: token });
     } else {
-        console.log("No token.");
+        console.log("No token. Logged out.");
+        app.ports.logoutResult.send(null);
     }
 
     function getUserInfo(result) {

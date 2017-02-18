@@ -47,6 +47,11 @@ button.button-disabled:hover {
 	height: 100%;
 }
 
+.login-loading {
+	font-size: 1.5em;
+	color: #33C3F0;
+}
+
 /* Menu */
 
 .menu-actions span {

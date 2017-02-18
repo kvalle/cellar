@@ -18,3 +18,4 @@ type alias UserData =
 type AuthStatus
     = LoggedOut
     | LoggedIn UserData
+    | Checking

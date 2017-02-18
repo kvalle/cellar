@@ -12,25 +12,37 @@ import Json.Decode as Decode
 fetchBeers : Environment -> AuthStatus -> Cmd Msg
 fetchBeers env auth =
     case auth of
-        LoggedOut ->
-            Cmd.none
-
         LoggedIn userData ->
             Http.send
                 LoadedBeerList
-                (request "GET" (url env) Http.emptyBody beerListDecoder userData.token)
+                (request
+                    "GET"
+                    (url env)
+                    Http.emptyBody
+                    beerListDecoder
+                    userData.token
+                )
+
+        _ ->
+            Cmd.none
 
 
 saveBeers : Environment -> AuthStatus -> List Beer -> Cmd Msg
 saveBeers env auth beers =
     case auth of
-        LoggedOut ->
-            Cmd.none
-
         LoggedIn userData ->
             Http.send
                 SavedBeerList
-                (request "POST" (url env) (Http.jsonBody <| beerListEncoder beers) beerListDecoder userData.token)
+                (request
+                    "POST"
+                    (url env)
+                    (Http.jsonBody <| beerListEncoder beers)
+                    beerListDecoder
+                    userData.token
+                )
+
+        _ ->
+            Cmd.none
 
 
 url : Environment -> String

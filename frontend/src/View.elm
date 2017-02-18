@@ -18,6 +18,9 @@ import Html.Attributes exposing (id, class, type_, for, src, title, value, style
 view : Model -> Html Msg
 view model =
     case model.auth of
+        Auth.Checking ->
+            viewCheckingLogin
+
         Auth.LoggedOut ->
             viewLoggedOut
 
@@ -27,11 +30,19 @@ view model =
 
 viewLoggedOut : Html Msg
 viewLoggedOut =
-    div [ class "login" ]
+    div [ class "login login-button" ]
         [ a [ class "button button-primary", onClick Msg.Login ]
             [ i [ class "icon-beer" ] []
             , text " Log in"
             ]
+        ]
+
+
+viewCheckingLogin : Html Msg
+viewCheckingLogin =
+    div [ class "login login-loading" ]
+        [ i [ class "icon-spinner animate-spin" ] []
+        , text "Loading…"
         ]
 
 
@@ -105,15 +116,15 @@ viewButton name icon msg active =
 viewUserInfo : Auth.AuthStatus -> Html Msg
 viewUserInfo auth =
     case auth of
-        Auth.LoggedOut ->
-            text ""
-
         Auth.LoggedIn user ->
             div [ class "user-info" ]
                 [ img [ src user.profile.picture ] []
                 , span [ class "profile" ] [ text user.profile.username ]
                 , a [ class "logout", onClick Msg.Logout ] [ text "Log out" ]
                 ]
+
+        _ ->
+            text ""
 
 
 viewErrors : Maybe String -> Html msg

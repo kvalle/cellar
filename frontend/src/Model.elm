@@ -25,7 +25,7 @@ init : Environment -> Model
 init env =
     Model
         env
-        Model.Auth.LoggedOut
+        Model.Auth.Checking
         Model.BeerList.init
         Model.Table.init
         Model.BeerForm.init
