@@ -43,7 +43,7 @@ echo "Installing dependencies"
 pip install -r requirements.txt
 
 echo "Preparing dev config"
-ansible-vault decrypt --output="app/config.py" "config_dev.py"
+ansible-vault decrypt --output="app/config.py" "config/config_dev.py"
 
 venv_bin_path=$(realpath --relative-to=${staring_dir} $(cd .cellar-venv/bin && pwd))
 server_path=$(realpath --relative-to=${staring_dir} "$(pwd)/application.py")

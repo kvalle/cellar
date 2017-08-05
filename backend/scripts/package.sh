@@ -18,7 +18,7 @@ fi
 
 ENV=$(echo "$1" | sed 's/cellar-//')
 
-ansible-vault decrypt --output="app/config.py" "config_${ENV}.py"
+ansible-vault decrypt --output="app/config.py" "config/config_${ENV}.py"
 
 echo "> Packaging app"
 zip --quiet --recurse-paths --exclude=".elasticbeanstalk/config.yml" dist/app.zip \
