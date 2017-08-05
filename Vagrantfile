@@ -10,6 +10,9 @@ Vagrant.configure("2") do |config|
     sudo apt-get install python -y
     sudo apt-get install python-setuptools -y
     sudo apt-get install ansible -y
+    sudo apt-get install npm -y
+    sudo ln -s /usr/bin/nodejs /usr/bin/node
+    sudo npm install -g elm
     sudo easy_install pip
     sudo pip install virtualenv
 SCRIPT
