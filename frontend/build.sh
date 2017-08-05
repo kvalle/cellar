@@ -55,11 +55,11 @@ function watch_build() {
     while inotifywait -q -r -e modify . ; do
       build
     done
-  fi
-
-  if command -v fswatch >/dev/null; then
+  elif command -v fswatch >/dev/null; then
     log_test_run
     fswatch ./src ./static | (while read; do build; done)
+  else
+    echo "Unable to run watch. Make sure you have inotifytools (linux) or fswatch (mac) installed."
   fi
 }
 
