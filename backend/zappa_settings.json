@@ -1,14 +1,20 @@
 {
     "dev": {
+    	"project_name": "cellar",
         "app_function": "app.main.application", 
+        "apigateway_description": "Cellar backend API (dev)",
         "s3_bucket": "zappa-cellar-dev",
         "domain": "dev.api.cellar.kjetilvalle.com",
-        "certificate_arn": "arn:aws:acm:us-east-1:017978203355:certificate/9cf0bdca-f3a6-4721-897b-a755216d28d6"
+        "certificate_arn": "arn:aws:acm:us-east-1:017978203355:certificate/9cf0bdca-f3a6-4721-897b-a755216d28d6",
+        "aws_region": "eu-central-1"
     },
     "test": {
+    	"project_name": "cellar",
         "app_function": "app.main.application", 
+        "apigateway_description": "Cellar backend API (test)",
         "s3_bucket": "zappa-cellar-test",
         "domain": "test.api.cellar.kjetilvalle.com",
-        "certificate_arn": "arn:aws:acm:us-east-1:017978203355:certificate/9cf0bdca-f3a6-4721-897b-a755216d28d6"
+        "certificate_arn": "arn:aws:acm:us-east-1:017978203355:certificate/9cf0bdca-f3a6-4721-897b-a755216d28d6",
+        "aws_region": "eu-central-1"
     }
 }
