@@ -52,4 +52,4 @@ echo "Preparing ${environment} config"
 ansible-vault decrypt --output="app/config.py" "config/config_${environment}.py"
 
 echo "Starting deploy"
-zappa deploy "${environment}"
+zappa update "${environment}"
