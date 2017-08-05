@@ -9,3 +9,6 @@ config.py
 # Compiled and packaged files
 *.pyc
 dist/app.zip
+
+# Virtualenv directory
+.cellar-venv/
