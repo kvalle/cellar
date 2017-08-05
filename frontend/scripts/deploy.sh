@@ -8,6 +8,7 @@ while [ -h "$BASEDIR/$0" ]; do
     BASEDIR=$(cd $DIR && cd $(dirname -- "$SYM") && pwd)
 done
 cd ${BASEDIR}
+cd ..
 
 if [[ "$#" != "1" ]]; then
   echo "Usage: ${0} cellar-<environment>"
@@ -16,11 +17,13 @@ elif [[ ${1} == "cellar-prod" ]]; then
   BUCKET="cellar.kjetilvalle.com"
 elif [[ ${1} == "cellar-test" ]]; then
   BUCKET="test.cellar.kjetilvalle.com"
+elif [[ ${1} == "cellar-dev" ]]; then
+  BUCKET="dev.cellar.kjetilvalle.com"
 else
   echo "Environment not recognized: '$1'."
   exit 1
 fi
 
-./build.sh
+./scripts/build.sh
 
 s3cmd --delete-removed --config=./.s3cfg sync dist/ s3://${BUCKET}

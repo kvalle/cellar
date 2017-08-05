@@ -13,6 +13,6 @@ function move_to_dir_with_this_script() {
 }
 
 move_to_dir_with_this_script
-cd dist
+cd ../dist
 
 python -m SimpleHTTPServer 8000
