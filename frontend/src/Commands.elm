@@ -55,7 +55,7 @@ url env =
             "https://test.api.cellar.kjetilvalle.com/beers"
 
         Local ->
-            "http://localhost:9000/beers"
+            "https://dev.api.cellar.kjetilvalle.com/beers"
 
         Unknown ->
             "/api/beers"
