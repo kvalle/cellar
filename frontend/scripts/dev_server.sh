@@ -13,6 +13,16 @@ function move_to_dir_with_this_script() {
 }
 
 move_to_dir_with_this_script
+
+./build.sh --debug --watch &
+build_pid=$!
+
+function cleanup() {
+	kill ${build_pid}
+}
+
+trap cleanup EXIT
+
 cd ../dist
 
-python -m SimpleHTTPServer 8000
+python -m SimpleHTTPServer ${1:-8000}
