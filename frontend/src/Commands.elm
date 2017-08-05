@@ -54,6 +54,9 @@ url env =
         Test ->
             "https://test.api.cellar.kjetilvalle.com/beers"
 
+        Dev ->
+            "https://dev.api.cellar.kjetilvalle.com/beers"
+
         Local ->
             "https://dev.api.cellar.kjetilvalle.com/beers"
 
