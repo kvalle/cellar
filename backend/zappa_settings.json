@@ -1,6 +1,14 @@
 {
     "dev": {
         "app_function": "app.main.application", 
-        "s3_bucket": "zappa-cellar-dev"
+        "s3_bucket": "zappa-cellar-dev",
+        "domain": "dev.api.cellar.kjetilvalle.com",
+        "certificate_arn": "arn:aws:acm:us-east-1:017978203355:certificate/9cf0bdca-f3a6-4721-897b-a755216d28d6"
+    },
+    "test": {
+        "app_function": "app.main.application", 
+        "s3_bucket": "zappa-cellar-test",
+        "domain": "test.api.cellar.kjetilvalle.com",
+        "certificate_arn": "arn:aws:acm:us-east-1:017978203355:certificate/9cf0bdca-f3a6-4721-897b-a755216d28d6"
     }
 }
