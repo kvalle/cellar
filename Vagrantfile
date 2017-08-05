@@ -7,7 +7,7 @@ Vagrant.configure("2") do |config|
 
   config.vm.provision "shell", inline: <<-SCRIPT
     sudo apt-get update
-    sudo apt-get install inotifytools -y
+    sudo apt-get install inotify-tools -y
     sudo apt-get install python -y
     sudo apt-get install python-setuptools -y
     sudo apt-get install ansible -y
