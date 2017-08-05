@@ -1,8 +1,0 @@
-global:
-  application_name: cellar-backend
-  default_ec2_keyname: cellar
-  default_platform: 64bit Amazon Linux 2016.09 v2.3.1 running Python 2.7
-  default_region: eu-central-1
-  profile: cellar
-deploy:
-  artifact: dist/app.zip
