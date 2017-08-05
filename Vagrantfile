@@ -9,6 +9,7 @@ Vagrant.configure("2") do |config|
     sudo apt-get update
     sudo apt-get install python -y
     sudo apt-get install python-setuptools -y
+    sudo apt-get install ansible -y
     sudo easy_install pip
     sudo pip install virtualenv
 SCRIPT

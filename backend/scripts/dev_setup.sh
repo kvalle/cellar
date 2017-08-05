@@ -33,6 +33,7 @@ move_to_dir_with_this_script
 cd ..
 
 verify_installed "virtualenv"
+verify_installed "ansible-vault"
 
 echo "Setting up virtualenv"
 virtualenv .cellar-venv
@@ -41,9 +42,17 @@ virtualenv .cellar-venv
 echo "Installing dependencies"
 pip install -r requirements.txt
 
+echo "Preparing dev config"
+ansible-vault decrypt --output="app/config.py" "config_dev.py"
+
 venv_bin_path=$(realpath --relative-to=${staring_dir} $(cd .cellar-venv/bin && pwd))
+server_path=$(realpath --relative-to=${staring_dir} "$(pwd)/application.py")
 echo "All done!"
 echo "Now, use the following command to activate the virtualenv:"
 echo
 echo "  source ${venv_bin_path}/activate"
+echo
+echo "And start the dev server with:"
+echo
+echo "  ./${server_path}"
 echo
