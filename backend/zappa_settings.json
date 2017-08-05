@@ -1,0 +1,6 @@
+{
+    "dev": {
+        "app_function": "app.main.application", 
+        "s3_bucket": "zappa-cellar-dev"
+    }
+}
