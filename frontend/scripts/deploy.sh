@@ -1,14 +1,12 @@
 #/bin/bash
 
 BASEDIR=$(cd -P -- "$(dirname -- "$0")" && pwd -P)
-
 while [ -h "$BASEDIR/$0" ]; do
     DIR=$(dirname -- "$BASEDIR/$0")
     SYM=$(readlink $BASEDIR/$0)
     BASEDIR=$(cd $DIR && cd $(dirname -- "$SYM") && pwd)
 done
-cd ${BASEDIR}
-cd ..
+cd "${BASEDIR}/.."
 
 if [[ "$#" != "1" ]]; then
   echo "Usage: ${0} cellar-<environment>"
