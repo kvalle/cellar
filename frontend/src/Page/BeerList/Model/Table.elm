@@ -1,4 +1,4 @@
-module Model.Table exposing (init)
+module Page.BeerList.Model.Table exposing (init)
 
 import Table
 

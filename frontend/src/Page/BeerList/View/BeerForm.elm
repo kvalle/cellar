@@ -1,12 +1,12 @@
-module View.BeerForm exposing (viewBeerForm)
+module Page.BeerList.View.BeerForm exposing (viewBeerForm)
 
-import Messages as Msg exposing (Msg)
-import Messages.BeerForm exposing (Field(..), SuggestionMsg(..))
-import Model exposing (Model)
-import Model.State exposing (DisplayState(..))
-import Model.BeerForm exposing (BeerForm)
-import Model.KeyEvent exposing (keys)
-import View.HtmlExtra exposing (onClickNoPropagation, onKeysWithOptions)
+import Page.BeerList.Messages as Msg exposing (Msg)
+import Page.BeerList.Messages.BeerForm exposing (Field(..), SuggestionMsg(..))
+import Page.BeerList.Model exposing (Model)
+import Page.BeerList.Model.State exposing (DisplayState(..))
+import Page.BeerList.Model.BeerForm exposing (BeerForm)
+import Page.BeerList.Model.KeyEvent exposing (keys)
+import Page.BeerList.View.HtmlExtra exposing (onClickNoPropagation, onKeysWithOptions)
 import Html exposing (..)
 import Html.Events exposing (onClick, on, onWithOptions, onInput, defaultOptions, keyCode, onBlur)
 import Html.Attributes exposing (id, class, type_, for, src, title, value, autocomplete, classList)
@@ -65,7 +65,7 @@ formControlButtons form =
                     "Save"
 
         attributes =
-            if Model.BeerForm.isValid form then
+            if Page.BeerList.Model.BeerForm.isValid form then
                 [ onClickNoPropagation Msg.SubmitForm, class "button-primary" ]
             else
                 [ class "button-disabled" ]
@@ -93,7 +93,7 @@ fieldwithLabel labelText tag field form suggestionsEnabled =
             , autocomplete False
             , id <| tag ++ "-input"
             , onInput <| Msg.UpdateFormField field
-            , value <| Model.BeerForm.show field form
+            , value <| Page.BeerList.Model.BeerForm.show field form
             , onBlur <| Msg.UpdateFormSuggestions field Clear
             , onKeysWithOptions
                 { defaultOptions | preventDefault = True }
@@ -115,10 +115,10 @@ suggestions : Field -> BeerForm -> Html Msg
 suggestions field form =
     let
         selectedIndex =
-            Model.BeerForm.selectedSuggestion field form
+            Page.BeerList.Model.BeerForm.selectedSuggestion field form
 
         values =
-            Model.BeerForm.suggestions field form
+            Page.BeerList.Model.BeerForm.suggestions field form
     in
         if List.isEmpty values then
             text ""

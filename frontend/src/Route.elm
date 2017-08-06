@@ -12,6 +12,7 @@ import UrlParser as Url exposing ((</>), Parser, oneOf, parseHash, s, string)
 type Route
     = Dummy1
     | Dummy2
+    | BeerList
 
 
 route : Parser (Route -> a) a
@@ -19,6 +20,7 @@ route =
     oneOf
         [ Url.map Dummy1 (s "")
         , Url.map Dummy2 (s "dummy2")
+        , Url.map BeerList (s "beer")
         ]
 
 
@@ -35,7 +37,10 @@ routeToString page =
                     []
 
                 Dummy2 ->
-                    [ "login" ]
+                    [ "dummy2" ]
+
+                BeerList ->
+                    [ "beer" ]
     in
         "#/" ++ String.join "/" pieces
 

@@ -1,10 +1,10 @@
-module Commands exposing (fetchBeers, saveBeers)
+module Page.BeerList.Commands exposing (fetchBeers, saveBeers)
 
-import Model.Beer exposing (Beer)
-import Model.Environment exposing (Environment(..))
-import Model.Auth exposing (AuthStatus(..))
-import Messages exposing (Msg(..))
-import Model.Beer.Json exposing (beerListEncoder, beerListDecoder)
+import Page.BeerList.Model.Beer exposing (Beer)
+import Page.BeerList.Model.Environment exposing (Environment(..))
+import Page.BeerList.Model.Auth exposing (AuthStatus(..))
+import Page.BeerList.Messages exposing (Msg(..))
+import Page.BeerList.Model.Beer.Json exposing (beerListEncoder, beerListDecoder)
 import Http
 import Json.Decode as Decode
 

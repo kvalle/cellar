@@ -1,10 +1,10 @@
-module Messages exposing (Msg(..))
+module Page.BeerList.Messages exposing (Msg(..))
 
-import Messages.BeerForm exposing (Field, SuggestionMsg)
-import Model.Filters exposing (FilterValue)
-import Model.Beer exposing (Beer)
-import Model.Auth exposing (UserData)
-import Model.KeyEvent exposing (KeyEvent)
+import Page.BeerList.Messages.BeerForm exposing (Field, SuggestionMsg)
+import Page.BeerList.Model.Filters exposing (FilterValue)
+import Page.BeerList.Model.Beer exposing (Beer)
+import Page.BeerList.Model.Auth exposing (UserData)
+import Page.BeerList.Model.KeyEvent exposing (KeyEvent)
 import Http
 import Table
 import Dom

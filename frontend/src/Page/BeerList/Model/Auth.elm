@@ -1,4 +1,4 @@
-module Model.Auth exposing (..)
+module Page.BeerList.Model.Auth exposing (..)
 
 
 type alias User =

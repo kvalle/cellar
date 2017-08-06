@@ -1,19 +1,19 @@
-module Update exposing (update)
+module Page.BeerList.Update exposing (update)
 
-import Messages exposing (Msg(..))
-import Messages.BeerForm exposing (SuggestionMsg(..))
-import Commands
+import Page.BeerList.Messages exposing (Msg(..))
+import Page.BeerList.Messages.BeerForm exposing (SuggestionMsg(..))
+import Page.BeerList.Commands
 import Ports
-import Model exposing (Model)
-import Model.State as State exposing (Network(..))
-import Model.Auth exposing (AuthStatus(..))
-import Model.BeerForm as BeerForm
-import Model.Beer as Beer
-import Model.Filters as Filter
-import Model.BeerList
+import Page.BeerList.Model exposing (Model)
+import Page.BeerList.Model.State as State exposing (Network(..))
+import Page.BeerList.Model.Auth exposing (AuthStatus(..))
+import Page.BeerList.Model.BeerForm as BeerForm
+import Page.BeerList.Model.Beer as Beer
+import Page.BeerList.Model.Filters as Filter
+import Page.BeerList.Model.BeerList
 import Dom
 import Task
-import Model.KeyEvent exposing (keys)
+import Page.BeerList.Model.KeyEvent exposing (keys)
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -26,7 +26,7 @@ update msg model =
 
         LoginResult userData ->
             ( { model | auth = LoggedIn userData }
-            , Commands.fetchBeers model.env <| LoggedIn userData
+            , Page.BeerList.Commands.fetchBeers model.env <| LoggedIn userData
             )
 
         Logout ->
@@ -84,12 +84,12 @@ update msg model =
 
         SaveBeers ->
             ( { model | state = State.withNetwork Saving model.state }
-            , Commands.saveBeers model.env model.auth model.beers
+            , Page.BeerList.Commands.saveBeers model.env model.auth model.beers
             )
 
         LoadBeers ->
             ( { model | state = State.withNetwork Loading model.state }
-            , Commands.fetchBeers model.env model.auth
+            , Page.BeerList.Commands.fetchBeers model.env model.auth
             )
 
         ShowJsonModal ->
@@ -120,7 +120,7 @@ update msg model =
         DecrementBeer beer ->
             let
                 newBeers =
-                    Model.BeerList.decrement beer model.beers
+                    Page.BeerList.Model.BeerList.decrement beer model.beers
             in
                 ( { model
                     | beers = newBeers
@@ -133,7 +133,7 @@ update msg model =
         IncrementBeer beer ->
             let
                 newBeers =
-                    Model.BeerList.increment beer model.beers
+                    Page.BeerList.Model.BeerList.increment beer model.beers
             in
                 ( { model
                     | beers = newBeers
@@ -146,7 +146,7 @@ update msg model =
         DeleteBeer beer ->
             let
                 newBeers =
-                    Model.BeerList.delete beer model.beers
+                    Page.BeerList.Model.BeerList.delete beer model.beers
             in
                 ( { model
                     | beers = newBeers
@@ -191,7 +191,7 @@ update msg model =
         SubmitForm ->
             let
                 newBeers =
-                    Model.BeerList.addOrUpdate (BeerForm.toBeer model.beerForm) model.beers
+                    Page.BeerList.Model.BeerList.addOrUpdate (BeerForm.toBeer model.beerForm) model.beers
             in
                 ( { model
                     | beers = newBeers

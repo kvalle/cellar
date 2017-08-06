@@ -1,4 +1,4 @@
-module Model.KeyEvent exposing (KeyEvent, fromKeyCode, keys, keyEventDecoder)
+module Page.BeerList.Model.KeyEvent exposing (KeyEvent, fromKeyCode, keys, keyEventDecoder)
 
 import Json.Decode
 import Json.Decode.Pipeline as Pipeline

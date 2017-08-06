@@ -1,4 +1,4 @@
-module Model.Beer exposing (Beer, empty)
+module Page.BeerList.Model.Beer exposing (Beer, empty)
 
 
 type alias Beer =

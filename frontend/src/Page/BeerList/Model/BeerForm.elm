@@ -1,7 +1,7 @@
-module Model.BeerForm exposing (BeerForm, empty, init, from, updateField, updateSuggestions, suggestions, selectedSuggestion, isValid, show, toBeer)
+module Page.BeerList.Model.BeerForm exposing (BeerForm, empty, init, from, updateField, updateSuggestions, suggestions, selectedSuggestion, isValid, show, toBeer)
 
-import Messages.BeerForm exposing (Field(..), SuggestionMsg(..))
-import Model.Beer exposing (Beer)
+import Page.BeerList.Messages.BeerForm exposing (Field(..), SuggestionMsg(..))
+import Page.BeerList.Model.Beer exposing (Beer)
 import Set
 
 
@@ -29,7 +29,7 @@ init =
 
 empty : List Beer -> BeerForm
 empty context =
-    from Model.Beer.empty context
+    from Page.BeerList.Model.Beer.empty context
 
 
 from : Beer -> List Beer -> BeerForm

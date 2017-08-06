@@ -1,6 +1,6 @@
-module Model.Beer.Json exposing (beerEncoder, beerListEncoder, beerDecoder, beerListDecoder)
+module Page.BeerList.Model.Beer.Json exposing (beerEncoder, beerListEncoder, beerDecoder, beerListDecoder)
 
-import Model.Beer exposing (Beer)
+import Page.BeerList.Model.Beer exposing (Beer)
 import Json.Decode as Decode
 import Json.Encode as Encode
 import Json.Decode.Pipeline as Pipeline

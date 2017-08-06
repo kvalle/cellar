@@ -1,6 +1,6 @@
-module View.HtmlExtra exposing (onClickNoPropagation, onKey, onKeys, onKeyWithOptions, onKeysWithOptions)
+module Page.BeerList.View.HtmlExtra exposing (onClickNoPropagation, onKey, onKeys, onKeyWithOptions, onKeysWithOptions)
 
-import Model.KeyEvent exposing (KeyEvent)
+import Page.BeerList.Model.KeyEvent exposing (KeyEvent)
 import Html exposing (Attribute)
 import Html.Events exposing (on, onWithOptions, defaultOptions, keyCode)
 import Json.Decode
@@ -23,7 +23,7 @@ onKeysWithOptions options mappings =
         onWithOptions
             "keydown"
             options
-            (Model.KeyEvent.keyEventDecoder |> Json.Decode.andThen (decoder mappings))
+            (Page.BeerList.Model.KeyEvent.keyEventDecoder |> Json.Decode.andThen (decoder mappings))
 
 
 onKeys : List ( KeyEvent, msg ) -> Attribute msg

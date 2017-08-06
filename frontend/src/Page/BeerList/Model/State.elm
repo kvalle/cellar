@@ -1,4 +1,4 @@
-module Model.State exposing (..)
+module Page.BeerList.Model.State exposing (..)
 
 
 type alias State =

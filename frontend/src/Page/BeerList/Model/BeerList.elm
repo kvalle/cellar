@@ -1,7 +1,7 @@
-module Model.BeerList exposing (BeerList, init, filtered, decrement, increment, delete, addOrUpdate)
+module Page.BeerList.Model.BeerList exposing (BeerList, init, filtered, decrement, increment, delete, addOrUpdate)
 
-import Model.Filters exposing (Filters)
-import Model.Beer exposing (Beer)
+import Page.BeerList.Model.Filters exposing (Filters)
+import Page.BeerList.Model.Beer exposing (Beer)
 
 
 type alias BeerList =
@@ -15,7 +15,7 @@ init =
 
 filtered : Filters -> BeerList -> BeerList
 filtered filters beers =
-    List.filter (\beer -> Model.Filters.matches beer filters) beers
+    List.filter (\beer -> Page.BeerList.Model.Filters.matches beer filters) beers
 
 
 decrement : Beer -> BeerList -> BeerList

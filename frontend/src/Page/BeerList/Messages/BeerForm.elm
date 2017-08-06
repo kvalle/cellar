@@ -1,4 +1,4 @@
-module Messages.BeerForm exposing (..)
+module Page.BeerList.Messages.BeerForm exposing (..)
 
 
 type SuggestionMsg

@@ -3,7 +3,10 @@ module Main exposing (..)
 --import Messages exposing (Msg)
 --import Subscriptions
 --import Model exposing (Model)
---import Model.Environment
+
+import Page.BeerList.Model.Environment
+
+
 --import View
 --import Update
 
@@ -13,6 +16,10 @@ import Page.Errored as Errored exposing (PageLoadError)
 import Page.Dummy1
 import Page.Dummy2
 import Page.NotFound
+import Page.BeerList.Model
+import Page.BeerList.Update
+import Page.BeerList.Messages
+import Page.BeerList.View
 import Util exposing ((=>))
 import Task
 import Navigation exposing (Location)
@@ -24,6 +31,7 @@ type Page
     | Errored PageLoadError
     | Dummy1 String
     | Dummy2 String
+    | BeerList Page.BeerList.Model.Model
 
 
 type PageState
@@ -70,9 +78,11 @@ init val location =
 type Msg
     = SetRoute (Maybe Route)
     | Dummy1Loaded (Result PageLoadError Page.Dummy1.Model)
-    | Dummy2Loaded (Result PageLoadError Page.Dummy1.Model)
+    | Dummy2Loaded (Result PageLoadError Page.Dummy2.Model)
+    | BeerListLoaded (Result PageLoadError Page.BeerList.Model.Model)
     | Dummy1Msg Page.Dummy1.Msg
     | Dummy2Msg Page.Dummy2.Msg
+    | BeerListMsg Page.BeerList.Messages.Msg
 
 
 setRoute : Maybe Route -> Model -> ( Model, Cmd Msg )
@@ -91,6 +101,10 @@ setRoute maybeRoute model =
 
             Just (Route.Dummy2) ->
                 transition Dummy2Loaded (Page.Dummy2.init)
+
+            Just (Route.BeerList) ->
+                -- FIXME: hard coded Dev should be picked from flag
+                transition BeerListLoaded (Page.BeerList.Model.init Page.BeerList.Model.Environment.Dev)
 
 
 pageErrored : Model -> String -> ( Model, Cmd msg )
@@ -165,11 +179,20 @@ updatePage page msg model =
             ( Dummy2Loaded (Err error), _ ) ->
                 { model | pageState = Loaded (Errored error) } => Cmd.none
 
+            ( BeerListLoaded (Ok subModel), _ ) ->
+                { model | pageState = Loaded (BeerList subModel) } => Cmd.none
+
+            ( BeerListLoaded (Err error), _ ) ->
+                { model | pageState = Loaded (Errored error) } => Cmd.none
+
             ( Dummy1Msg subMsg, Dummy1 subModel ) ->
                 toPage Dummy1 Dummy1Msg Page.Dummy1.update subMsg subModel
 
             ( Dummy2Msg subMsg, Dummy2 subModel ) ->
                 toPage Dummy2 Dummy2Msg Page.Dummy2.update subMsg subModel
+
+            ( BeerListMsg subMsg, BeerList subModel ) ->
+                toPage BeerList BeerListMsg Page.BeerList.Update.update subMsg subModel
 
             ( _, NotFound ) ->
                 -- Disregard incoming messages when we're on the
@@ -207,3 +230,7 @@ viewPage isLoading page =
         Dummy2 subModel ->
             Page.Dummy2.view subModel
                 |> Html.map Dummy2Msg
+
+        BeerList subModel ->
+            Page.BeerList.View.view subModel
+                |> Html.map BeerListMsg

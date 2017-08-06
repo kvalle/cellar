@@ -1,15 +1,15 @@
-module View exposing (view)
+module Page.BeerList.View exposing (view)
 
-import Messages as Msg exposing (Msg)
-import Model exposing (Model)
-import Model.State as State
-import Model.Auth as Auth
-import Model.Beer
-import View.BeerList exposing (viewBeerList)
-import View.Filters exposing (viewFilters)
-import View.BeerForm exposing (viewBeerForm)
-import View.Json exposing (viewJsonModal)
-import View.Help exposing (viewHelpDialog)
+import Page.BeerList.Messages as Msg exposing (Msg)
+import Page.BeerList.Model exposing (Model)
+import Page.BeerList.Model.State as State
+import Page.BeerList.Model.Auth as Auth
+import Page.BeerList.Model.Beer
+import Page.BeerList.View.BeerList exposing (viewBeerList)
+import Page.BeerList.View.Filters exposing (viewFilters)
+import Page.BeerList.View.BeerForm exposing (viewBeerForm)
+import Page.BeerList.View.Json exposing (viewJsonModal)
+import Page.BeerList.View.Help exposing (viewHelpDialog)
 import Html exposing (..)
 import Html.Events exposing (onClick, onInput, onWithOptions, defaultOptions)
 import Html.Attributes exposing (id, class, type_, for, src, title, value, style)
@@ -65,7 +65,7 @@ viewLoggedIn model =
         , div [ class "row" ]
             [ div [ class "main twelve columns" ]
                 [ div [ class "menu-actions" ]
-                    [ viewButton "Add beer" "beer" (Msg.ShowForm Model.Beer.empty) True
+                    [ viewButton "Add beer" "beer" (Msg.ShowForm Page.BeerList.Model.Beer.empty) True
                     , viewButton "Save" "floppy" Msg.SaveBeers (model.state.changes == State.Changed)
                     , viewButton "Reset" "ccw" Msg.LoadBeers (model.state.changes == State.Changed)
                     , viewButton "Clear filters" "cancel" Msg.ClearFilters model.filters.active

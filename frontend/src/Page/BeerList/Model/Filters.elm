@@ -1,6 +1,6 @@
-module Model.Filters exposing (FilterValue(..), Filters, init, empty, setValue, setContext, matches)
+module Page.BeerList.Model.Filters exposing (FilterValue(..), Filters, init, empty, setValue, setContext, matches)
 
-import Model.Beer exposing (Beer)
+import Page.BeerList.Model.Beer exposing (Beer)
 
 
 type FilterValue
