@@ -89,9 +89,7 @@ actionColumn =
         , viewData =
             \beer ->
                 Table.HtmlDetails [ class "actions" ]
-                    [ viewIncrementAction beer
-                    , viewDecrementAction beer
-                    , viewDeleteAction beer
+                    [ viewDeleteAction beer
                     , viewEditAction beer
                     ]
         , sorter = Table.unsortable
