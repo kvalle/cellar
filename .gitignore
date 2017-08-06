@@ -4,3 +4,4 @@ frontend/dist/
 .DS_Store
 .vagrant/
 .s3cfg
+worknotes.txt
