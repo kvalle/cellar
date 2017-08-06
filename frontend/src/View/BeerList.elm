@@ -40,11 +40,9 @@ tableConfig showCount =
                 [ intColumnWithClasses "count" "#" .count
                 , stringColumnWithClasses "brewery" "Brewery" .brewery
                 , stringColumnWithClasses "name" "Name" .name
-                , floatColumnWithClasses "vol" "Vol" .volume
                 , floatColumnWithClasses "abv" "ABV" .abv
                 , intColumnWithClasses "year" "Year" .year
                 , stringColumnWithClasses "style" "Style" .style
-                , locationColumn
                 , actionColumn
                 ]
             , customizations =
@@ -82,26 +80,6 @@ intColumnWithClasses classes name asInt =
 floatColumnWithClasses : String -> String -> (a -> Float) -> Table.Column a Msg
 floatColumnWithClasses classes name asFloat =
     columnWithClasses classes name asFloat (toString << asFloat)
-
-
-locationColumn : Table.Column Beer Msg
-locationColumn =
-    let
-        toString beer =
-            case ( beer.location, beer.shelf ) of
-                ( Nothing, Nothing ) ->
-                    ""
-
-                ( Just location, Nothing ) ->
-                    location
-
-                ( Just location, Just shelf ) ->
-                    location ++ " / " ++ shelf
-
-                ( Nothing, Just shelf ) ->
-                    "- / " ++ shelf
-    in
-        stringColumnWithClasses "location" "Location" toString
 
 
 actionColumn : Table.Column Beer Msg
