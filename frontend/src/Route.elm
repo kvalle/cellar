@@ -10,17 +10,15 @@ import UrlParser as Url exposing ((</>), Parser, oneOf, parseHash, s, string)
 
 
 type Route
-    = Dummy1
-    | Dummy2
-    | BeerList
+    = BeerList
+    | About
 
 
 route : Parser (Route -> a) a
 route =
     oneOf
-        [ Url.map Dummy1 (s "")
-        , Url.map Dummy2 (s "dummy2")
-        , Url.map BeerList (s "beer")
+        [ Url.map BeerList (s "")
+        , Url.map About (s "about")
         ]
 
 
@@ -33,14 +31,11 @@ routeToString page =
     let
         pieces =
             case page of
-                Dummy1 ->
+                BeerList ->
                     []
 
-                Dummy2 ->
-                    [ "dummy2" ]
-
-                BeerList ->
-                    [ "beer" ]
+                About ->
+                    [ "About" ]
     in
         "#/" ++ String.join "/" pieces
 
@@ -62,6 +57,6 @@ modifyUrl =
 fromLocation : Location -> Maybe Route
 fromLocation location =
     if String.isEmpty location.hash then
-        Just Dummy1
+        Just BeerList
     else
         parseHash route location

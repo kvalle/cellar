@@ -4,8 +4,7 @@ import Page.BeerList.Model.Environment
 import Html exposing (Html)
 import Route exposing (Route)
 import Page.Errored as Errored exposing (PageLoadError)
-import Page.Dummy1
-import Page.Dummy2
+import Page.About
 import Page.NotFound
 import Page.BeerList.Model
 import Page.BeerList.Update
@@ -18,10 +17,10 @@ import Navigation exposing (Location)
 
 
 type Page
-    = NotFound
+    = Blank
+    | NotFound
     | Errored PageLoadError
-    | Dummy1 String
-    | Dummy2 String
+    | About
     | BeerList Page.BeerList.Model.Model
 
 
@@ -53,7 +52,7 @@ main =
 init : Flags -> Location -> ( Model, Cmd Msg )
 init flags location =
     setRoute (Route.fromLocation location)
-        { pageState = Loaded (Dummy1 "foobar")
+        { pageState = Loaded Blank
         , environment = Page.BeerList.Model.Environment.fromLocation flags.location
         }
 
@@ -74,11 +73,7 @@ type alias Flags =
 
 type Msg
     = SetRoute (Maybe Route)
-    | Dummy1Loaded (Result PageLoadError Page.Dummy1.Model)
-    | Dummy2Loaded (Result PageLoadError Page.Dummy2.Model)
     | BeerListLoaded (Result PageLoadError Page.BeerList.Model.Model)
-    | Dummy1Msg Page.Dummy1.Msg
-    | Dummy2Msg Page.Dummy2.Msg
     | BeerListMsg Page.BeerList.Messages.Msg
 
 
@@ -93,11 +88,8 @@ setRoute maybeRoute model =
             Nothing ->
                 { model | pageState = Loaded NotFound } => Cmd.none
 
-            Just (Route.Dummy1) ->
-                transition Dummy1Loaded (Page.Dummy1.init)
-
-            Just (Route.Dummy2) ->
-                transition Dummy2Loaded (Page.Dummy2.init)
+            Just (Route.About) ->
+                { model | pageState = Loaded About } => Cmd.none
 
             Just (Route.BeerList) ->
                 -- FIXME: hard coded Dev should be picked from flag
@@ -166,29 +158,11 @@ updatePage page msg model =
             ( SetRoute route, _ ) ->
                 setRoute route model
 
-            ( Dummy1Loaded (Ok subModel), _ ) ->
-                { model | pageState = Loaded (Dummy1 subModel) } => Cmd.none
-
-            ( Dummy1Loaded (Err error), _ ) ->
-                { model | pageState = Loaded (Errored error) } => Cmd.none
-
-            ( Dummy2Loaded (Ok subModel), _ ) ->
-                { model | pageState = Loaded (Dummy2 subModel) } => Cmd.none
-
-            ( Dummy2Loaded (Err error), _ ) ->
-                { model | pageState = Loaded (Errored error) } => Cmd.none
-
             ( BeerListLoaded (Ok subModel), _ ) ->
                 { model | pageState = Loaded (BeerList subModel) } => Cmd.none
 
             ( BeerListLoaded (Err error), _ ) ->
                 { model | pageState = Loaded (Errored error) } => Cmd.none
-
-            ( Dummy1Msg subMsg, Dummy1 subModel ) ->
-                toPage Dummy1 Dummy1Msg Page.Dummy1.update subMsg subModel
-
-            ( Dummy2Msg subMsg, Dummy2 subModel ) ->
-                toPage Dummy2 Dummy2Msg Page.Dummy2.update subMsg subModel
 
             ( BeerListMsg subMsg, BeerList subModel ) ->
                 toPage BeerList BeerListMsg Page.BeerList.Update.update subMsg subModel
@@ -219,16 +193,14 @@ viewPage isLoading page =
         NotFound ->
             Page.NotFound.view
 
+        Blank ->
+            Html.text ""
+
         Errored subModel ->
             Errored.view subModel
 
-        Dummy1 subModel ->
-            Page.Dummy1.view subModel
-                |> Html.map Dummy1Msg
-
-        Dummy2 subModel ->
-            Page.Dummy2.view subModel
-                |> Html.map Dummy2Msg
+        About ->
+            Page.About.view
 
         BeerList subModel ->
             Page.BeerList.View.view subModel
