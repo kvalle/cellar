@@ -92,8 +92,7 @@ setRoute maybeRoute model =
                 { model | pageState = Loaded About } => Cmd.none
 
             Just (Route.BeerList) ->
-                -- FIXME: hard coded Dev should be picked from flag
-                transition BeerListLoaded (Page.BeerList.Model.init Page.BeerList.Model.Environment.Dev)
+                transition BeerListLoaded (Page.BeerList.Model.init model.environment)
 
 
 pageErrored : Model -> String -> ( Model, Cmd msg )
