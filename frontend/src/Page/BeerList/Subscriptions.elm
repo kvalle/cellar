@@ -1,15 +1,15 @@
-module Subscriptions exposing (subscriptions)
+module Page.BeerList.Subscriptions exposing (subscriptions)
 
 import Ports
 import Page.BeerList.Messages
-import Model.KeyEvent exposing (keyEventDecoder)
+import Page.BeerList.Model.KeyEvent exposing (keyEventDecoder)
 import Json.Decode exposing (decodeValue)
 
 
-subscriptions : model -> Sub Messages.Msg
-subscriptions model =
+subscriptions : Sub Page.BeerList.Messages.Msg
+subscriptions =
     Sub.batch
-        [ Ports.loginResult Messages.LoginResult
-        , Ports.logoutResult Messages.LogoutResult
-        , Ports.keyPressed (Messages.KeyPressed << decodeValue keyEventDecoder)
+        [ Ports.loginResult Page.BeerList.Messages.LoginResult
+        , Ports.logoutResult Page.BeerList.Messages.LogoutResult
+        , Ports.keyPressed (Page.BeerList.Messages.KeyPressed << decodeValue keyEventDecoder)
         ]

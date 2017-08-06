@@ -17,15 +17,19 @@ import Html.Attributes exposing (id, class, type_, for, src, title, value, style
 
 view : Model -> Html Msg
 view model =
-    case model.auth of
-        Auth.Checking ->
-            viewCheckingLogin
+    let
+        foo =
+            Debug.log (toString model) "foo"
+    in
+        case model.auth of
+            Auth.Checking ->
+                viewCheckingLogin
 
-        Auth.LoggedOut ->
-            viewLoggedOut
+            Auth.LoggedOut ->
+                viewLoggedOut
 
-        Auth.LoggedIn userData ->
-            viewLoggedIn model
+            Auth.LoggedIn userData ->
+                viewLoggedIn model
 
 
 viewLoggedOut : Html Msg

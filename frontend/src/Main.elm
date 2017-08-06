@@ -1,15 +1,6 @@
 module Main exposing (..)
 
---import Messages exposing (Msg)
---import Subscriptions
---import Model exposing (Model)
-
 import Page.BeerList.Model.Environment
-
-
---import View
---import Update
-
 import Html exposing (Html)
 import Route exposing (Route)
 import Page.Errored as Errored exposing (PageLoadError)
@@ -20,10 +11,10 @@ import Page.BeerList.Model
 import Page.BeerList.Update
 import Page.BeerList.Messages
 import Page.BeerList.View
+import Page.BeerList.Subscriptions
 import Util exposing ((=>))
 import Task
 import Navigation exposing (Location)
-import Json.Decode as Decode exposing (Value)
 
 
 type Page
@@ -41,6 +32,7 @@ type PageState
 
 type alias Model =
     { pageState : PageState
+    , environment : Page.BeerList.Model.Environment.Environment
     }
 
 
@@ -48,7 +40,7 @@ type alias Model =
 -- MAIN --
 
 
-main : Program Value Model Msg
+main : Program Flags Model Msg
 main =
     Navigation.programWithFlags (Route.fromLocation >> SetRoute)
         { init = init
@@ -58,11 +50,16 @@ main =
         }
 
 
-init : Value -> Location -> ( Model, Cmd Msg )
-init val location =
+init : Flags -> Location -> ( Model, Cmd Msg )
+init flags location =
     setRoute (Route.fromLocation location)
         { pageState = Loaded (Dummy1 "foobar")
+        , environment = Page.BeerList.Model.Environment.fromLocation flags.location
         }
+
+
+type alias Flags =
+    { location : String }
 
 
 
@@ -142,7 +139,9 @@ getPage pageState =
 
 subscriptions : Model -> Sub Msg
 subscriptions model =
-    Sub.none
+    Sub.batch
+        [ Sub.map BeerListMsg Page.BeerList.Subscriptions.subscriptions
+        ]
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
