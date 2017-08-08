@@ -8,7 +8,7 @@ of a giant walrus exploding the golden gate bridge with laser beams. Pew pew!
 
 -}
 
-import Html exposing (Html, div, h1, img, main_, p, text)
+import Html exposing (Html, div, h1, img, main_, p, text, em)
 import Html.Attributes exposing (alt, class, id, tabindex)
 
 
@@ -36,7 +36,6 @@ pageLoadError errorMessage =
 view : PageLoadError -> Html msg
 view (PageLoadError model) =
     main_ [ id "content", class "container", tabindex -1 ]
-        [ h1 [] [ text "Error Loading Page" ]
-        , div [ class "row" ]
-            [ p [] [ text model.errorMessage ] ]
+        [ p [] [ text "Error Loading Page" ]
+        , p [] [ em [] [ text model.errorMessage ] ]
         ]

@@ -3,7 +3,6 @@ module Page.BeerList.View exposing (view)
 import Page.BeerList.Messages as Msg exposing (Msg)
 import Page.BeerList.Model exposing (Model)
 import Page.BeerList.Model.State as State
-import Page.BeerList.Model.Auth as Auth
 import Page.BeerList.Model.Beer
 import Page.BeerList.View.BeerList exposing (viewBeerList)
 import Page.BeerList.View.Filters exposing (viewFilters)
@@ -17,47 +16,10 @@ import Html.Attributes exposing (id, class, type_, for, src, title, value, style
 
 view : Model -> Html Msg
 view model =
-    case model.auth of
-        Auth.Checking ->
-            viewCheckingLogin
-
-        Auth.LoggedOut ->
-            viewLoggedOut
-
-        Auth.LoggedIn userData ->
-            viewLoggedIn model
-
-
-viewLoggedOut : Html Msg
-viewLoggedOut =
-    div [ class "login login-button" ]
-        [ a [ class "button button-primary", onClick Msg.Login ]
-            [ i [ class "icon-beer" ] []
-            , text " Log in"
-            ]
-        ]
-
-
-viewCheckingLogin : Html Msg
-viewCheckingLogin =
-    div [ class "login login-loading" ]
-        [ i [ class "icon-spinner animate-spin" ] []
-        , text "Loading…"
-        ]
-
-
-viewLoggedIn : Model -> Html Msg
-viewLoggedIn model =
-    div [ class "container" ]
+    div []
         [ viewBeerForm model
         , viewJsonModal model
         , viewHelpDialog model
-        , div [ class "row" ]
-            [ div [ class "header seven columns" ]
-                [ viewTitle ]
-            , div [ class "header five columns" ]
-                [ viewUserInfo model.auth ]
-            ]
         , div [ class "row" ]
             [ div [ class "main twelve columns" ]
                 []
@@ -113,20 +75,6 @@ viewButton name icon msg active =
             ]
 
 
-viewUserInfo : Auth.AuthStatus -> Html Msg
-viewUserInfo auth =
-    case auth of
-        Auth.LoggedIn user ->
-            div [ class "user-info" ]
-                [ img [ src user.profile.picture ] []
-                , span [ class "profile" ] [ text user.profile.username ]
-                , a [ class "logout", onClick Msg.Logout ] [ text "Log out" ]
-                ]
-
-        _ ->
-            text ""
-
-
 viewErrors : Maybe String -> Html msg
 viewErrors error =
     case error of
@@ -160,12 +108,4 @@ viewStatus model =
 
                         State.Changed ->
                             [ text "You have unsaved changes" ]
-        ]
-
-
-viewTitle : Html Msg
-viewTitle =
-    h1 []
-        [ i [ class "icon-beer" ] []
-        , text "Cellar Index"
         ]

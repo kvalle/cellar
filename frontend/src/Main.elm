@@ -82,8 +82,8 @@ type Msg
     = SetRoute (Maybe Route)
     | BeerListLoaded (Result PageLoadError Page.BeerList.Model.Model)
     | BeerListMsg Page.BeerList.Messages.Msg
-      -- | Login
-      -- | Logout
+    | Login
+    | Logout
     | LoginResult Data.Auth.UserData
     | LogoutResult ()
 
@@ -156,6 +156,12 @@ updatePage page msg model =
             ( SetRoute route, _ ) ->
                 setRoute route model
 
+            ( Login, _ ) ->
+                model => Ports.login ()
+
+            ( Logout, _ ) ->
+                model => Ports.logout ()
+
             ( LoginResult userData, _ ) ->
                 { model | appState = model.appState |> Data.AppState.setAuth (Data.Auth.LoggedIn userData) } => Cmd.none
 
@@ -195,7 +201,7 @@ viewPage : AppState -> Bool -> Page -> Html Msg
 viewPage appState isLoading page =
     let
         frame =
-            Views.Page.frame isLoading appState
+            Views.Page.frame Login Logout isLoading appState
     in
         case page of
             NotFound ->

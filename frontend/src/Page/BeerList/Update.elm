@@ -2,11 +2,9 @@ module Page.BeerList.Update exposing (update)
 
 import Page.BeerList.Messages exposing (Msg(..))
 import Page.BeerList.Messages.BeerForm exposing (SuggestionMsg(..))
-import Page.BeerList.Commands
 import Ports
 import Page.BeerList.Model exposing (Model)
 import Page.BeerList.Model.State as State exposing (Network(..))
-import Page.BeerList.Model.Auth exposing (AuthStatus(..))
 import Page.BeerList.Model.BeerForm as BeerForm
 import Page.BeerList.Model.Beer as Beer
 import Page.BeerList.Model.Filters as Filter
@@ -25,9 +23,10 @@ update msg model =
             )
 
         LoginResult userData ->
-            ( { model | auth = LoggedIn userData }
-            , Page.BeerList.Commands.fetchBeers model.env <| LoggedIn userData
-            )
+            -- ( { model | auth = LoggedIn userData }
+            -- , Page.BeerList.Commands.fetchBeers model.env <| LoggedIn userData
+            -- )
+            ( model, Cmd.none )
 
         Logout ->
             ( model
@@ -35,7 +34,8 @@ update msg model =
             )
 
         LogoutResult _ ->
-            ( { model | auth = LoggedOut, beers = [] }, Cmd.none )
+            -- ( { model | auth = LoggedOut, beers = [] }, Cmd.none )
+            ( model, Cmd.none )
 
         SetTableState state ->
             ( { model | tableState = state }, Cmd.none )
@@ -84,12 +84,16 @@ update msg model =
 
         SaveBeers ->
             ( { model | state = State.withNetwork Saving model.state }
-            , Page.BeerList.Commands.saveBeers model.env model.auth model.beers
+              -- FIXME
+              --, Page.BeerList.Commands.saveBeers model.env model.auth model.beers
+            , Cmd.none
             )
 
         LoadBeers ->
             ( { model | state = State.withNetwork Loading model.state }
-            , Page.BeerList.Commands.fetchBeers model.env model.auth
+              -- FIXME
+              --, Page.BeerList.Commands.fetchBeers model.env model.auth
+            , Cmd.none
             )
 
         ShowJsonModal ->
