@@ -5,7 +5,7 @@ import Json.Decode as Decode
 import Page.BeerList.Model.Auth exposing (UserData)
 import Page.BeerList.Model.Beer exposing (Beer)
 import Page.BeerList.Model.Beer.Json exposing (beerListDecoder, beerListEncoder)
-import Page.BeerList.Model.Environment exposing (Environment(..))
+import Data.Environment exposing (Environment(..))
 
 
 get : Environment -> UserData -> Request (List Beer)

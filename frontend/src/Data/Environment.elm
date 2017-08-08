@@ -1,4 +1,4 @@
-module Page.BeerList.Model.Environment exposing (..)
+module Data.Environment exposing (..)
 
 
 type Environment

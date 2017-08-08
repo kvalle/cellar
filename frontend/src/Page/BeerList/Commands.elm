@@ -1,7 +1,7 @@
 module Page.BeerList.Commands exposing (fetchBeers, saveBeers)
 
 import Page.BeerList.Model.Beer exposing (Beer)
-import Page.BeerList.Model.Environment exposing (Environment(..))
+import Data.Environment exposing (Environment(..))
 import Page.BeerList.Model.Auth exposing (AuthStatus(..))
 import Page.BeerList.Messages exposing (Msg(..))
 import Page.BeerList.Model.Beer.Json exposing (beerListEncoder, beerListDecoder)

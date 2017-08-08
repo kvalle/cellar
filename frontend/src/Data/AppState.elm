@@ -1,7 +1,7 @@
 module Data.AppState exposing (..)
 
 import Data.Auth exposing (AuthStatus)
-import Page.BeerList.Model.Environment exposing (Environment)
+import Data.Environment exposing (Environment)
 
 
 type alias AppState =

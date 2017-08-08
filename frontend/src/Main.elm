@@ -1,7 +1,7 @@
 module Main exposing (..)
 
 import Ports
-import Page.BeerList.Model.Environment
+import Data.Environment
 import Html exposing (Html)
 import Route exposing (Route)
 import Page.Errored as Errored exposing (PageLoadError)
@@ -58,7 +58,7 @@ init flags location =
     setRoute (Route.fromLocation location)
         { pageState = Loaded Blank
         , appState =
-            { environment = Page.BeerList.Model.Environment.fromLocation flags.location
+            { environment = Data.Environment.fromLocation flags.location
             , auth = Data.Auth.LoggedOut
             }
         }
@@ -66,16 +66,6 @@ init flags location =
 
 type alias Flags =
     { location : String }
-
-
-
--- init : Flags -> ( Model, Cmd Msg )
--- init flags =
---     let
---         environment =
---             Model.Environment.fromLocation flags.location
---     in
---         ( Model.init environment, Cmd.none )
 
 
 type Msg
