@@ -1,5 +1,7 @@
 module Page.BeerList.Model exposing (Model, init)
 
+import Data.AppState exposing (AppState)
+import Data.Auth exposing (AuthStatus(..))
 import Page.BeerList.Model.State
 import Page.BeerList.Model.Auth
 import Page.BeerList.Model.Filters
@@ -10,27 +12,43 @@ import Page.BeerList.Model.Environment exposing (Environment)
 import Table
 import Task
 import Page.Errored as Errored exposing (PageLoadError, pageLoadError)
+import Backend.Beers
+import Http
 
 
 type alias Model =
     { env : Page.BeerList.Model.Environment.Environment
     , auth : Page.BeerList.Model.Auth.AuthStatus
-    , beers : Page.BeerList.Model.BeerList.BeerList
     , tableState : Table.State
     , beerForm : Page.BeerList.Model.BeerForm.BeerForm
     , filters : Page.BeerList.Model.Filters.Filters
     , state : Page.BeerList.Model.State.State
+    , beers : Page.BeerList.Model.BeerList.BeerList
     }
 
 
-init : Environment -> Task.Task PageLoadError Model
-init env =
-    Task.succeed <|
-        Model
-            env
-            Page.BeerList.Model.Auth.Checking
-            Page.BeerList.Model.BeerList.init
-            Page.BeerList.Model.Table.init
-            Page.BeerList.Model.BeerForm.init
-            Page.BeerList.Model.Filters.init
-            Page.BeerList.Model.State.init
+init : AppState -> Task.Task PageLoadError Model
+init appState =
+    let
+        model =
+            Model
+                appState.environment
+                Page.BeerList.Model.Auth.Checking
+                Page.BeerList.Model.Table.init
+                Page.BeerList.Model.BeerForm.init
+                Page.BeerList.Model.Filters.init
+                Page.BeerList.Model.State.init
+
+        loadBeers userData =
+            Backend.Beers.get appState.environment userData |> Http.toTask
+
+        handleLoadError _ =
+            pageLoadError "Unable to load beer list :("
+    in
+        case appState.auth of
+            LoggedIn userData ->
+                Task.map model (loadBeers userData)
+                    |> Task.mapError handleLoadError
+
+            _ ->
+                Task.fail <| handleLoadError "Need to be logged in to fetch beer list"

@@ -103,7 +103,7 @@ setRoute maybeRoute model =
                 { model | pageState = Loaded About } => Cmd.none
 
             Just (Route.BeerList) ->
-                transition BeerListLoaded (Page.BeerList.Model.init model.appState.environment)
+                transition BeerListLoaded (Page.BeerList.Model.init model.appState)
 
 
 pageErrored : Model -> String -> ( Model, Cmd msg )
