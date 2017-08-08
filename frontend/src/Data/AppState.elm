@@ -1,10 +1,15 @@
 module Data.AppState exposing (..)
 
-import Page.BeerList.Model.Environment
-import Data.Auth
+import Data.Auth exposing (AuthStatus)
+import Page.BeerList.Model.Environment exposing (Environment)
 
 
 type alias AppState =
-    { environment : Page.BeerList.Model.Environment.Environment
-    , auth : Data.Auth.AuthStatus
+    { environment : Environment
+    , auth : AuthStatus
     }
+
+
+setAuth : AuthStatus -> AppState -> AppState
+setAuth auth appState =
+    { appState | auth = auth }

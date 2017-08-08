@@ -1,5 +1,6 @@
 module Main exposing (..)
 
+import Ports
 import Page.BeerList.Model.Environment
 import Html exposing (Html)
 import Route exposing (Route)
@@ -81,6 +82,10 @@ type Msg
     = SetRoute (Maybe Route)
     | BeerListLoaded (Result PageLoadError Page.BeerList.Model.Model)
     | BeerListMsg Page.BeerList.Messages.Msg
+      -- | Login
+      -- | Logout
+    | LoginResult Data.Auth.UserData
+    | LogoutResult ()
 
 
 setRoute : Maybe Route -> Model -> ( Model, Cmd Msg )
@@ -120,24 +125,12 @@ getPage pageState =
             page
 
 
-
--- main : Program Flags Model Msg
--- main =
---     Html.programWithFlags
---         { init = init
---         , view = View.view
---         , update = Update.update
---         , subscriptions = Subscriptions.subscriptions
---         }
---
--- type alias Flags =
---     { location : String }
-
-
 subscriptions : Model -> Sub Msg
 subscriptions model =
     Sub.batch
-        [ Sub.map BeerListMsg Page.BeerList.Subscriptions.subscriptions
+        [ Ports.loginResult LoginResult
+        , Ports.logoutResult LogoutResult
+        , Sub.map BeerListMsg Page.BeerList.Subscriptions.subscriptions
         ]
 
 
@@ -162,6 +155,12 @@ updatePage page msg model =
         case ( msg, page ) of
             ( SetRoute route, _ ) ->
                 setRoute route model
+
+            ( LoginResult userData, _ ) ->
+                { model | appState = model.appState |> Data.AppState.setAuth (Data.Auth.LoggedIn userData) } => Cmd.none
+
+            ( LogoutResult _, _ ) ->
+                { model | appState = model.appState |> Data.AppState.setAuth Data.Auth.LoggedOut } => Cmd.none
 
             ( BeerListLoaded (Ok subModel), _ ) ->
                 { model | pageState = Loaded (BeerList subModel) } => Cmd.none
