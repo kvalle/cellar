@@ -3,7 +3,6 @@ module Page.BeerList.Messages exposing (Msg(..))
 import Page.BeerList.Messages.BeerForm exposing (Field, SuggestionMsg)
 import Page.BeerList.Model.Filters exposing (FilterValue)
 import Data.Beer exposing (Beer)
-import Data.Auth exposing (UserData)
 import Page.BeerList.Model.KeyEvent exposing (KeyEvent)
 import Http
 import Table
@@ -41,8 +40,3 @@ type Msg
       -- Json
     | ShowJsonModal
     | HideJsonModal
-      -- Authentication
-    | Login
-    | LoginResult UserData
-    | Logout
-    | LogoutResult ()

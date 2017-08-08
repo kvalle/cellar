@@ -2,7 +2,6 @@ module Page.BeerList.Update exposing (update)
 
 import Page.BeerList.Messages exposing (Msg(..))
 import Page.BeerList.Messages.BeerForm exposing (SuggestionMsg(..))
-import Ports
 import Page.BeerList.Model exposing (Model)
 import Page.BeerList.Model.State as State exposing (Network(..))
 import Page.BeerList.Model.BeerForm as BeerForm
@@ -17,26 +16,6 @@ import Page.BeerList.Model.KeyEvent exposing (keys)
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
-        Login ->
-            ( model
-            , Ports.login ()
-            )
-
-        LoginResult userData ->
-            -- ( { model | auth = LoggedIn userData }
-            -- , Page.BeerList.Commands.fetchBeers model.env <| LoggedIn userData
-            -- )
-            ( model, Cmd.none )
-
-        Logout ->
-            ( model
-            , Ports.logout ()
-            )
-
-        LogoutResult _ ->
-            -- ( { model | auth = LoggedOut, beers = [] }, Cmd.none )
-            ( model, Cmd.none )
-
         SetTableState state ->
             ( { model | tableState = state }, Cmd.none )
 
