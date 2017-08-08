@@ -14,6 +14,9 @@ import Page.BeerList.Subscriptions
 import Util exposing ((=>))
 import Task
 import Navigation exposing (Location)
+import Data.Auth
+import Data.AppState exposing (AppState)
+import Views.Page
 
 
 type Page
@@ -31,7 +34,7 @@ type PageState
 
 type alias Model =
     { pageState : PageState
-    , environment : Page.BeerList.Model.Environment.Environment
+    , appState : AppState
     }
 
 
@@ -53,7 +56,10 @@ init : Flags -> Location -> ( Model, Cmd Msg )
 init flags location =
     setRoute (Route.fromLocation location)
         { pageState = Loaded Blank
-        , environment = Page.BeerList.Model.Environment.fromLocation flags.location
+        , appState =
+            { environment = Page.BeerList.Model.Environment.fromLocation flags.location
+            , auth = Data.Auth.LoggedOut
+            }
         }
 
 
@@ -92,7 +98,7 @@ setRoute maybeRoute model =
                 { model | pageState = Loaded About } => Cmd.none
 
             Just (Route.BeerList) ->
-                transition BeerListLoaded (Page.BeerList.Model.init model.environment)
+                transition BeerListLoaded (Page.BeerList.Model.init model.appState.environment)
 
 
 pageErrored : Model -> String -> ( Model, Cmd msg )
@@ -180,27 +186,35 @@ view : Model -> Html Msg
 view model =
     case model.pageState of
         Loaded page ->
-            viewPage False page
+            viewPage model.appState False page
 
         TransitioningFrom page ->
-            viewPage True page
+            viewPage model.appState True page
 
 
-viewPage : Bool -> Page -> Html Msg
-viewPage isLoading page =
-    case page of
-        NotFound ->
-            Page.NotFound.view
+viewPage : AppState -> Bool -> Page -> Html Msg
+viewPage appState isLoading page =
+    let
+        frame =
+            Views.Page.frame isLoading appState
+    in
+        case page of
+            NotFound ->
+                Page.NotFound.view
+                    |> frame
 
-        Blank ->
-            Html.text ""
+            Blank ->
+                Html.text ""
 
-        Errored subModel ->
-            Errored.view subModel
+            Errored subModel ->
+                Errored.view subModel
+                    |> frame
 
-        About ->
-            Page.About.view
+            About ->
+                Page.About.view
+                    |> frame
 
-        BeerList subModel ->
-            Page.BeerList.View.view subModel
-                |> Html.map BeerListMsg
+            BeerList subModel ->
+                Page.BeerList.View.view subModel
+                    |> Html.map BeerListMsg
+                    |> frame
