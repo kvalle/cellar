@@ -1,6 +1,6 @@
 port module Ports exposing (..)
 
-import Page.BeerList.Model.Auth exposing (UserData)
+import Data.Auth exposing (UserData)
 import Json.Decode
 
 

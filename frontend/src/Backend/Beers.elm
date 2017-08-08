@@ -2,7 +2,7 @@ module Backend.Beers exposing (get)
 
 import Http exposing (Request)
 import Json.Decode as Decode
-import Page.BeerList.Model.Auth exposing (UserData)
+import Data.Auth exposing (UserData)
 import Data.Beer exposing (Beer, listDecoder)
 import Data.Environment exposing (Environment(..))
 
