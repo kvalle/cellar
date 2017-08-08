@@ -3,7 +3,7 @@ module Page.BeerList.View exposing (view)
 import Page.BeerList.Messages as Msg exposing (Msg)
 import Page.BeerList.Model exposing (Model)
 import Page.BeerList.Model.State as State
-import Page.BeerList.Model.Beer
+import Data.Beer
 import Page.BeerList.View.BeerList exposing (viewBeerList)
 import Page.BeerList.View.Filters exposing (viewFilters)
 import Page.BeerList.View.BeerForm exposing (viewBeerForm)
@@ -27,7 +27,7 @@ view model =
         , div [ class "row" ]
             [ div [ class "main twelve columns" ]
                 [ div [ class "menu-actions" ]
-                    [ viewButton "Add beer" "beer" (Msg.ShowForm Page.BeerList.Model.Beer.empty) True
+                    [ viewButton "Add beer" "beer" (Msg.ShowForm Data.Beer.empty) True
                     , viewButton "Save" "floppy" Msg.SaveBeers (model.state.changes == State.Changed)
                     , viewButton "Reset" "ccw" Msg.LoadBeers (model.state.changes == State.Changed)
                     , viewButton "Clear filters" "cancel" Msg.ClearFilters model.filters.active

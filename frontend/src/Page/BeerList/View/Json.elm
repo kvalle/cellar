@@ -3,7 +3,7 @@ module Page.BeerList.View.Json exposing (viewJsonModal)
 import Page.BeerList.Messages as Msg exposing (Msg)
 import Page.BeerList.Model exposing (Model)
 import Page.BeerList.Model.State exposing (DisplayState(..))
-import Page.BeerList.Model.Beer.Json exposing (beerEncoder, beerListEncoder)
+import Data.Beer exposing (encoder, listEncoder)
 import Page.BeerList.View.HtmlExtra exposing (onClickNoPropagation)
 import Html exposing (..)
 import Html.Events exposing (onClick)
@@ -20,7 +20,7 @@ viewJsonModal model =
         Visible ->
             let
                 json =
-                    beerListEncoder model.beers
+                    listEncoder model.beers
 
                 jsonString =
                     Json.Encode.encode 4 json

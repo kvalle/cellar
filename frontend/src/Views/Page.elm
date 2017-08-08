@@ -9,34 +9,6 @@ import Html.Events exposing (onClick, onInput, onWithOptions, defaultOptions)
 import Html.Attributes exposing (id, class, type_, for, src, title, value, style)
 
 
--- frame : Bool -> AppState -> Html msg -> Html msg
--- frame isLoading appState content =
---     div [ class "page-frame" ]
---         [ div []
---             [ span [] [ text <| "[" ++ toString appState.environment ++ "] " ]
---             , span [] [ text <| loginString appState.auth ]
---             , if isLoading then
---                 text " | loading..."
---               else
---                 text " | header"
---             ]
---         , content
---         , div [] [ text "footer" ]
---         ]
--- loginString : AuthStatus -> String
--- loginString login =
---     case login of
---         LoggedOut ->
---             "not logged in"
---
---         LoggedIn userdata ->
---             userdata.profile.email
---
---         Checking ->
---             "checking login"
---
-
-
 frame : msg -> msg -> Bool -> AppState -> Html msg -> Html msg
 frame loginMsg logoutMsg isLoading appState content =
     case appState.auth of

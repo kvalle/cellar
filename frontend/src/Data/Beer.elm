@@ -1,13 +1,48 @@
-module Page.BeerList.Model.Beer.Json exposing (beerEncoder, beerListEncoder, beerDecoder, beerListDecoder)
+module Data.Beer exposing (..)
 
-import Page.BeerList.Model.Beer exposing (Beer)
 import Json.Decode as Decode
 import Json.Encode as Encode
 import Json.Decode.Pipeline as Pipeline
 
 
-beerEncoder : Beer -> Encode.Value
-beerEncoder beer =
+-- MODEL --
+
+
+type alias Beer =
+    { id : Maybe Int
+    , brewery : String
+    , name : String
+    , style : String
+    , year : Int
+    , count : Int
+    , volume : Float
+    , abv : Float
+    , location : Maybe String
+    , shelf : Maybe String
+    }
+
+
+empty : Beer
+empty =
+    { id = Nothing
+    , brewery = ""
+    , name = ""
+    , style = ""
+    , year = 2017
+    , count = 1
+    , volume = 0.0
+    , abv = 0.0
+    , location = Nothing
+    , shelf = Nothing
+    }
+
+
+
+-- SERIALIZATION --
+
+
+encoder : Beer -> Encode.Value
+encoder beer =
     let
         maybeEncoder encoder maybe =
             case maybe of
@@ -31,13 +66,13 @@ beerEncoder beer =
             ]
 
 
-beerListEncoder : List Beer -> Encode.Value
-beerListEncoder beers =
-    Encode.list <| List.map beerEncoder beers
+listEncoder : List Beer -> Encode.Value
+listEncoder beers =
+    Encode.list <| List.map encoder beers
 
 
-beerDecoder : Decode.Decoder Beer
-beerDecoder =
+decoder : Decode.Decoder Beer
+decoder =
     Pipeline.decode Beer
         |> Pipeline.required "id" (Decode.nullable Decode.int)
         |> Pipeline.required "brewery" Decode.string
@@ -51,6 +86,6 @@ beerDecoder =
         |> Pipeline.optional "shelf" (Decode.nullable Decode.string) Nothing
 
 
-beerListDecoder : Decode.Decoder (List Beer)
-beerListDecoder =
-    Decode.list beerDecoder
+listDecoder : Decode.Decoder (List Beer)
+listDecoder =
+    Decode.list decoder

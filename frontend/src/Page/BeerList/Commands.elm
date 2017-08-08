@@ -1,10 +1,10 @@
 module Page.BeerList.Commands exposing (fetchBeers, saveBeers)
 
-import Page.BeerList.Model.Beer exposing (Beer)
+import Data.Beer exposing (Beer)
 import Data.Environment exposing (Environment(..))
 import Page.BeerList.Model.Auth exposing (AuthStatus(..))
 import Page.BeerList.Messages exposing (Msg(..))
-import Page.BeerList.Model.Beer.Json exposing (beerListEncoder, beerListDecoder)
+import Data.Beer exposing (listEncoder, listDecoder)
 import Http
 import Json.Decode as Decode
 
@@ -19,7 +19,7 @@ fetchBeers env auth =
                     "GET"
                     (url env)
                     Http.emptyBody
-                    beerListDecoder
+                    listDecoder
                     userData.token
                 )
 
@@ -36,8 +36,8 @@ saveBeers env auth beers =
                 (request
                     "POST"
                     (url env)
-                    (Http.jsonBody <| beerListEncoder beers)
-                    beerListDecoder
+                    (Http.jsonBody <| listEncoder beers)
+                    listDecoder
                     userData.token
                 )
 

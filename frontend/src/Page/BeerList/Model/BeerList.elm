@@ -1,7 +1,7 @@
 module Page.BeerList.Model.BeerList exposing (BeerList, init, filtered, decrement, increment, delete, addOrUpdate)
 
 import Page.BeerList.Model.Filters exposing (Filters)
-import Page.BeerList.Model.Beer exposing (Beer)
+import Data.Beer exposing (Beer)
 
 
 type alias BeerList =

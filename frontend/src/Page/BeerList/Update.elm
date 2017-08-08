@@ -6,7 +6,7 @@ import Ports
 import Page.BeerList.Model exposing (Model)
 import Page.BeerList.Model.State as State exposing (Network(..))
 import Page.BeerList.Model.BeerForm as BeerForm
-import Page.BeerList.Model.Beer as Beer
+import Data.Beer as Beer
 import Page.BeerList.Model.Filters as Filter
 import Page.BeerList.Model.BeerList
 import Dom

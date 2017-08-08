@@ -2,7 +2,7 @@ module Page.BeerList.View.BeerList exposing (viewBeerList)
 
 import Page.BeerList.Messages exposing (Msg(..))
 import Page.BeerList.Model exposing (Model)
-import Page.BeerList.Model.Beer exposing (Beer)
+import Data.Beer exposing (Beer)
 import Page.BeerList.Model.BeerList as BeerList
 import Html exposing (..)
 import Html.Attributes exposing (class, placeholder, type_, value, colspan, title)
@@ -110,7 +110,7 @@ viewEmptyMessage : Html Msg
 viewEmptyMessage =
     span [ class "empty-beer-list" ]
         [ text "Your cellar appears to be empty. Try "
-        , span [ onClick <| ShowForm Page.BeerList.Model.Beer.empty, class "action" ] [ text "adding" ]
+        , span [ onClick <| ShowForm Data.Beer.empty, class "action" ] [ text "adding" ]
         , text " a few beers!"
         ]
 

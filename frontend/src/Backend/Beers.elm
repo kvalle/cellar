@@ -3,8 +3,7 @@ module Backend.Beers exposing (get)
 import Http exposing (Request)
 import Json.Decode as Decode
 import Page.BeerList.Model.Auth exposing (UserData)
-import Page.BeerList.Model.Beer exposing (Beer)
-import Page.BeerList.Model.Beer.Json exposing (beerListDecoder, beerListEncoder)
+import Data.Beer exposing (Beer, listDecoder)
 import Data.Environment exposing (Environment(..))
 
 
@@ -14,7 +13,7 @@ get env userData =
         "GET"
         (url env)
         Http.emptyBody
-        beerListDecoder
+        listDecoder
         userData.token
 
 
