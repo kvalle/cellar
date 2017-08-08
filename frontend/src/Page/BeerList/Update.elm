@@ -1,20 +1,24 @@
 module Page.BeerList.Update exposing (update)
 
+import Backend.Beers
+import Data.AppState exposing (AppState)
+import Data.Auth exposing (AuthStatus(LoggedIn))
+import Data.Beer as Beer
+import Dom
+import Http
 import Page.BeerList.Messages exposing (Msg(..))
 import Page.BeerList.Messages.BeerForm exposing (SuggestionMsg(..))
 import Page.BeerList.Model exposing (Model)
-import Page.BeerList.Model.State as State exposing (Network(..))
 import Page.BeerList.Model.BeerForm as BeerForm
-import Data.Beer as Beer
-import Page.BeerList.Model.Filters as Filter
 import Page.BeerList.Model.BeerList
-import Dom
-import Task
+import Page.BeerList.Model.Filters as Filter
 import Page.BeerList.Model.KeyEvent exposing (keys)
+import Page.BeerList.Model.State as State exposing (Network(..))
+import Task
 
 
-update : Msg -> Model -> ( Model, Cmd Msg )
-update msg model =
+update : Msg -> AppState -> Model -> ( Model, Cmd Msg )
+update msg appState model =
     case msg of
         SetTableState state ->
             ( { model | tableState = state }, Cmd.none )
@@ -63,16 +67,24 @@ update msg model =
 
         SaveBeers ->
             ( { model | state = State.withNetwork Saving model.state }
-              -- FIXME
-              --, Page.BeerList.Commands.saveBeers model.env model.auth model.beers
-            , Cmd.none
+            , case appState.auth of
+                LoggedIn userData ->
+                    Http.send SavedBeerList <|
+                        Backend.Beers.save appState.environment userData model.beers
+
+                _ ->
+                    Cmd.none
             )
 
         LoadBeers ->
             ( { model | state = State.withNetwork Loading model.state }
-              -- FIXME
-              --, Page.BeerList.Commands.fetchBeers model.env model.auth
-            , Cmd.none
+            , case appState.auth of
+                LoggedIn userData ->
+                    Http.send LoadedBeerList <|
+                        Backend.Beers.get appState.environment userData
+
+                _ ->
+                    Cmd.none
             )
 
         ShowJsonModal ->
@@ -195,21 +207,21 @@ update msg model =
 
                 Ok key ->
                     if key == keys.escape then
-                        update ClearModals model
+                        update ClearModals appState model
                     else if key == keys.a && State.isClearOfModals model.state then
-                        update (ShowForm Beer.empty) model
+                        update (ShowForm Beer.empty) appState model
                     else if key == keys.f && State.isClearOfModals model.state then
-                        update ShowFilters model
+                        update ShowFilters appState model
                     else if key == keys.j && State.isClearOfModals model.state then
-                        update ShowJsonModal model
+                        update ShowJsonModal appState model
                     else if key == keys.r && model.state.changes == State.Changed && State.isClearOfModals model.state then
-                        update LoadBeers model
+                        update LoadBeers appState model
                     else if key == keys.s && model.state.changes == State.Changed && State.isClearOfModals model.state then
-                        update SaveBeers model
+                        update SaveBeers appState model
                     else if key == keys.c && model.filters.active && State.isClearOfModals model.state then
-                        update ClearFilters model
+                        update ClearFilters appState model
                     else if key == keys.questionMark && State.isClearOfModals model.state then
-                        update ShowHelp model
+                        update ShowHelp appState model
                     else
                         ( model, Cmd.none )
 

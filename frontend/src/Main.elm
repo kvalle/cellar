@@ -132,10 +132,10 @@ update msg model =
 updatePage : Page -> Msg -> Model -> ( Model, Cmd Msg )
 updatePage page msg model =
     let
-        toPage toModel toMsg subUpdate subMsg subModel =
+        toPage toModel toMsg subUpdate subMsg appState subModel =
             let
                 ( newModel, newCmd ) =
-                    subUpdate subMsg subModel
+                    subUpdate subMsg appState subModel
             in
                 ( { model | pageState = Loaded (toModel newModel) }, Cmd.map toMsg newCmd )
 
@@ -165,16 +165,15 @@ updatePage page msg model =
                 { model | pageState = Loaded (Errored error) } => Cmd.none
 
             ( BeerListMsg subMsg, BeerList subModel ) ->
-                toPage BeerList BeerListMsg Page.BeerList.Update.update subMsg subModel
+                toPage BeerList BeerListMsg Page.BeerList.Update.update subMsg model.appState subModel
 
-            ( _, NotFound ) ->
-                -- Disregard incoming messages when we're on the
-                -- NotFound page.
-                model => Cmd.none
-
-            ( _, _ ) ->
-                -- Disregard incoming messages that arrived for the wrong page
-                model => Cmd.none
+            ( msg, _ ) ->
+                let
+                    _ =
+                        Debug.log ("Ignored msg " ++ (toString msg) ++ " since it's irrelevant for page") page
+                in
+                    -- Disregard incoming messages that arrived for the wrong page
+                    model => Cmd.none
 
 
 view : Model -> Html Msg
