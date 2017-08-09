@@ -55,13 +55,17 @@ main =
 
 init : Flags -> Location -> ( Model, Cmd Msg )
 init flags location =
-    setRoute (Route.fromLocation location)
-        { pageState = Loaded Blank
-        , appState =
-            { environment = Data.Environment.fromLocation flags.location
-            , auth = Data.Auth.LoggedOut
+    let
+        route =
+            (Route.fromLocation location)
+    in
+        setRoute route
+            { pageState = Loaded Blank
+            , appState =
+                { environment = Data.Environment.fromLocation flags.location
+                , auth = Data.Auth.Checking route
+                }
             }
-        }
 
 
 type alias Flags =
@@ -76,24 +80,6 @@ type Msg
     | Logout
     | LoginResult Data.Auth.UserData
     | LogoutResult ()
-
-
-setRoute : Maybe Route -> Model -> ( Model, Cmd Msg )
-setRoute maybeRoute model =
-    let
-        transition toMsg task =
-            { model | pageState = TransitioningFrom (getPage model.pageState) }
-                => Task.attempt toMsg task
-    in
-        case maybeRoute of
-            Nothing ->
-                { model | pageState = Loaded NotFound } => Cmd.none
-
-            Just (Route.About) ->
-                { model | pageState = Loaded About } => Cmd.none
-
-            Just (Route.BeerList) ->
-                transition BeerListLoaded (Page.BeerList.Model.init model.appState)
 
 
 pageErrored : Model -> String -> ( Model, Cmd msg )
@@ -126,21 +112,19 @@ subscriptions model =
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
-    updatePage (getPage model.pageState) msg model
-
-
-updatePage : Page -> Msg -> Model -> ( Model, Cmd Msg )
-updatePage page msg model =
     let
+        _ =
+            Debug.log "Update got" msg
+
+        page =
+            getPage model.pageState
+
         toPage toModel toMsg subUpdate subMsg appState subModel =
             let
                 ( newModel, newCmd ) =
                     subUpdate subMsg appState subModel
             in
                 ( { model | pageState = Loaded (toModel newModel) }, Cmd.map toMsg newCmd )
-
-        errored =
-            pageErrored model
     in
         case ( msg, page ) of
             ( SetRoute route, _ ) ->
@@ -153,10 +137,22 @@ updatePage page msg model =
                 model => Ports.logout ()
 
             ( LoginResult userData, _ ) ->
-                { model | appState = model.appState |> Data.AppState.setAuth (Data.Auth.LoggedIn userData) } => Cmd.none
+                let
+                    newModel =
+                        { model | appState = model.appState |> Data.AppState.setAuth (Data.Auth.LoggedIn userData) }
+                in
+                    case model.appState.auth of
+                        Data.Auth.LoggedOut route ->
+                            setRoute route newModel
+
+                        Data.Auth.Checking route ->
+                            setRoute route newModel
+
+                        Data.Auth.LoggedIn _ ->
+                            newModel => Cmd.none
 
             ( LogoutResult _, _ ) ->
-                { model | appState = model.appState |> Data.AppState.setAuth Data.Auth.LoggedOut } => Cmd.none
+                { model | appState = model.appState |> Data.AppState.setAuth (Data.Auth.LoggedOut (Just Route.BeerList)) } => Cmd.none
 
             ( BeerListLoaded (Ok subModel), _ ) ->
                 { model | pageState = Loaded (BeerList subModel) } => Cmd.none
@@ -174,6 +170,46 @@ updatePage page msg model =
                 in
                     -- Disregard incoming messages that arrived for the wrong page
                     model => Cmd.none
+
+
+setRoute : Maybe Route -> Model -> ( Model, Cmd Msg )
+setRoute maybeRoute model =
+    let
+        _ =
+            Debug.log "Setting route" maybeRoute
+
+        transition toMsg task =
+            { model | pageState = TransitioningFrom (getPage model.pageState) }
+                => Task.attempt toMsg task
+
+        dispatch maybeRoute model =
+            case maybeRoute of
+                Nothing ->
+                    { model | pageState = Loaded NotFound } => Cmd.none
+
+                Just (Route.About) ->
+                    { model | pageState = Loaded About } => Cmd.none
+
+                Just (Route.BeerList) ->
+                    transition BeerListLoaded (Page.BeerList.Model.init model.appState)
+
+        requiresLogin maybeRoute =
+            case maybeRoute of
+                Just (Route.BeerList) ->
+                    True
+
+                _ ->
+                    False
+    in
+        case ( requiresLogin maybeRoute, model.appState.auth ) of
+            ( True, Data.Auth.Checking _ ) ->
+                { model | appState = model.appState |> Data.AppState.setAuth (Data.Auth.Checking maybeRoute) } => Cmd.none
+
+            ( True, Data.Auth.LoggedOut _ ) ->
+                { model | appState = model.appState |> Data.AppState.setAuth (Data.Auth.LoggedOut maybeRoute) } => Cmd.none
+
+            _ ->
+                dispatch maybeRoute model
 
 
 view : Model -> Html Msg

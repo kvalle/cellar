@@ -1,5 +1,7 @@
 module Data.Auth exposing (..)
 
+import Route exposing (Route)
+
 
 type alias User =
     { email : String
@@ -16,6 +18,6 @@ type alias UserData =
 
 
 type AuthStatus
-    = LoggedOut
-    | LoggedIn UserData
-    | Checking
+    = LoggedIn UserData
+    | LoggedOut (Maybe Route)
+    | Checking (Maybe Route)

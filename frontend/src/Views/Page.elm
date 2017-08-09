@@ -24,7 +24,7 @@ frame loginMsg logoutMsg isLoading appState content =
                 , div [] [ text "footer" ]
                 ]
 
-        LoggedOut ->
+        LoggedOut _ ->
             div [ class "login login-button" ]
                 [ a [ class "button button-primary", onClick loginMsg ]
                     [ i [ class "icon-beer" ] []
@@ -32,7 +32,7 @@ frame loginMsg logoutMsg isLoading appState content =
                     ]
                 ]
 
-        Checking ->
+        Checking _ ->
             div [ class "login login-loading" ]
                 [ i [ class "icon-spinner animate-spin" ] []
                 , text "Loading…"

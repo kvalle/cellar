@@ -56,7 +56,11 @@ modifyUrl =
 
 fromLocation : Location -> Maybe Route
 fromLocation location =
-    if String.isEmpty location.hash then
-        Just BeerList
-    else
-        parseHash route location
+    let
+        _ =
+            Debug.log "Location is" location
+    in
+        if String.isEmpty location.hash then
+            Just BeerList
+        else
+            parseHash route location
