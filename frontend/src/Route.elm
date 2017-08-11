@@ -10,7 +10,8 @@ import UrlParser as Url exposing ((</>), Parser, oneOf, parseHash, s, string)
 
 
 type Route
-    = BeerList
+    = Home
+    | BeerList
     | About
     | AuthRedirect String
 
@@ -18,7 +19,8 @@ type Route
 route : Parser (Route -> a) a
 route =
     oneOf
-        [ Url.map BeerList Url.top
+        [ Url.map Home (s "")
+        , Url.map BeerList (s "beers")
         , Url.map About (s "about")
         , Url.map AuthRedirect authRedirectParser
         ]
@@ -43,8 +45,11 @@ routeToString page =
     let
         pieces =
             case page of
-                BeerList ->
+                Home ->
                     []
+
+                BeerList ->
+                    [ "beers" ]
 
                 About ->
                     [ "about" ]
@@ -76,6 +81,6 @@ fromLocation location =
             Debug.log "Location is" location
     in
         if String.isEmpty location.hash then
-            Just BeerList
+            Just Home
         else
             parseHash route location

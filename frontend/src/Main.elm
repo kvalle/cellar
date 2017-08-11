@@ -5,6 +5,7 @@ import Data.Environment
 import Html exposing (Html)
 import Route exposing (Route)
 import Page.Errored as Errored exposing (PageLoadError)
+import Page.Home
 import Page.About
 import Page.NotFound
 import Page.BeerList.Model
@@ -22,10 +23,11 @@ import Views.Page
 
 type Page
     = Blank
-    | NotFound
-    | Errored PageLoadError
+    | Home
     | About
     | BeerList Page.BeerList.Model.Model
+    | NotFound
+    | Errored PageLoadError
 
 
 type PageState
@@ -153,7 +155,7 @@ update msg model =
                             newModel => Cmd.none
 
             ( LogoutResult _, _ ) ->
-                { model | appState = model.appState |> Data.AppState.setAuth (Data.Auth.LoggedOut (Just Route.BeerList)) } => Cmd.none
+                { model | appState = model.appState |> Data.AppState.setAuth (Data.Auth.LoggedOut (Just Route.Home)) } => Cmd.none
 
             ( BeerListLoaded (Ok subModel), _ ) ->
                 { model | pageState = Loaded (BeerList subModel) } => Cmd.none
@@ -216,6 +218,9 @@ setRoute maybeRoute model =
                     Just (Route.About) ->
                         { model | pageState = Loaded About } => Cmd.none
 
+                    Just (Route.Home) ->
+                        { model | pageState = Loaded Home } => Cmd.none
+
                     Just (Route.BeerList) ->
                         transition BeerListLoaded (Page.BeerList.Model.init model.appState)
 
@@ -255,6 +260,10 @@ viewPage appState isLoading page =
             Errored subModel ->
                 Errored.view subModel
                     |> frame Views.Page.Other
+
+            Home ->
+                Page.Home.view
+                    |> frame Views.Page.Home
 
             About ->
                 Page.About.view

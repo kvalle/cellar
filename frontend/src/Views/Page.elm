@@ -11,7 +11,8 @@ import Route
 
 
 type ActivePage
-    = BeerList
+    = Home
+    | BeerList
     | About
     | Other
 
@@ -70,7 +71,8 @@ viewMenu loginMsg logoutMsg auth activePage =
             a [ classList [ ( "menu-item", True ), ( "active", isActive ) ], Route.href route ] [ text name ]
 
         menuItems =
-            [ viewMenuItem (activePage == BeerList) Route.BeerList "Beers"
+            [ viewMenuItem (activePage == Home) Route.Home "Home"
+            , viewMenuItem (activePage == BeerList) Route.BeerList "Beers"
             , viewMenuItem (activePage == About) Route.About "About"
             ]
     in
