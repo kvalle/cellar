@@ -12,14 +12,26 @@ import UrlParser as Url exposing ((</>), Parser, oneOf, parseHash, s, string)
 type Route
     = BeerList
     | About
+    | AuthRedirect String
 
 
 route : Parser (Route -> a) a
 route =
     oneOf
-        [ Url.map BeerList (s "")
+        [ Url.map BeerList Url.top
         , Url.map About (s "about")
+        , Url.map AuthRedirect authRedirectParser
         ]
+
+
+authRedirectParser : Parser (String -> a) a
+authRedirectParser =
+    Url.custom "AUTH_REDIRECT" <|
+        \segment ->
+            if String.startsWith "access_token=" segment then
+                Ok segment
+            else
+                Err ""
 
 
 
@@ -36,6 +48,9 @@ routeToString page =
 
                 About ->
                     [ "about" ]
+
+                AuthRedirect _ ->
+                    []
     in
         "#/" ++ String.join "/" pieces
 

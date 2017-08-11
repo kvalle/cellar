@@ -60,7 +60,7 @@ init flags location =
             (Route.fromLocation location)
     in
         setRoute route
-            { pageState = Loaded Blank
+            { pageState = Loaded About
             , appState =
                 { environment = Data.Environment.fromLocation flags.location
                 , auth = Data.Auth.Checking route
@@ -192,6 +192,9 @@ setRoute maybeRoute model =
 
                 Just (Route.BeerList) ->
                     transition BeerListLoaded (Page.BeerList.Model.init model.appState)
+
+                Just (Route.AuthRedirect _) ->
+                    model => Cmd.none
 
         requiresLogin maybeRoute =
             case maybeRoute of
