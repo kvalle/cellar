@@ -22,9 +22,9 @@ button i {
 	padding-left: 5px;
 }
 
-.buttion.button-disabled, 
-.buttion.button-disabled:hover, 
-button.button-disabled, 
+.buttion.button-disabled,
+.buttion.button-disabled:hover,
+button.button-disabled,
 button.button-disabled:hover {
     color: #ccc;
     border-color: #ccc;
@@ -60,12 +60,13 @@ button.button-disabled:hover {
 
 /* Header */
 
-.user-info {
+.menu {
+	padding-top: 10px;
 	float: right;
 	color: #aaa;
 }
 
-.user-info img {
+.menu img {
 	display: inline-block;
 	margin-right: 10px;
 	width: 1em;
@@ -73,13 +74,19 @@ button.button-disabled:hover {
 	border: 1px solid #ccc;
 }
 
-.user-info a.logout {
-	margin-left: 10px;
+.menu .profile {
 	border-left: 1px solid #ccc;
 	padding-left: 10px;
+	margin-left: 10px;
+	padding-right: 10px;
 }
 
-.user-info a.logout:hover {
+.menu a.menu-item {
+	padding-left: 10px;
+	text-decoration: none;
+}
+
+.menu a.menu-item:hover {
 	cursor: pointer;
 }
 
@@ -271,4 +278,3 @@ tr.zero-row {
 .action.disabled:hover {
 	color: #ccc;
 }
-

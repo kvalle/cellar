@@ -7,6 +7,7 @@ import Data.Auth exposing (AuthStatus(..), User)
 import Html exposing (..)
 import Html.Events exposing (onClick, onInput, onWithOptions, defaultOptions)
 import Html.Attributes exposing (id, class, type_, for, src, title, value, style)
+import Route
 
 
 frame : msg -> msg -> Bool -> AppState -> Html msg -> Html msg
@@ -18,7 +19,8 @@ frame loginMsg logoutMsg isLoading appState content =
                     [ div [ class "header seven columns" ]
                         [ viewTitle ]
                     , div [ class "header five columns" ]
-                        [ viewUserInfo logoutMsg appState.auth ]
+                        [ viewMenu logoutMsg appState.auth
+                        ]
                     ]
                 , content
                 , div [] [ text "footer" ]
@@ -39,18 +41,26 @@ frame loginMsg logoutMsg isLoading appState content =
                 ]
 
 
-viewUserInfo : msg -> AuthStatus -> Html msg
-viewUserInfo logoutMsg auth =
-    case auth of
-        LoggedIn user ->
-            div [ class "user-info" ]
-                [ img [ src user.profile.picture ] []
-                , span [ class "profile" ] [ text user.profile.username ]
-                , a [ class "logout", onClick logoutMsg ] [ text "Log out" ]
-                ]
+viewMenu : msg -> AuthStatus -> Html msg
+viewMenu logoutMsg auth =
+    let
+        userInfo =
+            case auth of
+                LoggedIn user ->
+                    [ a [ class "menu-item logout", onClick logoutMsg ] [ text "Log out" ]
+                    , span [ class "profile" ] [ text user.profile.username ]
+                    , img [ src user.profile.picture ] []
+                    ]
 
-        _ ->
-            text ""
+                _ ->
+                    []
+
+        menuItems =
+            [ a [ class "menu-item", Route.href Route.BeerList ] [ text "Beers" ]
+            , a [ class "menu-item", Route.href Route.About ] [ text "About" ]
+            ]
+    in
+        div [ class "menu" ] <| menuItems ++ userInfo
 
 
 viewTitle : Html msg

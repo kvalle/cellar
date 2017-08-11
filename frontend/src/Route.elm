@@ -35,7 +35,7 @@ routeToString page =
                     []
 
                 About ->
-                    [ "About" ]
+                    [ "about" ]
     in
         "#/" ++ String.join "/" pieces
 
