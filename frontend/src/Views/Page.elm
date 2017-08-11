@@ -23,7 +23,7 @@ frame loginMsg logoutMsg isLoading appState activePage content =
             [ div [ class "header seven columns" ]
                 [ viewTitle ]
             , div [ class "header five columns" ]
-                [ viewMenu logoutMsg appState.auth activePage
+                [ viewMenu loginMsg logoutMsg appState.auth activePage
                 ]
             ]
         , content
@@ -51,8 +51,8 @@ requireLogin loginMsg auth content =
                 ]
 
 
-viewMenu : msg -> AuthStatus -> ActivePage -> Html msg
-viewMenu logoutMsg auth activePage =
+viewMenu : msg -> msg -> AuthStatus -> ActivePage -> Html msg
+viewMenu loginMsg logoutMsg auth activePage =
     let
         userInfo =
             case auth of
@@ -63,7 +63,8 @@ viewMenu logoutMsg auth activePage =
                     ]
 
                 _ ->
-                    []
+                    [ a [ class "menu-item logout", onClick loginMsg ] [ text "Log in" ]
+                    ]
 
         viewMenuItem isActive route name =
             a [ classList [ ( "menu-item", True ), ( "active", isActive ) ], Route.href route ] [ text name ]
