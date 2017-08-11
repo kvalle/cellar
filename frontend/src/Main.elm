@@ -60,7 +60,7 @@ init flags location =
             (Route.fromLocation location)
     in
         setRoute route
-            { pageState = Loaded About
+            { pageState = Loaded Blank
             , appState =
                 { environment = Data.Environment.fromLocation flags.location
                 , auth = Data.Auth.Checking route
@@ -238,6 +238,7 @@ viewPage appState isLoading page =
 
             Blank ->
                 Html.text ""
+                    |> frame Views.Page.Other
 
             Errored subModel ->
                 Errored.view subModel
