@@ -1,7 +1,6 @@
 module Page.Errored exposing (PageLoadError, pageLoadError, view)
 
 import Html exposing (Html, div, h1, img, main_, p, text, em)
-import Html.Attributes exposing (alt, class, id, tabindex)
 
 
 -- MODEL --
@@ -27,7 +26,7 @@ pageLoadError errorMessage =
 
 view : PageLoadError -> Html msg
 view (PageLoadError model) =
-    main_ [ id "content", class "container", tabindex -1 ]
+    div []
         [ p [] [ text "Error Loading Page" ]
         , p [] [ em [] [ text model.errorMessage ] ]
         ]
