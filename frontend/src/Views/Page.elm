@@ -1,4 +1,4 @@
-module Views.Page exposing (frame)
+module Views.Page exposing (frame, ActivePage(..))
 
 import Html exposing (..)
 import Html.Attributes exposing (..)
@@ -10,8 +10,14 @@ import Html.Attributes exposing (id, class, type_, for, src, title, value, style
 import Route
 
 
-frame : msg -> msg -> Bool -> AppState -> Html msg -> Html msg
-frame loginMsg logoutMsg isLoading appState content =
+type ActivePage
+    = BeerList
+    | About
+    | Other
+
+
+frame : msg -> msg -> Bool -> AppState -> ActivePage -> Html msg -> Html msg
+frame loginMsg logoutMsg isLoading appState activePage content =
     case appState.auth of
         LoggedIn _ ->
             div [ class "container" ]
@@ -19,7 +25,7 @@ frame loginMsg logoutMsg isLoading appState content =
                     [ div [ class "header seven columns" ]
                         [ viewTitle ]
                     , div [ class "header five columns" ]
-                        [ viewMenu logoutMsg appState.auth
+                        [ viewMenu logoutMsg appState.auth activePage
                         ]
                     ]
                 , content
@@ -41,8 +47,8 @@ frame loginMsg logoutMsg isLoading appState content =
                 ]
 
 
-viewMenu : msg -> AuthStatus -> Html msg
-viewMenu logoutMsg auth =
+viewMenu : msg -> AuthStatus -> ActivePage -> Html msg
+viewMenu logoutMsg auth activePage =
     let
         userInfo =
             case auth of
@@ -55,9 +61,12 @@ viewMenu logoutMsg auth =
                 _ ->
                     []
 
+        viewMenuItem isActive route name =
+            a [ classList [ ( "menu-item", True ), ( "active", isActive ) ], Route.href route ] [ text name ]
+
         menuItems =
-            [ a [ class "menu-item", Route.href Route.BeerList ] [ text "Beers" ]
-            , a [ class "menu-item", Route.href Route.About ] [ text "About" ]
+            [ viewMenuItem (activePage == BeerList) Route.BeerList "Beers"
+            , viewMenuItem (activePage == About) Route.About "About"
             ]
     in
         div [ class "menu" ] <| menuItems ++ userInfo

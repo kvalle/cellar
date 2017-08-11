@@ -231,20 +231,20 @@ viewPage appState isLoading page =
         case page of
             NotFound ->
                 Page.NotFound.view
-                    |> frame
+                    |> frame Views.Page.Other
 
             Blank ->
                 Html.text ""
 
             Errored subModel ->
                 Errored.view subModel
-                    |> frame
+                    |> frame Views.Page.Other
 
             About ->
                 Page.About.view
-                    |> frame
+                    |> frame Views.Page.About
 
             BeerList subModel ->
                 Page.BeerList.View.view subModel
                     |> Html.map BeerListMsg
-                    |> frame
+                    |> frame Views.Page.BeerList

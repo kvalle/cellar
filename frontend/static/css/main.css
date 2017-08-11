@@ -75,19 +75,27 @@ button.button-disabled:hover {
 }
 
 .menu .profile {
+	margin-left: 8px;
 	border-left: 1px solid #ccc;
 	padding-left: 15px;
-	margin-left: 15px;
 	padding-right: 15px;
 }
 
 .menu a.menu-item {
-	padding-left: 15px;
+	padding-bottom: 2px;
+	padding-left: 2px;
+	padding-right: 2px;
+	margin: 0 8px;
 	text-decoration: none;
 }
 
 .menu a.menu-item:hover {
 	cursor: pointer;
+}
+
+.menu a.menu-item.active {
+	/*color: #ffd000;*/
+	border-bottom: 2px solid #ffd000;
 }
 
 /* Filter form */
