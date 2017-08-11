@@ -12,6 +12,7 @@ import Task
 import Page.Errored as Errored exposing (PageLoadError, pageLoadError)
 import Backend.Beers
 import Http
+import Page.BeerList.Model.Filters as Filters
 
 
 type alias Model =
@@ -37,12 +38,17 @@ init appState =
         loadBeers userData =
             Backend.Beers.get appState.environment userData |> Http.toTask
 
+        calibrateFilters : Model -> Model
+        calibrateFilters model =
+            { model | filters = model.filters |> Filters.setContext model.beers }
+
         handleLoadError _ =
             pageLoadError "Unable to load beer list :("
     in
         case appState.auth of
             LoggedIn userData ->
                 Task.map model (loadBeers userData)
+                    |> Task.map calibrateFilters
                     |> Task.mapError handleLoadError
 
             _ ->
