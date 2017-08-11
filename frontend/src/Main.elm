@@ -149,6 +149,7 @@ update msg model =
                             setRoute route newModel
 
                         Data.Auth.LoggedIn _ ->
+                            -- already logged in -> no redirect needed
                             newModel => Cmd.none
 
             ( LogoutResult _, _ ) ->
@@ -182,37 +183,44 @@ setRoute maybeRoute model =
             { model | pageState = TransitioningFrom (getPage model.pageState) }
                 => Task.attempt toMsg task
 
-        dispatch maybeRoute model =
-            case maybeRoute of
-                Nothing ->
-                    { model | pageState = Loaded NotFound } => Cmd.none
+        pageErrored : String -> Model -> Model
+        pageErrored errorMessage model =
+            let
+                error =
+                    Errored.pageLoadError errorMessage
+            in
+                { model | pageState = Loaded (Errored error) }
 
-                Just (Route.About) ->
-                    { model | pageState = Loaded About } => Cmd.none
-
-                Just (Route.BeerList) ->
-                    transition BeerListLoaded (Page.BeerList.Model.init model.appState)
-
-                Just (Route.AuthRedirect _) ->
-                    model => Cmd.none
-
-        requiresLogin maybeRoute =
-            case maybeRoute of
-                Just (Route.BeerList) ->
-                    True
-
-                _ ->
-                    False
+        setRedirectRoute : Maybe Route.Route -> (Maybe Route.Route -> Data.Auth.AuthStatus) -> Model -> Model
+        setRedirectRoute maybeRoute authStatus model =
+            { model | appState = model.appState |> Data.AppState.setAuth (authStatus maybeRoute) }
     in
-        case ( requiresLogin maybeRoute, model.appState.auth ) of
-            ( True, Data.Auth.Checking _ ) ->
-                { model | appState = model.appState |> Data.AppState.setAuth (Data.Auth.Checking maybeRoute) } => Cmd.none
+        case ( maybeRoute, model.appState.auth ) of
+            ( Just (Route.BeerList), Data.Auth.Checking _ ) ->
+                model
+                    |> setRedirectRoute maybeRoute Data.Auth.Checking
+                    |> pageErrored "You need to log in"
+                    => Cmd.none
 
-            ( True, Data.Auth.LoggedOut _ ) ->
-                { model | appState = model.appState |> Data.AppState.setAuth (Data.Auth.LoggedOut maybeRoute) } => Cmd.none
+            ( Just (Route.BeerList), Data.Auth.LoggedOut _ ) ->
+                model
+                    |> setRedirectRoute maybeRoute Data.Auth.LoggedOut
+                    |> pageErrored "You need to log in"
+                    => Cmd.none
 
             _ ->
-                dispatch maybeRoute model
+                case maybeRoute of
+                    Nothing ->
+                        { model | pageState = Loaded NotFound } => Cmd.none
+
+                    Just (Route.About) ->
+                        { model | pageState = Loaded About } => Cmd.none
+
+                    Just (Route.BeerList) ->
+                        transition BeerListLoaded (Page.BeerList.Model.init model.appState)
+
+                    Just (Route.AuthRedirect _) ->
+                        model => Cmd.none
 
 
 view : Model -> Html Msg
@@ -230,6 +238,9 @@ viewPage appState isLoading page =
     let
         frame =
             Views.Page.frame Login Logout isLoading appState
+
+        requireLogin =
+            Views.Page.requireLogin Login appState.auth
     in
         case page of
             NotFound ->
@@ -239,6 +250,7 @@ viewPage appState isLoading page =
             Blank ->
                 Html.text ""
                     |> frame Views.Page.Other
+                    |> requireLogin
 
             Errored subModel ->
                 Errored.view subModel
@@ -252,3 +264,4 @@ viewPage appState isLoading page =
                 Page.BeerList.View.view subModel
                     |> Html.map BeerListMsg
                     |> frame Views.Page.BeerList
+                    |> requireLogin

@@ -1,4 +1,4 @@
-module Views.Page exposing (frame, ActivePage(..))
+module Views.Page exposing (frame, requireLogin, ActivePage(..))
 
 import Html exposing (..)
 import Html.Attributes exposing (..)
@@ -18,18 +18,23 @@ type ActivePage
 
 frame : msg -> msg -> Bool -> AppState -> ActivePage -> Html msg -> Html msg
 frame loginMsg logoutMsg isLoading appState activePage content =
-    case appState.auth of
-        LoggedIn _ ->
-            div [ class "container" ]
-                [ div [ class "row" ]
-                    [ div [ class "header seven columns" ]
-                        [ viewTitle ]
-                    , div [ class "header five columns" ]
-                        [ viewMenu logoutMsg appState.auth activePage
-                        ]
-                    ]
-                , content
+    div [ class "container" ]
+        [ div [ class "row" ]
+            [ div [ class "header seven columns" ]
+                [ viewTitle ]
+            , div [ class "header five columns" ]
+                [ viewMenu logoutMsg appState.auth activePage
                 ]
+            ]
+        , content
+        ]
+
+
+requireLogin : msg -> AuthStatus -> Html msg -> Html msg
+requireLogin loginMsg auth content =
+    case auth of
+        LoggedIn _ ->
+            content
 
         LoggedOut _ ->
             div [ class "login login-button" ]
