@@ -1,6 +1,7 @@
-module Page.Errored exposing (PageLoadError, pageLoadError, view)
+module Page.Errored exposing (PageLoadError, pageLoadError, view, getActivePage)
 
 import Html exposing (Html, div, h1, img, main_, p, text, em)
+import Views.Page exposing (ActivePage)
 
 
 -- MODEL --
@@ -11,13 +12,19 @@ type PageLoadError
 
 
 type alias Model =
-    { errorMessage : String
+    { activePage : ActivePage
+    , errorMessage : String
     }
 
 
-pageLoadError : String -> PageLoadError
-pageLoadError errorMessage =
-    PageLoadError { errorMessage = errorMessage }
+pageLoadError : ActivePage -> String -> PageLoadError
+pageLoadError activePage errorMessage =
+    PageLoadError { activePage = activePage, errorMessage = errorMessage }
+
+
+getActivePage : PageLoadError -> ActivePage
+getActivePage (PageLoadError model) =
+    model.activePage
 
 
 

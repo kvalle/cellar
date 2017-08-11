@@ -4,7 +4,7 @@ import Ports
 import Data.Environment
 import Html exposing (Html)
 import Route exposing (Route)
-import Page.Errored as Errored exposing (PageLoadError)
+import Page.Errored exposing (PageLoadError)
 import Page.Home
 import Page.About
 import Page.NotFound
@@ -82,15 +82,6 @@ type Msg
     | Logout
     | LoginResult Data.Auth.UserData
     | LogoutResult ()
-
-
-pageErrored : Model -> String -> ( Model, Cmd msg )
-pageErrored model errorMessage =
-    let
-        error =
-            Errored.pageLoadError errorMessage
-    in
-        { model | pageState = Loaded (Errored error) } => Cmd.none
 
 
 getPage : PageState -> Page
@@ -185,11 +176,11 @@ setRoute maybeRoute model =
             { model | pageState = TransitioningFrom (getPage model.pageState) }
                 => Task.attempt toMsg task
 
-        pageErrored : String -> Model -> Model
-        pageErrored errorMessage model =
+        pageErrored : Views.Page.ActivePage -> String -> Model -> Model
+        pageErrored activePage errorMessage model =
             let
                 error =
-                    Errored.pageLoadError errorMessage
+                    Page.Errored.pageLoadError activePage errorMessage
             in
                 { model | pageState = Loaded (Errored error) }
 
@@ -201,13 +192,13 @@ setRoute maybeRoute model =
             ( Just (Route.BeerList), Data.Auth.Checking _ ) ->
                 model
                     |> setRedirectRoute maybeRoute Data.Auth.Checking
-                    |> pageErrored "You need to log in"
+                    |> pageErrored Views.Page.BeerList "You need to log in"
                     => Cmd.none
 
             ( Just (Route.BeerList), Data.Auth.LoggedOut _ ) ->
                 model
                     |> setRedirectRoute maybeRoute Data.Auth.LoggedOut
-                    |> pageErrored "You need to log in"
+                    |> pageErrored Views.Page.BeerList "You need to log in"
                     => Cmd.none
 
             _ ->
@@ -257,9 +248,9 @@ viewPage appState isLoading page =
                     |> frame Views.Page.Other
                     |> requireLogin
 
-            Errored subModel ->
-                Errored.view subModel
-                    |> frame Views.Page.Other
+            Errored error ->
+                Page.Errored.view error
+                    |> frame (Page.Errored.getActivePage error)
 
             Home ->
                 Page.Home.view

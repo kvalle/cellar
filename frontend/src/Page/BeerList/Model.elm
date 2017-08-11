@@ -13,6 +13,7 @@ import Page.Errored as Errored exposing (PageLoadError, pageLoadError)
 import Backend.Beers
 import Http
 import Page.BeerList.Model.Filters as Filters
+import Views.Page
 
 
 type alias Model =
@@ -43,7 +44,7 @@ init appState =
             { model | filters = model.filters |> Filters.setContext model.beers }
 
         handleLoadError _ =
-            pageLoadError "Unable to load beer list :("
+            pageLoadError Views.Page.BeerList "Unable to load beer list :("
     in
         case appState.auth of
             LoggedIn userData ->
