@@ -29,7 +29,6 @@ frame loginMsg logoutMsg isLoading appState activePage content =
                         ]
                     ]
                 , content
-                , div [] [ text "footer" ]
                 ]
 
         LoggedOut _ ->
