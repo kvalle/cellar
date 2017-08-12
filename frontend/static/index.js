@@ -1,4 +1,4 @@
-(function() {    
+(function() {
     var app = Elm.Main.fullscreen({ "location" : window.location.host });
 
     var lock = new Auth0Lock('VRWeBjxOOu4TptcJNGiYw370OBcpTghq', 'cellar.eu.auth0.com', {
@@ -16,8 +16,7 @@
         console.log("Found token. Logging in!");
         getUserInfo({ idToken: token });
     } else {
-        console.log("No token. Logged out.");
-        app.ports.logoutResult.send(null);
+        console.log("No token. Not logging in.");
     }
 
     function getUserInfo(result) {
