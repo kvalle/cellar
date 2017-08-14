@@ -9,15 +9,15 @@ type Environment
     | Unknown
 
 
-fromLocation : String -> Environment
-fromLocation location =
-    if String.contains "localhost" location then
+fromHostString : String -> Environment
+fromHostString host =
+    if String.contains "localhost" host then
         Local
-    else if String.contains "test.cellar.kjetilvalle.com" location then
+    else if String.contains "test.cellar.kjetilvalle.com" host then
         Test
-    else if String.contains "dev.cellar.kjetilvalle.com" location then
+    else if String.contains "dev.cellar.kjetilvalle.com" host then
         Dev
-    else if String.contains "cellar.kjetilvalle.com" location then
+    else if String.contains "cellar.kjetilvalle.com" host then
         Prod
     else
         Unknown

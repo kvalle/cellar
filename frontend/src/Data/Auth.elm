@@ -1,5 +1,7 @@
 module Data.Auth exposing (..)
 
+import Json.Decode exposing (field)
+import Json.Decode as Decode exposing (Value, field)
 import Route exposing (Route)
 
 
@@ -17,25 +19,6 @@ type alias UserData =
     }
 
 
-
--- type alias Profile userMetaData appMetaData =
---     { email : String
---     , email_verified : Bool
---     , created_at : Date
---     , family_name : Maybe String
---     , given_name : Maybe String
---     , global_client_id : Maybe String
---     , identities : List OAuth2Identity
---     , locale : Maybe String
---     , name : String
---     , nickname : String
---     , picture : String
---     , user_id : UserID
---     , user_metadata : Maybe userMetaData
---     , app_metadata : Maybe appMetaData
---     }
-
-
 type AuthRedirect
     = NoRedirect
     | Redirect (Maybe Route)
@@ -44,3 +27,23 @@ type AuthRedirect
 type AuthStatus
     = LoggedIn UserData
     | LoggedOut AuthRedirect
+
+
+
+---- DECODERS
+
+
+userDataDecoder : Json.Decode.Decoder UserData
+userDataDecoder =
+    Json.Decode.map2 UserData
+        (field "token" Json.Decode.string)
+        (field "profile" profileDecoder)
+
+
+profileDecoder : Json.Decode.Decoder User
+profileDecoder =
+    Json.Decode.map4 User
+        (field "email" Json.Decode.string)
+        (field "username" Json.Decode.string)
+        (field "email_verified" Json.Decode.bool)
+        (field "picture" Json.Decode.string)

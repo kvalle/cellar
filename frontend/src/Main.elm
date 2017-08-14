@@ -64,12 +64,8 @@ init flags location =
     in
         setRoute route
             { pageState = Loaded Blank
-            , appState = Data.AppState.decodeFromJson flags route
+            , appState = Data.AppState.decodeFromJson route flags
             }
-
-
-
------ other stuff
 
 
 type Msg
