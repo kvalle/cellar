@@ -1,7 +1,8 @@
 module Main exposing (..)
 
+import Json.Decode exposing (field)
+import Json.Decode as Decode exposing (Value, field)
 import Ports
-import Data.Environment
 import Html exposing (Html)
 import Route exposing (Route)
 import Page.Errored exposing (PageLoadError)
@@ -45,7 +46,7 @@ type alias Model =
 -- MAIN --
 
 
-main : Program Flags Model Msg
+main : Program Value Model Msg
 main =
     Navigation.programWithFlags (Route.fromLocation >> SetRoute)
         { init = init
@@ -55,23 +56,20 @@ main =
         }
 
 
-init : Flags -> Location -> ( Model, Cmd Msg )
+init : Value -> Location -> ( Model, Cmd Msg )
 init flags location =
     let
         route =
-            (Route.fromLocation location)
+            Route.fromLocation location
     in
         setRoute route
             { pageState = Loaded Blank
-            , appState =
-                { environment = Data.Environment.fromLocation flags.location
-                , auth = Data.Auth.Checking route
-                }
+            , appState = Data.AppState.decodeFromJson flags route
             }
 
 
-type alias Flags =
-    { location : String }
+
+----- other stuff
 
 
 type Msg
@@ -135,10 +133,10 @@ update msg model =
                         { model | appState = model.appState |> Data.AppState.setAuth (Data.Auth.LoggedIn userData) }
                 in
                     case model.appState.auth of
-                        Data.Auth.LoggedOut route ->
-                            setRoute route newModel
+                        Data.Auth.LoggedOut (Data.Auth.NoRedirect) ->
+                            newModel => Cmd.none
 
-                        Data.Auth.Checking route ->
+                        Data.Auth.LoggedOut (Data.Auth.Redirect route) ->
                             setRoute route newModel
 
                         Data.Auth.LoggedIn _ ->
@@ -146,7 +144,7 @@ update msg model =
                             newModel => Cmd.none
 
             ( LogoutResult _, _ ) ->
-                { model | appState = model.appState |> Data.AppState.setAuth (Data.Auth.LoggedOut (Just Route.Home)) } => Cmd.none
+                { model | appState = model.appState |> Data.AppState.setAuth (Data.Auth.LoggedOut (Data.Auth.NoRedirect)) } => Cmd.none
 
             ( BeerListLoaded (Ok subModel), _ ) ->
                 { model | pageState = Loaded (BeerList subModel) } => Cmd.none
@@ -184,20 +182,14 @@ setRoute maybeRoute model =
             in
                 { model | pageState = Loaded (Errored error) }
 
-        setRedirectRoute : Maybe Route.Route -> (Maybe Route.Route -> Data.Auth.AuthStatus) -> Model -> Model
-        setRedirectRoute maybeRoute authStatus model =
-            { model | appState = model.appState |> Data.AppState.setAuth (authStatus maybeRoute) }
+        setRedirectRoute : Data.Auth.AuthRedirect -> (Data.Auth.AuthRedirect -> Data.Auth.AuthStatus) -> Model -> Model
+        setRedirectRoute redirect authStatus model =
+            { model | appState = model.appState |> Data.AppState.setAuth (authStatus redirect) }
     in
         case ( maybeRoute, model.appState.auth ) of
-            ( Just (Route.BeerList), Data.Auth.Checking _ ) ->
-                model
-                    |> setRedirectRoute maybeRoute Data.Auth.Checking
-                    |> pageErrored Views.Page.BeerList "You need to log in"
-                    => Cmd.none
-
             ( Just (Route.BeerList), Data.Auth.LoggedOut _ ) ->
                 model
-                    |> setRedirectRoute maybeRoute Data.Auth.LoggedOut
+                    |> setRedirectRoute (Data.Auth.Redirect maybeRoute) Data.Auth.LoggedOut
                     |> pageErrored Views.Page.BeerList "You need to log in"
                     => Cmd.none
 

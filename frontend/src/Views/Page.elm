@@ -27,7 +27,13 @@ frame loginMsg logoutMsg isLoading appState activePage content =
                 [ viewMenu loginMsg logoutMsg appState.auth activePage
                 ]
             ]
-        , content
+        , if isLoading then
+            div [ class "login login-loading" ]
+                [ i [ class "icon-spinner animate-spin" ] []
+                , text "Loading…"
+                ]
+          else
+            content
         ]
 
 
@@ -43,12 +49,6 @@ requireLogin loginMsg auth content =
                     [ i [ class "icon-beer" ] []
                     , text " Log in"
                     ]
-                ]
-
-        Checking _ ->
-            div [ class "login login-loading" ]
-                [ i [ class "icon-spinner animate-spin" ] []
-                , text "Loading…"
                 ]
 
 

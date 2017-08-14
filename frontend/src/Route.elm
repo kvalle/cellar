@@ -78,7 +78,7 @@ fromLocation : Location -> Maybe Route
 fromLocation location =
     let
         _ =
-            Debug.log "Location is" location
+            Debug.log "Location hash is" location.hash
     in
         if String.isEmpty location.hash then
             Just Home
