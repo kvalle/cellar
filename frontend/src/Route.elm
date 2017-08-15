@@ -4,6 +4,13 @@ import Html exposing (Attribute)
 import Html.Attributes as Attr
 import Navigation exposing (Location)
 import UrlParser as Url exposing ((</>), Parser, oneOf, parseHash, s, string)
+import Auth0.UrlParser
+    exposing
+        ( Auth0CallbackInfo
+        , Auth0CallbackError
+        , accessTokenUrlParser
+        , unauthorizedUrlParser
+        )
 
 
 -- ROUTING --
@@ -13,7 +20,8 @@ type Route
     = Home
     | BeerList
     | About
-    | AuthRedirect String
+    | AccessTokenRoute Auth0CallbackInfo
+    | UnauthorizedRoute Auth0CallbackError
 
 
 route : Parser (Route -> a) a
@@ -22,18 +30,9 @@ route =
         [ Url.map Home (s "")
         , Url.map BeerList (s "beers")
         , Url.map About (s "about")
-        , Url.map AuthRedirect authRedirectParser
+        , Url.map AccessTokenRoute accessTokenUrlParser
+        , Url.map UnauthorizedRoute unauthorizedUrlParser
         ]
-
-
-authRedirectParser : Parser (String -> a) a
-authRedirectParser =
-    Url.custom "AUTH_REDIRECT" <|
-        \segment ->
-            if String.startsWith "access_token=" segment then
-                Ok segment
-            else
-                Err ""
 
 
 
@@ -54,7 +53,10 @@ routeToString page =
                 About ->
                     [ "about" ]
 
-                AuthRedirect _ ->
+                UnauthorizedRoute _ ->
+                    []
+
+                AccessTokenRoute _ ->
                     []
     in
         "#/" ++ String.join "/" pieces

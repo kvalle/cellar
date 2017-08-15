@@ -1,24 +1,23 @@
 module Main exposing (..)
 
-import Json.Decode exposing (field)
-import Json.Decode as Decode exposing (Value, field)
-import Ports
+import Data.AppState exposing (AppState)
+import Data.Auth
 import Html exposing (Html)
-import Route exposing (Route)
+import Json.Decode as Decode exposing (Value, field)
+import Navigation exposing (Location)
+import Page.About
+import Page.BeerList.Messages
+import Page.BeerList.Model
+import Page.BeerList.Subscriptions
+import Page.BeerList.Update
+import Page.BeerList.View
 import Page.Errored exposing (PageLoadError)
 import Page.Home
-import Page.About
 import Page.NotFound
-import Page.BeerList.Model
-import Page.BeerList.Update
-import Page.BeerList.Messages
-import Page.BeerList.View
-import Page.BeerList.Subscriptions
-import Util exposing ((=>))
+import Ports
+import Route exposing (Route)
 import Task
-import Navigation exposing (Location)
-import Data.Auth
-import Data.AppState exposing (AppState)
+import Util exposing ((=>))
 import Views.Page
 
 
@@ -203,7 +202,10 @@ setRoute maybeRoute model =
                     Just (Route.BeerList) ->
                         transition BeerListLoaded (Page.BeerList.Model.init model.appState)
 
-                    Just (Route.AuthRedirect _) ->
+                    Just (Route.UnauthorizedRoute _) ->
+                        model => Cmd.none
+
+                    Just (Route.AccessTokenRoute x) ->
                         model => Cmd.none
 
 
