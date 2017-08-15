@@ -3,7 +3,7 @@ module Main exposing (..)
 import Data.AppState exposing (AppState)
 import Data.Auth
 import Html exposing (Html)
-import Json.Decode as Decode exposing (Value, field)
+import Json.Decode as Decode exposing (Value, field, null)
 import Navigation exposing (Location)
 import Page.About
 import Page.BeerList.Messages
@@ -188,25 +188,35 @@ setRoute maybeRoute model =
                     |> pageErrored Views.Page.BeerList "You need to log in"
                     => Cmd.none
 
-            _ ->
-                case maybeRoute of
-                    Nothing ->
-                        { model | pageState = Loaded NotFound } => Cmd.none
+            ( Nothing, _ ) ->
+                { model | pageState = Loaded NotFound } => Cmd.none
 
-                    Just (Route.About) ->
-                        { model | pageState = Loaded About } => Cmd.none
+            ( Just (Route.About), _ ) ->
+                { model | pageState = Loaded About } => Cmd.none
 
-                    Just (Route.Home) ->
-                        { model | pageState = Loaded Home } => Cmd.none
+            ( Just (Route.Home), _ ) ->
+                { model | pageState = Loaded Home } => Cmd.none
 
-                    Just (Route.BeerList) ->
-                        transition BeerListLoaded (Page.BeerList.Model.init model.appState)
+            ( Just (Route.BeerList), _ ) ->
+                transition BeerListLoaded (Page.BeerList.Model.init model.appState)
 
-                    Just (Route.UnauthorizedRoute _) ->
-                        model => Cmd.none
+            ( Just (Route.AccessTokenRoute callBackInfo), _ ) ->
+                let
+                    authStatus =
+                        case callBackInfo.idToken of
+                            Just token ->
+                                Data.Auth.LoggedIn
+                                    { token = token
+                                    , profile = Data.Auth.User "dunno@example.com" "User Userson" True ""
+                                    }
 
-                    Just (Route.AccessTokenRoute x) ->
-                        model => Cmd.none
+                            Nothing ->
+                                Data.Auth.LoggedOut Data.Auth.NoRedirect
+                in
+                    { model | appState = model.appState |> Data.AppState.setAuth authStatus } => Cmd.none
+
+            ( Just (Route.UnauthorizedRoute x), _ ) ->
+                model |> pageErrored Views.Page.Other "Login failed" => Cmd.none
 
 
 view : Model -> Html Msg

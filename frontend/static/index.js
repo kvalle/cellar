@@ -37,11 +37,11 @@
 
             localStorage.setItem('cellar_login_token', result.idToken);
             localStorage.setItem('cellar_login_profile', JSON.stringify(profile));
-            console.log("Logged in.");
-            app.ports.loginResult.send({
-                token: result.idToken,
-                profile: profile
-            });
+            // console.log("Logged in.");
+            // app.ports.loginResult.send({
+            //     token: result.idToken,
+            //     profile: profile
+            // });
         });
     }
 
