@@ -1,8 +1,10 @@
 module Data.Auth exposing (..)
 
-import Json.Decode exposing (field)
-import Json.Decode as Decode exposing (Value, field)
+import Json.Decode exposing (Value, field)
 import Route exposing (Route)
+import Json.Decode as Decode exposing (Decoder)
+import Json.Decode as Decode exposing (Decoder, maybe, list, string, bool)
+import Json.Decode.Pipeline exposing (decode, required, optional)
 
 
 type alias User =
@@ -10,12 +12,6 @@ type alias User =
     , username : String
     , email_verified : Bool
     , picture : String
-    }
-
-
-type alias Session =
-    { token : String
-    , profile : User
     }
 
 
@@ -30,7 +26,20 @@ type AuthStatus
 
 
 
----- DECODERS
+{-
+   Session represent the user loggin session. IdToken is the JWT token
+   from Auth0 representing the current login session.
+-}
+
+
+type alias Session =
+    { token : IdToken
+    , profile : Profile
+    }
+
+
+type alias IdToken =
+    String
 
 
 sessionDecoder : Json.Decode.Decoder Session
@@ -40,10 +49,29 @@ sessionDecoder =
         (field "profile" profileDecoder)
 
 
-profileDecoder : Json.Decode.Decoder User
+
+{-
+   Profile class matching user info in Auth0. For a reference of possible
+   fields, see https://auth0.com/docs/user-profile/user-profile-structure
+-}
+
+
+type alias Profile =
+    { email : String
+    , email_verified : Bool
+    , name : String
+    , picture : String
+    , user_id : String
+    , username : String
+    }
+
+
+profileDecoder : Decoder Profile
 profileDecoder =
-    Json.Decode.map4 User
-        (field "email" Json.Decode.string)
-        (field "username" Json.Decode.string)
-        (field "email_verified" Json.Decode.bool)
-        (field "picture" Json.Decode.string)
+    decode Profile
+        |> required "email" string
+        |> required "email_verified" bool
+        |> required "name" string
+        |> required "picture" string
+        |> required "user_id" string
+        |> required "username" string

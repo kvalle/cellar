@@ -1,6 +1,6 @@
 module Main exposing (..)
 
-import Backend.Auth0
+import Backend.Auth
 import Http
 import Data.AppState exposing (AppState)
 import Data.Auth
@@ -76,7 +76,7 @@ type Msg
     | Login
     | Logout
     | LogoutResult ()
-    | FetchedUserInfo (Result Http.Error Backend.Auth0.Profile)
+    | FetchedUserInfo (Result Http.Error Data.Auth.Profile)
 
 
 getPage : PageState -> Page
@@ -200,7 +200,7 @@ setRoute maybeRoute model =
                     cmd =
                         case callBackInfo.idToken of
                             Just token ->
-                                Http.send FetchedUserInfo <| Backend.Auth0.getAuthedUserProfile token
+                                Http.send FetchedUserInfo <| Backend.Auth.getAuthedUserProfile token
 
                             Nothing ->
                                 Cmd.none
