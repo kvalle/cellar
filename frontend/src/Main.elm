@@ -1,7 +1,6 @@
 module Main exposing (..)
 
 import Backend.Auth
-import Http
 import Data.AppState exposing (AppState)
 import Data.Auth
 import Html exposing (Html)
@@ -73,12 +72,9 @@ type Msg
     = SetRoute Route
     | BeerListLoaded (Result PageLoadError Page.BeerList.Model.Model)
     | BeerListMsg Page.BeerList.Messages.Msg
-    | InitiateLogin
-    | LoginSuccessful Data.Auth.Session
-    | LoginFailed String
+    | Login
+    | LoginResult (Result String Data.Auth.Session)
     | Logout
-    | LogoutResult ()
-    | FetchedUserInfo (Result Http.Error Data.Auth.Profile)
 
 
 getPage : PageState -> Page
@@ -118,21 +114,23 @@ update msg model =
             ( SetRoute route, _ ) ->
                 setRoute route model
 
-            ( InitiateLogin, _ ) ->
+            ( Login, _ ) ->
                 model => Ports.showAuth0Lock ()
 
-            ( LoginSuccessful session, _ ) ->
-                { model | appState = model.appState |> Data.AppState.setAuth (Data.Auth.LoggedIn session) } => Cmd.none
+            ( LoginResult (Ok session), _ ) ->
+                { model | appState = model.appState |> Data.AppState.setAuth (Data.Auth.LoggedIn session) }
+                    => Cmd.none
 
-            ( LoginFailed error, _ ) ->
-                -- TODO
-                model => Ports.clearSessionStorage ()
+            ( LoginResult (Err error), _ ) ->
+                { model | appState = model.appState |> Data.AppState.setAuth (Data.Auth.LoggedOut Data.Auth.NoRedirect) }
+                    => Ports.clearSessionStorage ()
 
             ( Logout, _ ) ->
-                model => Ports.clearSessionStorage ()
-
-            ( LogoutResult _, _ ) ->
-                { model | appState = model.appState |> Data.AppState.setAuth (Data.Auth.LoggedOut (Data.Auth.NoRedirect)) } => Cmd.none
+                let
+                    m =
+                        { model | appState = model.appState |> Data.AppState.setAuth (Data.Auth.LoggedOut Data.Auth.NoRedirect) }
+                in
+                    m => Ports.clearSessionStorage ()
 
             ( BeerListLoaded (Ok subModel), _ ) ->
                 { model | pageState = Loaded (BeerList subModel) } => Cmd.none
@@ -194,26 +192,7 @@ setRoute maybeRoute model =
                 transition BeerListLoaded (Page.BeerList.Model.init model.appState)
 
             ( Route.AccessTokenRoute callBackInfo, _ ) ->
-                let
-                    -- authStatus =
-                    --     case callBackInfo.idToken of
-                    --         Just token ->
-                    --             Data.Auth.LoggedIn
-                    --                 { token = token
-                    --                 , profile = Data.Auth.User "dunno@example.com" "User Userson" True ""
-                    --                 }
-                    --
-                    --         Nothing ->
-                    --             Data.Auth.LoggedOut Data.Auth.NoRedirect
-                    cmd =
-                        case callBackInfo.idToken of
-                            Just token ->
-                                Http.send FetchedUserInfo <| Backend.Auth.getAuthedUserProfile token
-
-                            Nothing ->
-                                Cmd.none
-                in
-                    model => cmd
+                model => Task.attempt LoginResult (Backend.Auth.login callBackInfo.idToken)
 
             ( Route.UnauthorizedRoute x, _ ) ->
                 model |> pageErrored Views.Page.Other "Login failed" => Cmd.none
@@ -233,7 +212,7 @@ viewPage : AppState -> Bool -> Page -> Html Msg
 viewPage appState isLoading page =
     let
         frame =
-            Views.Page.frame InitiateLogin Logout isLoading appState
+            Views.Page.frame Login Logout isLoading appState
     in
         case page of
             NotFound ->
