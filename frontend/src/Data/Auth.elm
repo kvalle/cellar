@@ -7,14 +7,6 @@ import Json.Decode as Decode exposing (Decoder, maybe, list, string, bool)
 import Json.Decode.Pipeline exposing (decode, required, optional)
 
 
-type alias User =
-    { email : String
-    , username : String
-    , email_verified : Bool
-    , picture : String
-    }
-
-
 type AuthRedirect
     = NoRedirect
     | Redirect Route

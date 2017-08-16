@@ -73,7 +73,9 @@ type Msg
     = SetRoute Route
     | BeerListLoaded (Result PageLoadError Page.BeerList.Model.Model)
     | BeerListMsg Page.BeerList.Messages.Msg
-    | Login
+    | InitiateLogin
+    | LoginSuccessful Data.Auth.Session
+    | LoginFailed String
     | Logout
     | LogoutResult ()
     | FetchedUserInfo (Result Http.Error Data.Auth.Profile)
@@ -116,8 +118,15 @@ update msg model =
             ( SetRoute route, _ ) ->
                 setRoute route model
 
-            ( Login, _ ) ->
+            ( InitiateLogin, _ ) ->
                 model => Ports.showAuth0Lock ()
+
+            ( LoginSuccessful session, _ ) ->
+                { model | appState = model.appState |> Data.AppState.setAuth (Data.Auth.LoggedIn session) } => Cmd.none
+
+            ( LoginFailed error, _ ) ->
+                -- TODO
+                model => Ports.clearSessionStorage ()
 
             ( Logout, _ ) ->
                 model => Ports.clearSessionStorage ()
@@ -186,17 +195,16 @@ setRoute maybeRoute model =
 
             ( Route.AccessTokenRoute callBackInfo, _ ) ->
                 let
-                    authStatus =
-                        case callBackInfo.idToken of
-                            Just token ->
-                                Data.Auth.LoggedIn
-                                    { token = token
-                                    , profile = Data.Auth.User "dunno@example.com" "User Userson" True ""
-                                    }
-
-                            Nothing ->
-                                Data.Auth.LoggedOut Data.Auth.NoRedirect
-
+                    -- authStatus =
+                    --     case callBackInfo.idToken of
+                    --         Just token ->
+                    --             Data.Auth.LoggedIn
+                    --                 { token = token
+                    --                 , profile = Data.Auth.User "dunno@example.com" "User Userson" True ""
+                    --                 }
+                    --
+                    --         Nothing ->
+                    --             Data.Auth.LoggedOut Data.Auth.NoRedirect
                     cmd =
                         case callBackInfo.idToken of
                             Just token ->
@@ -205,8 +213,7 @@ setRoute maybeRoute model =
                             Nothing ->
                                 Cmd.none
                 in
-                    { model | appState = model.appState |> Data.AppState.setAuth authStatus }
-                        => cmd
+                    model => cmd
 
             ( Route.UnauthorizedRoute x, _ ) ->
                 model |> pageErrored Views.Page.Other "Login failed" => Cmd.none
@@ -226,7 +233,7 @@ viewPage : AppState -> Bool -> Page -> Html Msg
 viewPage appState isLoading page =
     let
         frame =
-            Views.Page.frame Login Logout isLoading appState
+            Views.Page.frame InitiateLogin Logout isLoading appState
     in
         case page of
             NotFound ->
