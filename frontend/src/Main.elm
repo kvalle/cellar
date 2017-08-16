@@ -1,5 +1,7 @@
 module Main exposing (..)
 
+import Backend.Auth0
+import Http
 import Data.AppState exposing (AppState)
 import Data.Auth
 import Html exposing (Html)
@@ -75,6 +77,7 @@ type Msg
     | Logout
     | LoginResult Data.Auth.UserData
     | LogoutResult ()
+    | FetchedUserInfo (Result Http.Error Backend.Auth0.Profile)
 
 
 getPage : PageState -> Page
@@ -212,8 +215,17 @@ setRoute maybeRoute model =
 
                             Nothing ->
                                 Data.Auth.LoggedOut Data.Auth.NoRedirect
+
+                    cmd =
+                        case callBackInfo.idToken of
+                            Just token ->
+                                Http.send FetchedUserInfo <| Backend.Auth0.getAuthedUserProfile token
+
+                            Nothing ->
+                                Cmd.none
                 in
-                    { model | appState = model.appState |> Data.AppState.setAuth authStatus } => Cmd.none
+                    { model | appState = model.appState |> Data.AppState.setAuth authStatus }
+                        => cmd
 
             ( Just (Route.UnauthorizedRoute x), _ ) ->
                 model |> pageErrored Views.Page.Other "Login failed" => Cmd.none

@@ -22,28 +22,28 @@
             title: "Log into Cellar"
         },
     });
-
-    function getUserInfo(result) {
-        console.log("Fetching user info.");
-        lock.getProfile(result.idToken, function(error, profile) {
-            if (error) {
-                if (error.error === 401) {
-                    localStorage.removeItem('cellar_login_token');
-                    localStorage.removeItem('cellar_login_profile');
-                }
-                console.log(error);
-                return;
-            }
-
-            localStorage.setItem('cellar_login_token', result.idToken);
-            localStorage.setItem('cellar_login_profile', JSON.stringify(profile));
-            // console.log("Logged in.");
-            // app.ports.loginResult.send({
-            //     token: result.idToken,
-            //     profile: profile
-            // });
-        });
-    }
+    
+    // function getUserInfo(result) {
+    //     console.log("Fetching user info.");
+    //     lock.getProfile(result.idToken, function(error, profile) {
+    //         if (error) {
+    //             if (error.error === 401) {
+    //                 localStorage.removeItem('cellar_login_token');
+    //                 localStorage.removeItem('cellar_login_profile');
+    //             }
+    //             console.log(error);
+    //             return;
+    //         }
+    //
+    //         localStorage.setItem('cellar_login_token', result.idToken);
+    //         localStorage.setItem('cellar_login_profile', JSON.stringify(profile));
+    //         // console.log("Logged in.");
+    //         // app.ports.loginResult.send({
+    //         //     token: result.idToken,
+    //         //     profile: profile
+    //         // });
+    //     });
+    // }
 
     app.ports.login.subscribe(function() {
         lock.show();
@@ -61,5 +61,4 @@
         app.ports.keyPressed.send(e);
     };
 
-    lock.on('authenticated', getUserInfo);
 })();
