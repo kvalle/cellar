@@ -123,11 +123,11 @@ update msg model =
                     => Ports.clearSessionStorage ()
 
             Logout ->
-                let
-                    m =
-                        { model | appState = model.appState |> Data.AppState.setAuth (Data.Auth.LoggedOut Data.Auth.NoRedirect) }
-                in
-                    m => Ports.clearSessionStorage ()
+                { model | appState = model.appState |> Data.AppState.setAuth (Data.Auth.LoggedOut Data.Auth.NoRedirect) }
+                    => Cmd.batch
+                        [ Ports.clearSessionStorage ()
+                        , Route.modifyUrl Route.Home
+                        ]
 
             BeerListLoaded (Ok subModel) ->
                 { model | pageState = Loaded (BeerList subModel) } => Cmd.none
