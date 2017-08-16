@@ -32,7 +32,6 @@ init appState =
             Model
                 Page.BeerList.Model.Table.init
                 Page.BeerList.Model.BeerForm.init
-                -- FIXME: Filters need to be set based on loaded beers
                 Page.BeerList.Model.Filters.init
                 Page.BeerList.Model.State.init
 
