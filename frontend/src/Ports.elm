@@ -1,15 +1,16 @@
 port module Ports exposing (..)
 
 import Json.Decode
+import Data.Auth exposing (Session)
 
 
-port login : () -> Cmd msg
+port setSessionStorage : Session -> Cmd msg
 
 
-port logout : () -> Cmd msg
+port clearSessionStorage : () -> Cmd msg
 
 
-port logoutResult : (() -> msg) -> Sub msg
+port showAuth0Lock : () -> Cmd msg
 
 
 port keyPressed : (Json.Decode.Value -> msg) -> Sub msg

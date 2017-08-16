@@ -92,8 +92,7 @@ getPage pageState =
 subscriptions : Model -> Sub Msg
 subscriptions model =
     Sub.batch
-        [ Ports.logoutResult LogoutResult
-        , Sub.map BeerListMsg Page.BeerList.Subscriptions.subscriptions
+        [ Sub.map BeerListMsg Page.BeerList.Subscriptions.subscriptions
         ]
 
 
@@ -118,10 +117,10 @@ update msg model =
                 setRoute route model
 
             ( Login, _ ) ->
-                model => Ports.login ()
+                model => Ports.showAuth0Lock ()
 
             ( Logout, _ ) ->
-                model => Ports.logout ()
+                model => Ports.clearSessionStorage ()
 
             ( LogoutResult _, _ ) ->
                 { model | appState = model.appState |> Data.AppState.setAuth (Data.Auth.LoggedOut (Data.Auth.NoRedirect)) } => Cmd.none
