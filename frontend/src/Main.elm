@@ -116,7 +116,7 @@ update msg model =
 
             LoginResult (Ok session) ->
                 { model | appState = model.appState |> Data.AppState.setAuth (Data.Auth.LoggedIn session) }
-                    => Cmd.none
+                    => Ports.setSessionStorage session
 
             LoginResult (Err error) ->
                 { model | appState = model.appState |> Data.AppState.setAuth (Data.Auth.LoggedOut Data.Auth.NoRedirect) }
