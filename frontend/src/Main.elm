@@ -100,54 +100,49 @@ update msg model =
         _ =
             Debug.log "Update got" msg
 
-        page =
-            getPage model.pageState
-
-        toPage toModel toMsg subUpdate subMsg appState subModel =
+        delegateToPage toModel toMsg subUpdate subMsg appState subModel =
             let
                 ( newModel, newCmd ) =
                     subUpdate subMsg appState subModel
             in
                 ( { model | pageState = Loaded (toModel newModel) }, Cmd.map toMsg newCmd )
     in
-        case ( msg, page ) of
-            ( SetRoute route, _ ) ->
+        case msg of
+            SetRoute route ->
                 setRoute route model
 
-            ( Login, _ ) ->
+            Login ->
                 model => Ports.showAuth0Lock ()
 
-            ( LoginResult (Ok session), _ ) ->
+            LoginResult (Ok session) ->
                 { model | appState = model.appState |> Data.AppState.setAuth (Data.Auth.LoggedIn session) }
                     => Cmd.none
 
-            ( LoginResult (Err error), _ ) ->
+            LoginResult (Err error) ->
                 { model | appState = model.appState |> Data.AppState.setAuth (Data.Auth.LoggedOut Data.Auth.NoRedirect) }
                     => Ports.clearSessionStorage ()
 
-            ( Logout, _ ) ->
+            Logout ->
                 let
                     m =
                         { model | appState = model.appState |> Data.AppState.setAuth (Data.Auth.LoggedOut Data.Auth.NoRedirect) }
                 in
                     m => Ports.clearSessionStorage ()
 
-            ( BeerListLoaded (Ok subModel), _ ) ->
+            BeerListLoaded (Ok subModel) ->
                 { model | pageState = Loaded (BeerList subModel) } => Cmd.none
 
-            ( BeerListLoaded (Err error), _ ) ->
+            BeerListLoaded (Err error) ->
                 { model | pageState = Loaded (Errored error) } => Cmd.none
 
-            ( BeerListMsg subMsg, BeerList subModel ) ->
-                toPage BeerList BeerListMsg Page.BeerList.Update.update subMsg model.appState subModel
+            BeerListMsg subMsg ->
+                case getPage model.pageState of
+                    BeerList subModel ->
+                        delegateToPage BeerList BeerListMsg Page.BeerList.Update.update subMsg model.appState subModel
 
-            ( msg, _ ) ->
-                let
-                    _ =
-                        Debug.log ("Ignored msg " ++ (toString msg) ++ " since it's irrelevant for page") page
-                in
-                    -- Disregard incoming messages that arrived for the wrong page
-                    model => Cmd.none
+                    _ ->
+                        -- Disregard BeerListMsg for other pages
+                        model => Cmd.none
 
 
 setRoute : Route -> Model -> ( Model, Cmd Msg )
