@@ -228,9 +228,6 @@ viewPage appState isLoading page =
     let
         frame =
             Views.Page.frame Login Logout isLoading appState
-
-        requireLogin =
-            Views.Page.requireLogin Login appState.auth
     in
         case page of
             NotFound ->
@@ -240,7 +237,6 @@ viewPage appState isLoading page =
             Blank ->
                 Html.text ""
                     |> frame Views.Page.Other
-                    |> requireLogin
 
             Errored error ->
                 Page.Errored.view error
@@ -258,4 +254,3 @@ viewPage appState isLoading page =
                 Page.BeerList.View.view subModel
                     |> Html.map BeerListMsg
                     |> frame Views.Page.BeerList
-                    |> requireLogin

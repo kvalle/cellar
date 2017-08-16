@@ -1,4 +1,4 @@
-module Views.Page exposing (frame, requireLogin, ActivePage(..))
+module Views.Page exposing (frame, ActivePage(..))
 
 import Html exposing (..)
 import Html.Attributes exposing (..)
@@ -35,21 +35,6 @@ frame loginMsg logoutMsg isLoading appState activePage content =
           else
             content
         ]
-
-
-requireLogin : msg -> AuthStatus -> Html msg -> Html msg
-requireLogin loginMsg auth content =
-    case auth of
-        LoggedIn _ ->
-            content
-
-        LoggedOut _ ->
-            div [ class "login login-button" ]
-                [ a [ class "button button-primary", onClick loginMsg ]
-                    [ i [ class "icon-beer" ] []
-                    , text " Log in"
-                    ]
-                ]
 
 
 viewMenu : msg -> msg -> AuthStatus -> ActivePage -> Html msg
