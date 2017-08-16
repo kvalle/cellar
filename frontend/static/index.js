@@ -1,14 +1,14 @@
 (function() {
     var token = localStorage.getItem('cellar_login_token');
     var profile = localStorage.getItem('cellar_login_profile');
-    var user = null;
+    var session = null;
 
     if (token && profile) {
         console.log("Found token. Staring app with user session!");
-        user = { "token": token, "profile": JSON.parse(profile) };
+        session = { "token": token, "profile": JSON.parse(profile) };
     }
 
-    var flags = { "location" : window.location.host, "user" : user };
+    var flags = { "location" : window.location.host, "session" : session };
 
     console.log("Sending flags: ", flags);
     var app = Elm.Main.fullscreen(flags);
@@ -22,7 +22,7 @@
             title: "Log into Cellar"
         },
     });
-    
+
     // function getUserInfo(result) {
     //     console.log("Fetching user info.");
     //     lock.getProfile(result.idToken, function(error, profile) {

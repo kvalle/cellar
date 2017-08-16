@@ -42,4 +42,4 @@ appStateDecoder route =
     in
         Json.Decode.map2 AppState
             (Json.Decode.map Data.Environment.fromHostString (field "location" Json.Decode.string))
-            (Json.Decode.map toAuthStatus (Json.Decode.maybe (field "user" Data.Auth.userDataDecoder)))
+            (Json.Decode.map toAuthStatus (Json.Decode.maybe (field "session" Data.Auth.sessionDecoder)))

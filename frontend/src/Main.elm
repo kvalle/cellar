@@ -75,7 +75,6 @@ type Msg
     | BeerListMsg Page.BeerList.Messages.Msg
     | Login
     | Logout
-    | LoginResult Data.Auth.UserData
     | LogoutResult ()
     | FetchedUserInfo (Result Http.Error Backend.Auth0.Profile)
 
@@ -93,8 +92,7 @@ getPage pageState =
 subscriptions : Model -> Sub Msg
 subscriptions model =
     Sub.batch
-        [ Ports.loginResult LoginResult
-        , Ports.logoutResult LogoutResult
+        [ Ports.logoutResult LogoutResult
         , Sub.map BeerListMsg Page.BeerList.Subscriptions.subscriptions
         ]
 
@@ -124,22 +122,6 @@ update msg model =
 
             ( Logout, _ ) ->
                 model => Ports.logout ()
-
-            ( LoginResult userData, _ ) ->
-                let
-                    newModel =
-                        { model | appState = model.appState |> Data.AppState.setAuth (Data.Auth.LoggedIn userData) }
-                in
-                    case model.appState.auth of
-                        Data.Auth.LoggedOut (Data.Auth.NoRedirect) ->
-                            newModel => Cmd.none
-
-                        Data.Auth.LoggedOut (Data.Auth.Redirect route) ->
-                            setRoute route newModel
-
-                        Data.Auth.LoggedIn _ ->
-                            -- already logged in -> no redirect needed
-                            newModel => Cmd.none
 
             ( LogoutResult _, _ ) ->
                 { model | appState = model.appState |> Data.AppState.setAuth (Data.Auth.LoggedOut (Data.Auth.NoRedirect)) } => Cmd.none

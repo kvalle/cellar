@@ -13,7 +13,7 @@ type alias User =
     }
 
 
-type alias UserData =
+type alias Session =
     { token : String
     , profile : User
     }
@@ -25,7 +25,7 @@ type AuthRedirect
 
 
 type AuthStatus
-    = LoggedIn UserData
+    = LoggedIn Session
     | LoggedOut AuthRedirect
 
 
@@ -33,9 +33,9 @@ type AuthStatus
 ---- DECODERS
 
 
-userDataDecoder : Json.Decode.Decoder UserData
-userDataDecoder =
-    Json.Decode.map2 UserData
+sessionDecoder : Json.Decode.Decoder Session
+sessionDecoder =
+    Json.Decode.map2 Session
         (field "token" Json.Decode.string)
         (field "profile" profileDecoder)
 

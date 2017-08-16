@@ -2,12 +2,12 @@ module Backend.Beers exposing (get, save)
 
 import Http exposing (Request)
 import Json.Decode as Decode
-import Data.Auth exposing (UserData)
+import Data.Auth exposing (Session)
 import Data.Beer exposing (Beer, listDecoder, listEncoder)
 import Data.Environment exposing (Environment(..))
 
 
-get : Environment -> UserData -> Request (List Beer)
+get : Environment -> Session -> Request (List Beer)
 get env userData =
     request
         "GET"
@@ -17,7 +17,7 @@ get env userData =
         userData.token
 
 
-save : Environment -> UserData -> List Beer -> Request (List Beer)
+save : Environment -> Session -> List Beer -> Request (List Beer)
 save env userData beers =
     request
         "POST"
