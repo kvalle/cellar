@@ -82,11 +82,7 @@ modifyUrl =
 
 fromLocation : Location -> Route
 fromLocation location =
-    let
-        _ =
-            Debug.log "Location hash is" location.hash
-    in
-        if String.isEmpty location.hash then
-            Home
-        else
-            parseHash route location |> Maybe.withDefault Unknown
+    if String.isEmpty location.hash then
+        Home
+    else
+        parseHash route location |> Maybe.withDefault Unknown

@@ -97,9 +97,6 @@ subscriptions model =
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     let
-        _ =
-            Debug.log "Update got" msg
-
         delegateToPage toModel toMsg subUpdate subMsg appState subModel =
             let
                 ( newModel, newCmd ) =
@@ -148,9 +145,6 @@ update msg model =
 setRoute : Route -> Model -> ( Model, Cmd Msg )
 setRoute maybeRoute model =
     let
-        _ =
-            Debug.log "Setting route" maybeRoute
-
         transition toMsg task =
             { model | pageState = TransitioningFrom (getPage model.pageState) }
                 => Task.attempt toMsg task
