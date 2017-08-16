@@ -70,7 +70,7 @@ init flags location =
 
 
 type Msg
-    = SetRoute (Maybe Route)
+    = SetRoute Route
     | BeerListLoaded (Result PageLoadError Page.BeerList.Model.Model)
     | BeerListMsg Page.BeerList.Messages.Msg
     | Login
@@ -162,7 +162,7 @@ update msg model =
                     model => Cmd.none
 
 
-setRoute : Maybe Route -> Model -> ( Model, Cmd Msg )
+setRoute : Route -> Model -> ( Model, Cmd Msg )
 setRoute maybeRoute model =
     let
         _ =
@@ -185,25 +185,25 @@ setRoute maybeRoute model =
             { model | appState = model.appState |> Data.AppState.setAuth (authStatus redirect) }
     in
         case ( maybeRoute, model.appState.auth ) of
-            ( Just (Route.BeerList), Data.Auth.LoggedOut _ ) ->
+            ( Route.BeerList, Data.Auth.LoggedOut _ ) ->
                 model
-                    |> setRedirectRoute (Data.Auth.Redirect maybeRoute) Data.Auth.LoggedOut
+                    |> setRedirectRoute (Data.Auth.Redirect Route.BeerList) Data.Auth.LoggedOut
                     |> pageErrored Views.Page.BeerList "You need to log in"
                     => Cmd.none
 
-            ( Nothing, _ ) ->
+            ( Route.Unknown, _ ) ->
                 { model | pageState = Loaded NotFound } => Cmd.none
 
-            ( Just (Route.About), _ ) ->
+            ( Route.About, _ ) ->
                 { model | pageState = Loaded About } => Cmd.none
 
-            ( Just (Route.Home), _ ) ->
+            ( Route.Home, _ ) ->
                 { model | pageState = Loaded Home } => Cmd.none
 
-            ( Just (Route.BeerList), _ ) ->
+            ( Route.BeerList, _ ) ->
                 transition BeerListLoaded (Page.BeerList.Model.init model.appState)
 
-            ( Just (Route.AccessTokenRoute callBackInfo), _ ) ->
+            ( Route.AccessTokenRoute callBackInfo, _ ) ->
                 let
                     authStatus =
                         case callBackInfo.idToken of
@@ -227,7 +227,7 @@ setRoute maybeRoute model =
                     { model | appState = model.appState |> Data.AppState.setAuth authStatus }
                         => cmd
 
-            ( Just (Route.UnauthorizedRoute x), _ ) ->
+            ( Route.UnauthorizedRoute x, _ ) ->
                 model |> pageErrored Views.Page.Other "Login failed" => Cmd.none
 
 

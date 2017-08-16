@@ -21,7 +21,7 @@ type alias UserData =
 
 type AuthRedirect
     = NoRedirect
-    | Redirect (Maybe Route)
+    | Redirect Route
 
 
 type AuthStatus

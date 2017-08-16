@@ -22,6 +22,7 @@ type Route
     | About
     | AccessTokenRoute Auth0CallbackInfo
     | UnauthorizedRoute Auth0CallbackError
+    | Unknown
 
 
 route : Parser (Route -> a) a
@@ -58,6 +59,9 @@ routeToString page =
 
                 AccessTokenRoute _ ->
                     []
+
+                Unknown ->
+                    []
     in
         "#/" ++ String.join "/" pieces
 
@@ -76,13 +80,13 @@ modifyUrl =
     routeToString >> Navigation.modifyUrl
 
 
-fromLocation : Location -> Maybe Route
+fromLocation : Location -> Route
 fromLocation location =
     let
         _ =
             Debug.log "Location hash is" location.hash
     in
         if String.isEmpty location.hash then
-            Just Home
+            Home
         else
-            parseHash route location
+            parseHash route location |> Maybe.withDefault Unknown

@@ -18,7 +18,7 @@ setAuth auth appState =
     { appState | auth = auth }
 
 
-decodeFromJson : Maybe Route.Route -> Value -> AppState
+decodeFromJson : Route.Route -> Value -> AppState
 decodeFromJson defaultRoute json =
     let
         defaultAppState =
@@ -32,7 +32,7 @@ decodeFromJson defaultRoute json =
             |> Maybe.withDefault defaultAppState
 
 
-appStateDecoder : Maybe Route.Route -> Json.Decode.Decoder AppState
+appStateDecoder : Route.Route -> Json.Decode.Decoder AppState
 appStateDecoder route =
     let
         toAuthStatus maybeUserData =
