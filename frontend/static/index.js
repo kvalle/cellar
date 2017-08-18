@@ -10,7 +10,7 @@
         },
     });
 
-    var session = localStorage.getItem('cellar_session');
+    var session = JSON.parse(localStorage.getItem('cellar_session'));
     var flags = {
       "location" : window.location.host,
       "session" : session
