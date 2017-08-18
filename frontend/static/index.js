@@ -1,6 +1,10 @@
 (function() {
 
     var lock = new Auth0Lock('VRWeBjxOOu4TptcJNGiYw370OBcpTghq', 'cellar.eu.auth0.com', {
+        hashCleanup: false,
+        auth: {
+          autoParseHash: false
+        },
         theme: {
             logo: "logo.png",
             primaryColor: '#33C3F0'
@@ -20,8 +24,13 @@
     var app = Elm.Main.fullscreen(flags);
 
     // Show Auth0 lock subscription
-    app.ports.showAuth0Lock.subscribe(function() {
-        lock.show();
+    app.ports.showAuth0Lock.subscribe(function(page) {
+        console.log("Showing lock. Page is: " + page);
+        lock.show({
+          auth: {
+            params: { state: page }
+          }
+        });
     });
 
     // Log out of Auth0 subscription

@@ -97,6 +97,9 @@ subscriptions model =
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     let
+        _ =
+            Debug.log "Update msg:" msg
+
         delegateToPage toModel toMsg subUpdate subMsg appState subModel =
             let
                 ( newModel, newCmd ) =
@@ -109,7 +112,16 @@ update msg model =
                 setRoute route model
 
             Login ->
-                model => Ports.showAuth0Lock ()
+                let
+                    routeState =
+                        case model.appState.auth of
+                            Data.Auth.LoggedOut (Data.Auth.Redirect route) ->
+                                Just (Route.toName route)
+
+                            _ ->
+                                Nothing
+                in
+                    model => Ports.showAuth0Lock routeState
 
             LoginResult (Ok session) ->
                 { model | appState = model.appState |> Data.AppState.setAuth (Data.Auth.LoggedIn session) }

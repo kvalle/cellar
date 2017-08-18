@@ -1,4 +1,4 @@
-module Route exposing (Route(..), fromLocation, href, modifyUrl)
+module Route exposing (Route(..), fromLocation, href, modifyUrl, fromName, toName)
 
 import Html exposing (Attribute)
 import Html.Attributes as Attr
@@ -66,6 +66,14 @@ routeToString page =
         "#/" ++ String.join "/" pieces
 
 
+names : List ( String, Route )
+names =
+    [ ( "home", Home )
+    , ( "about", About )
+    , ( "beer-list", BeerList )
+    ]
+
+
 
 -- PUBLIC HELPERS --
 
@@ -82,7 +90,29 @@ modifyUrl =
 
 fromLocation : Location -> Route
 fromLocation location =
-    if String.isEmpty location.hash then
-        Home
-    else
-        parseHash route location |> Maybe.withDefault Unknown
+    let
+        _ =
+            Debug.log "Location changed: " location
+    in
+        if String.isEmpty location.hash then
+            Home
+        else
+            parseHash route location |> Maybe.withDefault Unknown
+
+
+fromName : String -> Route
+fromName name =
+    names
+        |> List.filter (Tuple.first >> (==) name)
+        |> List.head
+        |> Maybe.map Tuple.second
+        |> Maybe.withDefault Unknown
+
+
+toName : Route -> String
+toName route =
+    names
+        |> List.filter (Tuple.second >> (==) route)
+        |> List.head
+        |> Maybe.map Tuple.first
+        |> Maybe.withDefault ""
