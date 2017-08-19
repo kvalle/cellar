@@ -42,19 +42,23 @@ viewMenu loginMsg logoutMsg auth activePage =
                     , img [ src user.profile.picture ] []
                     ]
 
-                _ ->
+                LoggedOut ->
                     [ a [ class "menu-item logout", onClick loginMsg ] [ text "Log in" ]
                     ]
 
         viewMenuItem isActive route name =
             a [ classList [ ( "menu-item", True ), ( "active", isActive ) ], Route.href route ] [ text name ]
-
-        menuItems =
-            [ viewMenuItem (activePage == Home) Route.Home "Home"
-            , viewMenuItem (activePage == BeerList) Route.BeerList "Beers"
-            ]
     in
-        div [ class "menu" ] <| menuItems ++ userInfo
+        div [ class "menu" ] <|
+            [ viewMenuItem (activePage == Home) Route.Home "Home"
+            , case auth of
+                LoggedIn _ ->
+                    viewMenuItem (activePage == BeerList) Route.BeerList "Beers"
+
+                LoggedOut ->
+                    text ""
+            , span [] userInfo
+            ]
 
 
 viewTitle : Html msg
