@@ -33,8 +33,8 @@ type Page
 
 
 type PageState
-    = Loaded Page
-    | TransitioningFrom Page
+    = Loaded Page Data.Page.ActivePage
+    | TransitioningFrom Page Data.Page.ActivePage
 
 
 type alias Model =
@@ -60,7 +60,7 @@ main =
 init : Value -> Location -> ( Model, Cmd Msg )
 init flags location =
     setRoute (Route.fromLocation location)
-        { pageState = Loaded Blank
+        { pageState = Loaded Blank Data.Page.Other
         , appState = Data.AppState.decodeFromJson flags
         }
 
@@ -77,10 +77,20 @@ type Msg
 getPage : PageState -> Page
 getPage pageState =
     case pageState of
-        Loaded page ->
+        Loaded page _ ->
             page
 
-        TransitioningFrom page ->
+        TransitioningFrom page _ ->
+            page
+
+
+getActivePage : PageState -> Page
+getActivePage pageState =
+    case pageState of
+        Loaded page _ ->
+            page
+
+        TransitioningFrom page _ ->
             page
 
 
@@ -97,12 +107,12 @@ update msg model =
         _ =
             Debug.log "Update msg:" msg
 
-        delegateToPage toModel toMsg subUpdate subMsg appState subModel =
+        delegateToPage toPage activePage toMsg subUpdate subMsg appState subModel =
             let
                 ( newModel, newCmd ) =
                     subUpdate subMsg appState subModel
             in
-                ( { model | pageState = Loaded (toModel newModel) }, Cmd.map toMsg newCmd )
+                ( { model | pageState = Loaded (toPage newModel) activePage }, Cmd.map toMsg newCmd )
     in
         case msg of
             SetRoute route ->
@@ -158,15 +168,15 @@ update msg model =
                         ]
 
             BeerListLoaded (Ok subModel) ->
-                { model | pageState = Loaded (BeerList subModel) } => Cmd.none
+                { model | pageState = Loaded (BeerList subModel) Data.Page.BeerList } => Cmd.none
 
             BeerListLoaded (Err error) ->
-                { model | pageState = Loaded (Errored error) } => Cmd.none
+                { model | pageState = Loaded (Errored error) Data.Page.BeerList } => Cmd.none
 
             BeerListMsg subMsg ->
                 case getPage model.pageState of
                     BeerList subModel ->
-                        delegateToPage BeerList BeerListMsg Page.BeerList.Update.update subMsg model.appState subModel
+                        delegateToPage BeerList Data.Page.BeerList BeerListMsg Page.BeerList.Update.update subMsg model.appState subModel
 
                     _ ->
                         -- Disregard BeerListMsg for other pages
@@ -176,13 +186,13 @@ update msg model =
 setRoute : Route -> Model -> ( Model, Cmd Msg )
 setRoute maybeRoute model =
     let
-        transition toMsg task =
-            { model | pageState = TransitioningFrom (getPage model.pageState) }
+        transition toMsg task activePage =
+            { model | pageState = TransitioningFrom (getPage model.pageState) activePage }
                 => Task.attempt toMsg task
 
         pageErrored : Data.Page.ActivePage -> String -> Model -> Model
         pageErrored activePage errorMessage model =
-            { model | pageState = Loaded (Errored errorMessage) }
+            { model | pageState = Loaded (Errored errorMessage) activePage }
     in
         case ( maybeRoute, model.appState.auth ) of
             ( Route.BeerList, Data.Auth.LoggedOut ) ->
@@ -190,16 +200,16 @@ setRoute maybeRoute model =
                     => Cmd.none
 
             ( Route.Unknown, _ ) ->
-                { model | pageState = Loaded NotFound } => Cmd.none
+                { model | pageState = Loaded NotFound Data.Page.Other } => Cmd.none
 
             ( Route.About, _ ) ->
-                { model | pageState = Loaded About } => Cmd.none
+                { model | pageState = Loaded About Data.Page.About } => Cmd.none
 
             ( Route.Home, _ ) ->
-                { model | pageState = Loaded Home } => Cmd.none
+                { model | pageState = Loaded Home Data.Page.Home } => Cmd.none
 
             ( Route.BeerList, _ ) ->
-                transition BeerListLoaded (Page.BeerList.Model.init model.appState)
+                transition BeerListLoaded (Page.BeerList.Model.init model.appState) Data.Page.BeerList
 
             ( Route.AccessTokenRoute callBackInfo, _ ) ->
                 let
@@ -215,43 +225,36 @@ setRoute maybeRoute model =
 view : Model -> Html Msg
 view model =
     case model.pageState of
-        Loaded page ->
-            viewPage model.appState False page
+        Loaded page activePage ->
+            viewPage model.appState False page activePage
 
-        TransitioningFrom page ->
-            viewPage model.appState True page
+        TransitioningFrom page activePage ->
+            viewPage model.appState True page activePage
 
 
-viewPage : AppState -> Bool -> Page -> Html Msg
-viewPage appState isLoading page =
+viewPage : AppState -> Bool -> Page -> Data.Page.ActivePage -> Html Msg
+viewPage appState isLoading page activePage =
     let
         frame =
-            Views.Page.frame Login Logout isLoading appState
+            Views.Page.frame Login Logout isLoading appState activePage
     in
         case page of
             NotFound ->
-                Page.NotFound.view
-                    |> frame Data.Page.Other
+                Page.NotFound.view |> frame
 
             Blank ->
-                Html.text ""
-                    |> frame Data.Page.Other
+                Html.text "" |> frame
 
             Errored error ->
-                Page.Errored.view error
-                    -- FIXME: use activePage from pageState
-                    |>
-                        frame Data.Page.Other
+                Page.Errored.view error |> frame
 
             Home ->
-                Page.Home.view
-                    |> frame Data.Page.Home
+                Page.Home.view |> frame
 
             About ->
-                Page.About.view
-                    |> frame Data.Page.About
+                Page.About.view |> frame
 
             BeerList subModel ->
                 Page.BeerList.View.view subModel
                     |> Html.map BeerListMsg
-                    |> frame Data.Page.BeerList
+                    |> frame
