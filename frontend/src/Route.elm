@@ -20,7 +20,6 @@ import Auth0.UrlParser
 type Route
     = Home
     | BeerList
-    | About
     | AccessTokenRoute Auth0CallbackInfo
     | UnauthorizedRoute Auth0CallbackError
     | Unknown
@@ -31,7 +30,6 @@ route =
     oneOf
         [ Url.map Home (s "")
         , Url.map BeerList (s "beers")
-        , Url.map About (s "about")
         , Url.map AccessTokenRoute accessTokenUrlParser
         , Url.map UnauthorizedRoute unauthorizedUrlParser
         ]
@@ -52,9 +50,6 @@ routeToString page =
                 BeerList ->
                     [ "beers" ]
 
-                About ->
-                    [ "about" ]
-
                 UnauthorizedRoute _ ->
                     []
 
@@ -70,7 +65,6 @@ routeToString page =
 names : List ( String, Route )
 names =
     [ ( "home", Home )
-    , ( "about", About )
     , ( "beer-list", BeerList )
     ]
 
@@ -127,9 +121,6 @@ fromActivePage activePage =
 
         Data.Page.BeerList ->
             BeerList
-
-        Data.Page.About ->
-            About
 
         Data.Page.Other ->
             Unknown

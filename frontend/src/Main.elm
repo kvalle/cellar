@@ -6,7 +6,6 @@ import Data.Auth
 import Html exposing (Html)
 import Json.Decode as Decode exposing (Value, field, null)
 import Navigation exposing (Location)
-import Page.About
 import Page.BeerList.Messages
 import Page.BeerList.Model
 import Page.BeerList.Subscriptions
@@ -26,7 +25,6 @@ import Data.Page
 type Page
     = Blank
     | Home
-    | About
     | BeerList Page.BeerList.Model.Model
     | NotFound
     | Errored Page.Errored.Model
@@ -181,9 +179,6 @@ setRoute maybeRoute model =
             ( Route.Unknown, _ ) ->
                 { model | pageState = Loaded NotFound Data.Page.Other } => Cmd.none
 
-            ( Route.About, _ ) ->
-                { model | pageState = Loaded About Data.Page.About } => Cmd.none
-
             ( Route.Home, _ ) ->
                 { model | pageState = Loaded Home Data.Page.Home } => Cmd.none
 
@@ -229,9 +224,6 @@ viewPage appState isLoading page activePage =
 
             Home ->
                 Page.Home.view |> frame
-
-            About ->
-                Page.About.view |> frame
 
             BeerList subModel ->
                 Page.BeerList.View.view subModel

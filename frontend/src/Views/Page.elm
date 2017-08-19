@@ -52,7 +52,6 @@ viewMenu loginMsg logoutMsg auth activePage =
         menuItems =
             [ viewMenuItem (activePage == Home) Route.Home "Home"
             , viewMenuItem (activePage == BeerList) Route.BeerList "Beers"
-            , viewMenuItem (activePage == About) Route.About "About"
             ]
     in
         div [ class "menu" ] <| menuItems ++ userInfo
