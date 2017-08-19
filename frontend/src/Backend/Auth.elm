@@ -4,6 +4,7 @@ import Data.Auth exposing (IdToken, Session)
 import Http exposing (Request)
 import Json.Encode as Encode
 import Task exposing (Task)
+import Route
 
 
 auth0endpoint : String
@@ -11,8 +12,8 @@ auth0endpoint =
     "https://cellar.eu.auth0.com"
 
 
-login : Maybe IdToken -> Task String Session
-login maybeToken =
+login : Maybe IdToken -> Route.Route -> Task String ( Session, Route.Route )
+login maybeToken redirect =
     let
         getProfile token =
             getAuthedUserProfile token |> Http.toTask
@@ -24,6 +25,7 @@ login maybeToken =
         case maybeToken of
             Just token ->
                 Task.map (Session token) (getProfile token)
+                    |> Task.map (\session -> ( session, redirect ))
                     |> Task.mapError (\_ -> errorMsg)
 
             Nothing ->

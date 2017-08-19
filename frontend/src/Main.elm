@@ -73,7 +73,7 @@ type Msg
     | BeerListLoaded (Result PageLoadError Page.BeerList.Model.Model)
     | BeerListMsg Page.BeerList.Messages.Msg
     | Login
-    | LoginResult (Result String Data.Auth.Session)
+    | LoginResult (Result String ( Data.Auth.Session, Route.Route ))
     | Logout
 
 
@@ -113,19 +113,38 @@ update msg model =
 
             Login ->
                 let
-                    routeState =
-                        case model.appState.auth of
-                            Data.Auth.LoggedOut (Data.Auth.Redirect route) ->
-                                Just (Route.toName route)
+                    routeForPage : Page -> Route.Route
+                    routeForPage page =
+                        case page of
+                            BeerList _ ->
+                                Route.BeerList
 
-                            _ ->
-                                Nothing
+                            About ->
+                                Route.About
+
+                            Blank ->
+                                Route.Unknown
+
+                            Home ->
+                                Route.Home
+
+                            NotFound ->
+                                Route.Unknown
+
+                            Errored _ ->
+                                Route.Unknown
+
+                    redirectString =
+                        (Route.toName << routeForPage << getPage) model.pageState
                 in
-                    model => Ports.showAuth0Lock routeState
+                    model => Ports.showAuth0Lock redirectString
 
-            LoginResult (Ok session) ->
+            LoginResult (Ok ( session, redirect )) ->
                 { model | appState = model.appState |> Data.AppState.setAuth (Data.Auth.LoggedIn session) }
-                    => Ports.setSessionStorage session
+                    => Cmd.batch
+                        [ Ports.setSessionStorage session
+                        , Route.modifyUrl redirect
+                        ]
 
             LoginResult (Err error) ->
                 { model | appState = model.appState |> Data.AppState.setAuth (Data.Auth.LoggedOut Data.Auth.NoRedirect) }
@@ -193,7 +212,11 @@ setRoute maybeRoute model =
                 transition BeerListLoaded (Page.BeerList.Model.init model.appState)
 
             ( Route.AccessTokenRoute callBackInfo, _ ) ->
-                model => Task.attempt LoginResult (Backend.Auth.login callBackInfo.idToken)
+                let
+                    redirect =
+                        Route.fromName callBackInfo.state
+                in
+                    model => Task.attempt LoginResult (Backend.Auth.login callBackInfo.idToken redirect)
 
             ( Route.UnauthorizedRoute x, _ ) ->
                 model |> pageErrored Views.Page.Other "Login failed" => Cmd.none
