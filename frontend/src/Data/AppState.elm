@@ -2,7 +2,6 @@ module Data.AppState exposing (AppState, setAuth, decodeFromJson)
 
 import Json.Decode exposing (field)
 import Json.Decode as Decode exposing (Value, field)
-import Route exposing (Route)
 import Data.Auth exposing (AuthStatus)
 import Data.Environment exposing (Environment)
 
@@ -18,27 +17,27 @@ setAuth auth appState =
     { appState | auth = auth }
 
 
-decodeFromJson : Route.Route -> Value -> AppState
-decodeFromJson defaultRoute json =
+decodeFromJson : Value -> AppState
+decodeFromJson json =
     let
         defaultAppState =
             { environment = Data.Environment.Unknown
-            , auth = Data.Auth.LoggedOut (Data.Auth.Redirect defaultRoute)
+            , auth = Data.Auth.LoggedOut
             }
     in
         json
-            |> Decode.decodeValue (appStateDecoder defaultRoute)
+            |> Decode.decodeValue appStateDecoder
             |> Result.toMaybe
             |> Maybe.withDefault defaultAppState
 
 
-appStateDecoder : Route.Route -> Json.Decode.Decoder AppState
-appStateDecoder route =
+appStateDecoder : Json.Decode.Decoder AppState
+appStateDecoder =
     let
         toAuthStatus maybeUserData =
             maybeUserData
                 |> Maybe.map Data.Auth.LoggedIn
-                |> Maybe.withDefault (Data.Auth.LoggedOut (Data.Auth.Redirect route))
+                |> Maybe.withDefault Data.Auth.LoggedOut
     in
         Json.Decode.map2 AppState
             (Json.Decode.map Data.Environment.fromHostString (field "location" Json.Decode.string))

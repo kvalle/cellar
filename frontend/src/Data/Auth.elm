@@ -1,20 +1,14 @@
 module Data.Auth exposing (..)
 
 import Json.Decode exposing (Value, field)
-import Route exposing (Route)
 import Json.Decode as Decode exposing (Decoder)
 import Json.Decode as Decode exposing (Decoder, maybe, list, string, bool)
 import Json.Decode.Pipeline exposing (decode, required, optional)
 
 
-type AuthRedirect
-    = NoRedirect
-    | Redirect Route
-
-
 type AuthStatus
     = LoggedIn Session
-    | LoggedOut AuthRedirect
+    | LoggedOut
 
 
 

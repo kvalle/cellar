@@ -28,7 +28,7 @@ type Page
     | About
     | BeerList Page.BeerList.Model.Model
     | NotFound
-    | Errored PageLoadError
+    | Errored Page.Errored.PageLoadError
 
 
 type PageState
@@ -58,14 +58,10 @@ main =
 
 init : Value -> Location -> ( Model, Cmd Msg )
 init flags location =
-    let
-        route =
-            Route.fromLocation location
-    in
-        setRoute route
-            { pageState = Loaded Blank
-            , appState = Data.AppState.decodeFromJson route flags
-            }
+    setRoute (Route.fromLocation location)
+        { pageState = Loaded Blank
+        , appState = Data.AppState.decodeFromJson flags
+        }
 
 
 type Msg
@@ -113,8 +109,8 @@ update msg model =
 
             Login ->
                 let
-                    routeForPage : Page -> Route.Route
-                    routeForPage page =
+                    fromPage : Page -> Route.Route
+                    fromPage page =
                         case page of
                             BeerList _ ->
                                 Route.BeerList
@@ -135,7 +131,7 @@ update msg model =
                                 Route.Unknown
 
                     redirectString =
-                        (Route.toName << routeForPage << getPage) model.pageState
+                        (Route.toName << fromPage << getPage) model.pageState
                 in
                     model => Ports.showAuth0Lock redirectString
 
@@ -147,11 +143,11 @@ update msg model =
                         ]
 
             LoginResult (Err error) ->
-                { model | appState = model.appState |> Data.AppState.setAuth (Data.Auth.LoggedOut Data.Auth.NoRedirect) }
+                { model | appState = model.appState |> Data.AppState.setAuth Data.Auth.LoggedOut }
                     => Ports.clearSessionStorage ()
 
             Logout ->
-                { model | appState = model.appState |> Data.AppState.setAuth (Data.Auth.LoggedOut Data.Auth.NoRedirect) }
+                { model | appState = model.appState |> Data.AppState.setAuth Data.Auth.LoggedOut }
                     => Cmd.batch
                         [ Ports.clearSessionStorage ()
                         , Route.modifyUrl Route.Home
@@ -187,16 +183,10 @@ setRoute maybeRoute model =
                     Page.Errored.pageLoadError activePage errorMessage
             in
                 { model | pageState = Loaded (Errored error) }
-
-        setRedirectRoute : Data.Auth.AuthRedirect -> (Data.Auth.AuthRedirect -> Data.Auth.AuthStatus) -> Model -> Model
-        setRedirectRoute redirect authStatus model =
-            { model | appState = model.appState |> Data.AppState.setAuth (authStatus redirect) }
     in
         case ( maybeRoute, model.appState.auth ) of
-            ( Route.BeerList, Data.Auth.LoggedOut _ ) ->
-                model
-                    |> setRedirectRoute (Data.Auth.Redirect Route.BeerList) Data.Auth.LoggedOut
-                    |> pageErrored Views.Page.BeerList "You need to log in"
+            ( Route.BeerList, Data.Auth.LoggedOut ) ->
+                pageErrored Views.Page.BeerList "You need to log in" model
                     => Cmd.none
 
             ( Route.Unknown, _ ) ->
