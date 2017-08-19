@@ -223,7 +223,7 @@ viewPage appState isLoading page activePage =
                 Page.Errored.view error |> frame
 
             Home ->
-                Page.Home.view |> frame
+                Page.Home.view appState |> frame
 
             BeerList subModel ->
                 Page.BeerList.View.view subModel
