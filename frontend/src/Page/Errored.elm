@@ -1,7 +1,7 @@
 module Page.Errored exposing (PageLoadError, pageLoadError, view, getActivePage)
 
 import Html exposing (Html, div, h1, img, main_, p, text, em)
-import Views.Page exposing (ActivePage)
+import Data.Page exposing (ActivePage)
 
 
 -- MODEL --

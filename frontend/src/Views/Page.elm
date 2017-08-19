@@ -1,4 +1,4 @@
-module Views.Page exposing (frame, ActivePage(..))
+module Views.Page exposing (frame)
 
 import Html exposing (..)
 import Html.Attributes exposing (..)
@@ -8,13 +8,7 @@ import Html exposing (..)
 import Html.Events exposing (onClick, onInput, onWithOptions, defaultOptions)
 import Html.Attributes exposing (id, class, type_, for, src, title, value, style)
 import Route
-
-
-type ActivePage
-    = Home
-    | BeerList
-    | About
-    | Other
+import Data.Page exposing (ActivePage(..))
 
 
 frame : msg -> msg -> Bool -> AppState -> ActivePage -> Html msg -> Html msg

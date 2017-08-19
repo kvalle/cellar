@@ -20,6 +20,7 @@ import Route exposing (Route)
 import Task
 import Util exposing ((=>))
 import Views.Page
+import Data.Page
 
 
 type Page
@@ -132,6 +133,9 @@ update msg model =
 
                     redirectString =
                         (Route.toName << fromPage << getPage) model.pageState
+
+                    _ =
+                        Debug.log "Redirect after login back to: " redirectString
                 in
                     model => Ports.showAuth0Lock redirectString
 
@@ -176,7 +180,7 @@ setRoute maybeRoute model =
             { model | pageState = TransitioningFrom (getPage model.pageState) }
                 => Task.attempt toMsg task
 
-        pageErrored : Views.Page.ActivePage -> String -> Model -> Model
+        pageErrored : Data.Page.ActivePage -> String -> Model -> Model
         pageErrored activePage errorMessage model =
             let
                 error =
@@ -186,7 +190,7 @@ setRoute maybeRoute model =
     in
         case ( maybeRoute, model.appState.auth ) of
             ( Route.BeerList, Data.Auth.LoggedOut ) ->
-                pageErrored Views.Page.BeerList "You need to log in" model
+                pageErrored Data.Page.BeerList "You need to log in" model
                     => Cmd.none
 
             ( Route.Unknown, _ ) ->
@@ -209,7 +213,7 @@ setRoute maybeRoute model =
                     model => Task.attempt LoginResult (Backend.Auth.login callBackInfo.idToken redirect)
 
             ( Route.UnauthorizedRoute x, _ ) ->
-                model |> pageErrored Views.Page.Other "Login failed" => Cmd.none
+                model |> pageErrored Data.Page.Other "Login failed" => Cmd.none
 
 
 view : Model -> Html Msg
@@ -231,11 +235,11 @@ viewPage appState isLoading page =
         case page of
             NotFound ->
                 Page.NotFound.view
-                    |> frame Views.Page.Other
+                    |> frame Data.Page.Other
 
             Blank ->
                 Html.text ""
-                    |> frame Views.Page.Other
+                    |> frame Data.Page.Other
 
             Errored error ->
                 Page.Errored.view error
@@ -243,13 +247,13 @@ viewPage appState isLoading page =
 
             Home ->
                 Page.Home.view
-                    |> frame Views.Page.Home
+                    |> frame Data.Page.Home
 
             About ->
                 Page.About.view
-                    |> frame Views.Page.About
+                    |> frame Data.Page.About
 
             BeerList subModel ->
                 Page.BeerList.View.view subModel
                     |> Html.map BeerListMsg
-                    |> frame Views.Page.BeerList
+                    |> frame Data.Page.BeerList
