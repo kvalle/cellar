@@ -120,23 +120,8 @@ update msg model =
 
             Login ->
                 let
-                    fromActivePage : Data.Page.ActivePage -> Route.Route
-                    fromActivePage page =
-                        case page of
-                            Data.Page.Home ->
-                                Route.Home
-
-                            Data.Page.BeerList ->
-                                Route.BeerList
-
-                            Data.Page.About ->
-                                Route.About
-
-                            Data.Page.Other ->
-                                Route.Unknown
-
                     redirectString =
-                        (Route.toName << fromActivePage << getActivePage) model.pageState
+                        (Route.toName << Route.fromActivePage << getActivePage) model.pageState
 
                     _ =
                         Debug.log "Redirect after login back to: " redirectString

@@ -1,9 +1,10 @@
-module Route exposing (Route(..), fromLocation, href, modifyUrl, fromName, toName)
+module Route exposing (Route(..), fromLocation, href, modifyUrl, fromName, toName, fromActivePage)
 
 import Html exposing (Attribute)
 import Html.Attributes as Attr
 import Navigation exposing (Location)
 import UrlParser as Url exposing ((</>), Parser, oneOf, parseHash, s, string)
+import Data.Page
 import Auth0.UrlParser
     exposing
         ( Auth0CallbackInfo
@@ -116,3 +117,19 @@ toName route =
         |> List.head
         |> Maybe.map Tuple.first
         |> Maybe.withDefault ""
+
+
+fromActivePage : Data.Page.ActivePage -> Route
+fromActivePage activePage =
+    case activePage of
+        Data.Page.Home ->
+            Home
+
+        Data.Page.BeerList ->
+            BeerList
+
+        Data.Page.About ->
+            About
+
+        Data.Page.Other ->
+            Unknown
