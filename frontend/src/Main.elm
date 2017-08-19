@@ -12,7 +12,7 @@ import Page.BeerList.Model
 import Page.BeerList.Subscriptions
 import Page.BeerList.Update
 import Page.BeerList.View
-import Page.Errored exposing (PageLoadError)
+import Page.Errored
 import Page.Home
 import Page.NotFound
 import Ports
@@ -29,7 +29,7 @@ type Page
     | About
     | BeerList Page.BeerList.Model.Model
     | NotFound
-    | Errored Page.Errored.PageLoadError
+    | Errored Page.Errored.Model
 
 
 type PageState
@@ -67,7 +67,7 @@ init flags location =
 
 type Msg
     = SetRoute Route
-    | BeerListLoaded (Result PageLoadError Page.BeerList.Model.Model)
+    | BeerListLoaded (Result Page.Errored.Model Page.BeerList.Model.Model)
     | BeerListMsg Page.BeerList.Messages.Msg
     | Login
     | LoginResult (Result String ( Data.Auth.Session, Route.Route ))
@@ -182,11 +182,7 @@ setRoute maybeRoute model =
 
         pageErrored : Data.Page.ActivePage -> String -> Model -> Model
         pageErrored activePage errorMessage model =
-            let
-                error =
-                    Page.Errored.pageLoadError activePage errorMessage
-            in
-                { model | pageState = Loaded (Errored error) }
+            { model | pageState = Loaded (Errored errorMessage) }
     in
         case ( maybeRoute, model.appState.auth ) of
             ( Route.BeerList, Data.Auth.LoggedOut ) ->
@@ -243,7 +239,9 @@ viewPage appState isLoading page =
 
             Errored error ->
                 Page.Errored.view error
-                    |> frame (Page.Errored.getActivePage error)
+                    -- FIXME: use activePage from pageState
+                    |>
+                        frame Data.Page.Other
 
             Home ->
                 Page.Home.view

@@ -9,11 +9,10 @@ import Page.BeerList.Model.BeerForm
 import Page.BeerList.Model.Table
 import Table
 import Task
-import Page.Errored as Errored exposing (PageLoadError, pageLoadError)
+import Page.Errored
 import Backend.Beers
 import Http
 import Page.BeerList.Model.Filters as Filters
-import Data.Page
 
 
 type alias Model =
@@ -25,7 +24,7 @@ type alias Model =
     }
 
 
-init : AppState -> Task.Task PageLoadError Model
+init : AppState -> Task.Task Page.Errored.Model Model
 init appState =
     let
         model =
@@ -43,7 +42,7 @@ init appState =
             { model | filters = model.filters |> Filters.setContext model.beers }
 
         handleLoadError _ =
-            pageLoadError Data.Page.BeerList "Unable to load beer list :("
+            "Unable to load beer list :("
     in
         case appState.auth of
             LoggedIn userData ->

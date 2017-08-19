@@ -1,39 +1,22 @@
-module Page.Errored exposing (PageLoadError, pageLoadError, view, getActivePage)
+module Page.Errored exposing (view, Model)
 
 import Html exposing (Html, div, h1, img, main_, p, text, em)
-import Data.Page exposing (ActivePage)
 
 
 -- MODEL --
 
 
-type PageLoadError
-    = PageLoadError Model
-
-
 type alias Model =
-    { activePage : ActivePage
-    , errorMessage : String
-    }
-
-
-pageLoadError : ActivePage -> String -> PageLoadError
-pageLoadError activePage errorMessage =
-    PageLoadError { activePage = activePage, errorMessage = errorMessage }
-
-
-getActivePage : PageLoadError -> ActivePage
-getActivePage (PageLoadError model) =
-    model.activePage
+    String
 
 
 
 -- VIEW --
 
 
-view : PageLoadError -> Html msg
-view (PageLoadError model) =
+view : Model -> Html msg
+view model =
     div []
         [ p [] [ text "Error Loading Page" ]
-        , p [] [ em [] [ text model.errorMessage ] ]
+        , p [] [ em [] [ text model ] ]
         ]
