@@ -1,6 +1,6 @@
 module Page.Errored exposing (view, Model)
 
-import Html exposing (Html, div, h1, img, main_, p, text, em)
+import Html exposing (..)
 
 
 -- MODEL --
@@ -16,7 +16,7 @@ type alias Model =
 
 view : Model -> Html msg
 view model =
-    div []
-        [ p [] [ text "Error Loading Page" ]
-        , p [] [ em [] [ text model ] ]
+    p []
+        [ span [] [ text "Error loading page: " ]
+        , em [] [ text model ]
         ]
