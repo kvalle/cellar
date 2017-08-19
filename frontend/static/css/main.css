@@ -94,6 +94,23 @@ button.button-disabled:hover {
 	border-bottom: 2px solid #ffd000;
 }
 
+/* Home page */
+
+.home-about, .home-beta {
+	display: flex;
+	flex-direction: row;
+}
+
+.home-about p, .home-beta p {
+	margin-top: 10px;
+	margin-left: 10px;
+}
+
+.home-about i, .home-beta i {
+	color: #ffd000;
+	font-size: 40px;
+}
+
 /* Filter form */
 
 .filter-action {

@@ -3,7 +3,7 @@ module Page.Home exposing (view)
 import Data.AppState exposing (AppState)
 import Data.Auth exposing (AuthStatus(..))
 import Html exposing (..)
-import Html.Attributes exposing (href)
+import Html.Attributes exposing (href, class)
 import Route
 
 
@@ -34,27 +34,33 @@ view appState =
 
         LoggedOut ->
             main_ []
-                [ p [] [ text "Hi there, stranger!" ]
-                , p []
-                    [ text
-                        """
-                        This is the Cellar Index. A place where—you guessed it—you
-                        can keep track of the beers you keep for storage in your
-                        cellar. Ever found yourself wondering if you didn't have just
-                        one more bottle of that belgian barleywine you picked up last
-                        year, or maybe which of those old stouts on the back of the
-                        shelf are old enough to open yet? Cellar Index aims to help
-                        you keep track of just those sort of things.
-                        """
+                [ div [ class "home-about" ]
+                    [ i [ class "icon-beer" ] []
+                    , p []
+                        [ text
+                            """
+                            This is the Cellar Index. A place where—you guessed it—you
+                            can keep track of the beers you keep for storage in your
+                            cellar. Ever found yourself wondering if you didn't have just
+                            one more bottle of that belgian barleywine you picked up last
+                            year, or maybe which of those old stouts on the back of the
+                            shelf are old enough to open yet? Cellar Index aims to help
+                            you keep track of just those sort of things.
+                            """
+                        ]
                     ]
-                , p []
-                    [ text
-                        """
-                        The site is still very much in beta, and a lot of things will
-                        probably change going forward. However, if this seems like
-                        the sort of thing you might need, feel free to
-                        """
-                    , a [ href "mailto:kjetil.valle@gmail.com" ] [ text "pop me an email" ]
-                    , text " asking to become a beta tester."
+                , div [ class "home-beta" ]
+                    [ i [ class "icon-floppy" ] []
+                    , p []
+                        [ text
+                            """
+                            The site is still very much in beta, and a lot of things will
+                            probably change going forward. It is therefore generally
+                            not possible to sign up quite yet. However, if this seems like
+                            the sort of thing you might need, feel free to
+                            """
+                        , a [ href "mailto:kjetil.valle@gmail.com" ] [ text "pop me an email" ]
+                        , text " and ask to become a beta tester."
+                        ]
                     ]
                 ]

@@ -15,9 +15,9 @@ frame : msg -> msg -> Bool -> AppState -> ActivePage -> Html msg -> Html msg
 frame loginMsg logoutMsg isLoading appState activePage content =
     div [ class "container" ]
         [ div [ class "row header" ]
-            [ div [ class "seven columns" ]
+            [ div [ class "four columns" ]
                 [ viewTitle ]
-            , div [ class "five columns" ]
+            , div [ class "eight columns" ]
                 [ viewMenu loginMsg logoutMsg appState.auth activePage
                 ]
             ]
