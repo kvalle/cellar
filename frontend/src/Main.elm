@@ -84,14 +84,14 @@ getPage pageState =
             page
 
 
-getActivePage : PageState -> Page
+getActivePage : PageState -> Data.Page.ActivePage
 getActivePage pageState =
     case pageState of
-        Loaded page _ ->
-            page
+        Loaded _ activePage ->
+            activePage
 
-        TransitioningFrom page _ ->
-            page
+        TransitioningFrom _ activePage ->
+            activePage
 
 
 subscriptions : Model -> Sub Msg
@@ -120,29 +120,23 @@ update msg model =
 
             Login ->
                 let
-                    fromPage : Page -> Route.Route
-                    fromPage page =
+                    fromActivePage : Data.Page.ActivePage -> Route.Route
+                    fromActivePage page =
                         case page of
-                            BeerList _ ->
-                                Route.BeerList
-
-                            About ->
-                                Route.About
-
-                            Blank ->
-                                Route.Unknown
-
-                            Home ->
+                            Data.Page.Home ->
                                 Route.Home
 
-                            NotFound ->
-                                Route.Unknown
+                            Data.Page.BeerList ->
+                                Route.BeerList
 
-                            Errored _ ->
+                            Data.Page.About ->
+                                Route.About
+
+                            Data.Page.Other ->
                                 Route.Unknown
 
                     redirectString =
-                        (Route.toName << fromPage << getPage) model.pageState
+                        (Route.toName << fromActivePage << getActivePage) model.pageState
 
                     _ =
                         Debug.log "Redirect after login back to: " redirectString
