@@ -175,7 +175,7 @@ setRoute maybeRoute model =
     in
         case ( maybeRoute, model.appState.auth ) of
             ( Route.BeerList, Data.Auth.LoggedOut ) ->
-                pageErrored Data.Page.BeerList "You need to log in" model
+                pageErrored Data.Page.BeerList "You need to log in to see this page." model
                     => Cmd.none
 
             ( Route.Unknown, _ ) ->
