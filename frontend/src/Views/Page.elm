@@ -14,15 +14,15 @@ import Data.Page exposing (ActivePage(..))
 frame : msg -> msg -> Bool -> AppState -> ActivePage -> Html msg -> Html msg
 frame loginMsg logoutMsg isLoading appState activePage content =
     div [ class "container" ]
-        [ div [ class "row" ]
-            [ div [ class "header seven columns" ]
+        [ div [ class "row header" ]
+            [ div [ class "seven columns" ]
                 [ viewTitle ]
-            , div [ class "header five columns" ]
+            , div [ class "five columns" ]
                 [ viewMenu loginMsg logoutMsg appState.auth activePage
                 ]
             ]
         , if isLoading then
-            div [ class "login login-loading" ]
+            div [ class "loading-dialog login-loading" ]
                 [ i [ class "icon-spinner animate-spin" ] []
                 , text "Loading…"
                 ]
@@ -59,7 +59,7 @@ viewMenu loginMsg logoutMsg auth activePage =
 
 viewTitle : Html msg
 viewTitle =
-    h1 []
+    div [ class "logo" ]
         [ i [ class "icon-beer" ] []
         , text "Cellar Index"
         ]
