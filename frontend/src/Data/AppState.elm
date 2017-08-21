@@ -27,8 +27,7 @@ decodeFromJson json =
     in
         json
             |> Decode.decodeValue appStateDecoder
-            |> Result.toMaybe
-            |> Maybe.withDefault defaultAppState
+            |> Result.withDefault defaultAppState
 
 
 appStateDecoder : Json.Decode.Decoder AppState
