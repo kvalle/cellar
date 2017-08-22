@@ -17,7 +17,6 @@ content =
 - `?` will show this dialog
 - `a` will show the form for adding new beers
 - `f` will show the filters dialog
-- `j` will show the download json dialog
 - `Esc` will close open dialog
 - `c` will clear the filters
 - `s` will save the current changes

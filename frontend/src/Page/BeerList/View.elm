@@ -7,7 +7,6 @@ import Data.Beer
 import Page.BeerList.View.BeerList exposing (viewBeerList)
 import Page.BeerList.View.Filters exposing (viewFilters)
 import Page.BeerList.View.BeerForm exposing (viewBeerForm)
-import Page.BeerList.View.Json exposing (viewJsonModal)
 import Page.BeerList.View.Help exposing (viewHelpDialog)
 import Html exposing (..)
 import Html.Events exposing (onClick, onInput, onWithOptions, defaultOptions)
@@ -18,7 +17,6 @@ view : Model -> Html Msg
 view model =
     div []
         [ viewBeerForm model
-        , viewJsonModal model
         , viewHelpDialog model
         , div [ class "row" ]
             [ div [ class "main twelve columns" ]
@@ -31,7 +29,6 @@ view model =
                     , viewButton "Save" "floppy" Msg.SaveBeers (model.state.changes == State.Changed)
                     , viewButton "Reset" "ccw" Msg.LoadBeers (model.state.changes == State.Changed)
                     , viewButton "Clear filters" "cancel" Msg.ClearFilters model.filters.active
-                    , viewButton "Download JSON" "download" Msg.ShowJsonModal True
                     , viewFilterAction model
                     , viewFilters model
                     ]

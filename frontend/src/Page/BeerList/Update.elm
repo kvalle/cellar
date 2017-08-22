@@ -87,12 +87,6 @@ update msg appState model =
                     Cmd.none
             )
 
-        ShowJsonModal ->
-            ( { model | state = model.state |> State.withJsonModal State.Visible }, Cmd.none )
-
-        HideJsonModal ->
-            ( { model | state = model.state |> State.withJsonModal State.Hidden }, Cmd.none )
-
         ClearFilters ->
             ( { model
                 | filters = Filter.empty model.beers
@@ -212,8 +206,6 @@ update msg appState model =
                         update (ShowForm Beer.empty) appState model
                     else if key == keys.f && State.isClearOfModals model.state then
                         update ShowFilters appState model
-                    else if key == keys.j && State.isClearOfModals model.state then
-                        update ShowJsonModal appState model
                     else if key == keys.r && model.state.changes == State.Changed && State.isClearOfModals model.state then
                         update LoadBeers appState model
                     else if key == keys.s && model.state.changes == State.Changed && State.isClearOfModals model.state then

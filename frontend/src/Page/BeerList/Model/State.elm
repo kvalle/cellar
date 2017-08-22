@@ -5,7 +5,6 @@ type alias State =
     { changes : Changes
     , network : Network
     , error : Maybe String
-    , jsonModal : DisplayState
     , filters : DisplayState
     , beerForm : DisplayState
     , helpDialog : DisplayState
@@ -33,7 +32,6 @@ init =
     { changes = Unchanged
     , network = Idle
     , error = Nothing
-    , jsonModal = Hidden
     , filters = Hidden
     , beerForm = Hidden
     , helpDialog = Hidden
@@ -45,13 +43,12 @@ clearModals state =
     state
         |> withBeerForm Hidden
         |> withFilters Hidden
-        |> withJsonModal Hidden
         |> withHelpDialog Hidden
 
 
 isClearOfModals : State -> Bool
 isClearOfModals state =
-    List.all ((==) Hidden) [ state.jsonModal, state.filters, state.beerForm ]
+    List.all ((==) Hidden) [ state.filters, state.beerForm ]
 
 
 withHelpDialog : DisplayState -> State -> State
@@ -62,11 +59,6 @@ withHelpDialog displayState state =
 withBeerForm : DisplayState -> State -> State
 withBeerForm displayState state =
     { state | beerForm = displayState }
-
-
-withJsonModal : DisplayState -> State -> State
-withJsonModal displayState state =
-    { state | jsonModal = displayState }
 
 
 withFilters : DisplayState -> State -> State

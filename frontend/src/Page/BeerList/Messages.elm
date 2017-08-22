@@ -37,6 +37,3 @@ type Msg
     | UpdateFormField Field String
     | UpdateFormSuggestions Field SuggestionMsg
     | SubmitForm
-      -- Json
-    | ShowJsonModal
-    | HideJsonModal
