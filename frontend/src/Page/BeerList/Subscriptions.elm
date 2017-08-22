@@ -2,7 +2,7 @@ module Page.BeerList.Subscriptions exposing (subscriptions)
 
 import Ports
 import Page.BeerList.Messages
-import Page.BeerList.Model.KeyEvent exposing (keyEventDecoder)
+import Data.KeyEvent exposing (keyEventDecoder)
 import Json.Decode exposing (decodeValue)
 
 

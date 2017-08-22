@@ -12,7 +12,7 @@ import Page.BeerList.Model exposing (Model)
 import Page.BeerList.Model.BeerForm as BeerForm
 import Page.BeerList.Model.BeerList
 import Page.BeerList.Model.Filters as Filter
-import Page.BeerList.Model.KeyEvent exposing (keys)
+import Data.KeyEvent exposing (keys)
 import Page.BeerList.Model.State as State exposing (Network(..))
 import Task
 

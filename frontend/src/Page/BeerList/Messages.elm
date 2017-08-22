@@ -3,7 +3,7 @@ module Page.BeerList.Messages exposing (Msg(..))
 import Page.BeerList.Messages.BeerForm exposing (Field, SuggestionMsg)
 import Page.BeerList.Model.Filters exposing (FilterValue)
 import Data.Beer exposing (Beer)
-import Page.BeerList.Model.KeyEvent exposing (KeyEvent)
+import Data.KeyEvent exposing (KeyEvent)
 import Http
 import Table
 import Dom
