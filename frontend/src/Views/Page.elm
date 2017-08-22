@@ -57,6 +57,12 @@ viewMenu loginMsg logoutMsg auth activePage =
 
                 LoggedOut ->
                     text ""
+            , case auth of
+                LoggedIn _ ->
+                    viewMenuItem (activePage == Json) Route.Json "Json"
+
+                LoggedOut ->
+                    text ""
             , span [] userInfo
             ]
 

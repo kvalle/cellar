@@ -13,6 +13,7 @@ import Page.BeerList.Update
 import Page.BeerList.View
 import Page.Errored
 import Page.Home
+import Page.Json
 import Page.NotFound
 import Ports
 import Route exposing (Route)
@@ -25,6 +26,7 @@ import Data.Page
 type Page
     = Blank
     | Home
+    | Json Page.Json.Model
     | BeerList Page.BeerList.Model.Model
     | NotFound
     | Errored Page.Errored.Model
@@ -66,6 +68,7 @@ init flags location =
 type Msg
     = SetRoute Route
     | BeerListLoaded (Result Page.Errored.Model Page.BeerList.Model.Model)
+    | JsonLoaded (Result Page.Errored.Model Page.Json.Model)
     | BeerListMsg Page.BeerList.Messages.Msg
     | Login
     | LoginResult (Result String ( Data.Auth.Session, Route.Route ))
@@ -144,6 +147,12 @@ update msg model =
                         , Route.modifyUrl Route.Home
                         ]
 
+            JsonLoaded (Ok subModel) ->
+                { model | pageState = Loaded (Json subModel) Data.Page.Json } => Cmd.none
+
+            JsonLoaded (Err error) ->
+                { model | pageState = Loaded (Errored error) Data.Page.Json } => Cmd.none
+
             BeerListLoaded (Ok subModel) ->
                 { model | pageState = Loaded (BeerList subModel) Data.Page.BeerList } => Cmd.none
 
@@ -195,6 +204,9 @@ setRoute maybeRoute model =
             ( Route.UnauthorizedRoute x, _ ) ->
                 model |> pageErrored Data.Page.Other "Login failed" => Cmd.none
 
+            ( Route.Json, _ ) ->
+                transition JsonLoaded (Page.Json.init model.appState) Data.Page.Json
+
 
 view : Model -> Html Msg
 view model =
@@ -215,6 +227,9 @@ viewPage appState isLoading page activePage =
         case page of
             NotFound ->
                 Page.NotFound.view |> frame
+
+            Json subModel ->
+                Page.Json.view subModel |> frame
 
             Blank ->
                 Html.text "" |> frame
