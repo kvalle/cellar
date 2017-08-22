@@ -212,8 +212,6 @@ update msg appState model =
                         update SaveBeers appState model
                     else if key == keys.c && model.filters.active && State.isClearOfModals model.state then
                         update ClearFilters appState model
-                    else if key == keys.questionMark && State.isClearOfModals model.state then
-                        update ShowHelp appState model
                     else
                         ( model, Cmd.none )
 
@@ -226,12 +224,6 @@ update msg appState model =
                     Debug.log "Unable to focus: " err
             in
                 ( model, Cmd.none )
-
-        HideHelp ->
-            ( { model | state = model.state |> State.withHelpDialog State.Hidden }, Cmd.none )
-
-        ShowHelp ->
-            ( { model | state = model.state |> State.withHelpDialog State.Visible }, Cmd.none )
 
         Noop ->
             ( model, Cmd.none )

@@ -14,9 +14,6 @@ type Msg
     | KeyPressed (Result String KeyEvent)
     | FocusResult (Result Dom.Error ())
     | ClearModals
-      -- Help
-    | ShowHelp
-    | HideHelp
       -- Filter
     | ClearFilters
     | UpdateFilters FilterValue

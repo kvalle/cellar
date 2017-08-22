@@ -7,7 +7,6 @@ import Data.Beer
 import Page.BeerList.View.BeerList exposing (viewBeerList)
 import Page.BeerList.View.Filters exposing (viewFilters)
 import Page.BeerList.View.BeerForm exposing (viewBeerForm)
-import Page.BeerList.View.Help exposing (viewHelpDialog)
 import Html exposing (..)
 import Html.Events exposing (onClick, onInput, onWithOptions, defaultOptions)
 import Html.Attributes exposing (id, class, type_, for, src, title, value, style)
@@ -17,7 +16,6 @@ view : Model -> Html Msg
 view model =
     div []
         [ viewBeerForm model
-        , viewHelpDialog model
         , div [ class "row" ]
             [ div [ class "main twelve columns" ]
                 []

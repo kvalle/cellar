@@ -7,7 +7,6 @@ type alias State =
     , error : Maybe String
     , filters : DisplayState
     , beerForm : DisplayState
-    , helpDialog : DisplayState
     }
 
 
@@ -34,7 +33,6 @@ init =
     , error = Nothing
     , filters = Hidden
     , beerForm = Hidden
-    , helpDialog = Visible
     }
 
 
@@ -43,17 +41,11 @@ clearModals state =
     state
         |> withBeerForm Hidden
         |> withFilters Hidden
-        |> withHelpDialog Hidden
 
 
 isClearOfModals : State -> Bool
 isClearOfModals state =
     List.all ((==) Hidden) [ state.filters, state.beerForm ]
-
-
-withHelpDialog : DisplayState -> State -> State
-withHelpDialog displayState state =
-    { state | helpDialog = displayState }
 
 
 withBeerForm : DisplayState -> State -> State
