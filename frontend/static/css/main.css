@@ -111,6 +111,13 @@ button.button-disabled:hover {
 	font-size: 40px;
 }
 
+/* Json page */
+
+textarea.json {
+	width: 100%;
+	min-height: 400px;
+}
+
 /* Filter form */
 
 .filter-action {

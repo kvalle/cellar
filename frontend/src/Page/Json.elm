@@ -39,6 +39,6 @@ view model =
     in
         div
             []
-            [ h3 [] [ text "Your beers as JSON" ]
-            , pre [ class "json" ] [ text jsonString ]
+            [ p [] [ text "Here are the raw data of your beer cellar, formatted as JSON." ]
+            , textarea [ class "json" ] [ text jsonString ]
             ]
