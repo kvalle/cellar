@@ -53,13 +53,13 @@ viewMenu loginMsg logoutMsg auth activePage =
             [ viewMenuItem (activePage == Home) Route.Home "Home"
             , case auth of
                 LoggedIn _ ->
-                    viewMenuItem (activePage == BeerList) Route.BeerList "Beers"
+                    viewMenuItem (activePage == BeerList) Route.BeerList "Beer list"
 
                 LoggedOut ->
                     text ""
             , case auth of
                 LoggedIn _ ->
-                    viewMenuItem (activePage == Json) Route.Json "Json"
+                    viewMenuItem (activePage == Json) Route.Json "Raw data"
 
                 LoggedOut ->
                     text ""
