@@ -1,4 +1,4 @@
-module Page.BeerList.View.HtmlExtra exposing (onClickNoPropagation, onKey, onKeys, onKeyWithOptions, onKeysWithOptions)
+module Views.HtmlAttributes exposing (onClickNoPropagation, onKey, onKeys, onKeyWithOptions, onKeysWithOptions)
 
 import Data.KeyEvent exposing (KeyEvent)
 import Html exposing (Attribute)
