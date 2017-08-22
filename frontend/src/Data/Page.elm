@@ -5,4 +5,5 @@ type ActivePage
     = Home
     | BeerList
     | Json
+    | Help
     | Other

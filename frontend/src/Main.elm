@@ -13,6 +13,7 @@ import Page.BeerList.Update
 import Page.BeerList.View
 import Page.Errored
 import Page.Home
+import Page.Help
 import Page.Json
 import Page.NotFound
 import Ports
@@ -26,6 +27,7 @@ import Data.Page
 type Page
     = Blank
     | Home
+    | Help
     | Json Page.Json.Model
     | BeerList Page.BeerList.Model.Model
     | NotFound
@@ -207,6 +209,9 @@ setRoute maybeRoute model =
             ( Route.Json, _ ) ->
                 transition JsonLoaded (Page.Json.init model.appState) Data.Page.Json
 
+            ( Route.Help, _ ) ->
+                { model | pageState = Loaded Help Data.Page.Help } => Cmd.none
+
 
 view : Model -> Html Msg
 view model =
@@ -239,6 +244,9 @@ viewPage appState isLoading page activePage =
 
             Home ->
                 Page.Home.view appState |> frame
+
+            Help ->
+                Page.Help.view |> frame
 
             BeerList subModel ->
                 Page.BeerList.View.view subModel

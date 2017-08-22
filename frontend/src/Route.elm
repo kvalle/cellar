@@ -21,6 +21,7 @@ type Route
     = Home
     | BeerList
     | Json
+    | Help
     | AccessTokenRoute Auth0CallbackInfo
     | UnauthorizedRoute Auth0CallbackError
     | Unknown
@@ -32,6 +33,7 @@ route =
         [ Url.map Home (s "")
         , Url.map BeerList (s "beers")
         , Url.map Json (s "json")
+        , Url.map Help (s "help")
         , Url.map AccessTokenRoute accessTokenUrlParser
         , Url.map UnauthorizedRoute unauthorizedUrlParser
         ]
@@ -54,6 +56,9 @@ routeToString page =
 
                 Json ->
                     [ "json" ]
+
+                Help ->
+                    [ "help" ]
 
                 UnauthorizedRoute _ ->
                     []
@@ -130,6 +135,9 @@ fromActivePage activePage =
 
         Data.Page.Json ->
             Json
+
+        Data.Page.Help ->
+            Help
 
         Data.Page.Other ->
             Unknown

@@ -46,23 +46,25 @@ viewMenu loginMsg logoutMsg auth activePage =
                     [ a [ class "menu-item logout", onClick loginMsg ] [ text "Log in" ]
                     ]
 
+        ifLoggedIn html =
+            case auth of
+                LoggedIn _ ->
+                    html
+
+                LoggedOut ->
+                    text ""
+
         viewMenuItem isActive route name =
             a [ classList [ ( "menu-item", True ), ( "active", isActive ) ], Route.href route ] [ text name ]
     in
         div [ class "menu" ] <|
             [ viewMenuItem (activePage == Home) Route.Home "Home"
-            , case auth of
-                LoggedIn _ ->
-                    viewMenuItem (activePage == BeerList) Route.BeerList "Beer list"
-
-                LoggedOut ->
-                    text ""
-            , case auth of
-                LoggedIn _ ->
-                    viewMenuItem (activePage == Json) Route.Json "Raw data"
-
-                LoggedOut ->
-                    text ""
+            , ifLoggedIn <|
+                viewMenuItem (activePage == BeerList) Route.BeerList "Beer list"
+            , ifLoggedIn <|
+                viewMenuItem (activePage == Json) Route.Json "Raw data"
+            , ifLoggedIn <|
+                viewMenuItem (activePage == Help) Route.Help "?"
             , span [] userInfo
             ]
 

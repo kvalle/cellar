@@ -34,7 +34,7 @@ init =
     , error = Nothing
     , filters = Hidden
     , beerForm = Hidden
-    , helpDialog = Hidden
+    , helpDialog = Visible
     }
 
 
