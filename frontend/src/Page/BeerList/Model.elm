@@ -5,8 +5,8 @@ import Data.Auth exposing (AuthStatus(..))
 import Page.BeerList.Model.State
 import Page.BeerList.Model.Filters
 import Page.BeerList.Model.BeerList
-import Page.BeerList.Model.BeerForm
 import Page.BeerList.Model.Table
+import Page.BeerList.Model.BeerForm
 import Table
 import Task
 import Page.Errored

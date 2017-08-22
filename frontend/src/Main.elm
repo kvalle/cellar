@@ -11,6 +11,10 @@ import Page.BeerList.Model
 import Page.BeerList.Subscriptions
 import Page.BeerList.Update
 import Page.BeerList.View
+import Page.BeerForm.Messages
+import Page.BeerForm.Model
+import Page.BeerForm.Update
+import Page.BeerForm.View
 import Page.Errored
 import Page.Home
 import Page.Help
@@ -30,6 +34,7 @@ type Page
     | Help
     | Json Page.Json.Model
     | BeerList Page.BeerList.Model.Model
+    | BeerForm Page.BeerForm.Model.Model
     | NotFound
     | Errored Page.Errored.Model
 
@@ -70,8 +75,10 @@ init flags location =
 type Msg
     = SetRoute Route
     | BeerListLoaded (Result Page.Errored.Model Page.BeerList.Model.Model)
+    | AddBeerLoaded (Result Page.Errored.Model Page.BeerForm.Model.Model)
     | JsonLoaded (Result Page.Errored.Model Page.Json.Model)
     | BeerListMsg Page.BeerList.Messages.Msg
+    | BeerFormMsg Page.BeerForm.Messages.Msg
     | Login
     | LoginResult (Result String ( Data.Auth.Session, Route.Route ))
     | Logout
@@ -161,10 +168,25 @@ update msg model =
             BeerListLoaded (Err error) ->
                 { model | pageState = Loaded (Errored error) Data.Page.BeerList } => Cmd.none
 
+            AddBeerLoaded (Ok subModel) ->
+                { model | pageState = Loaded (BeerForm subModel) Data.Page.AddBeer } => Cmd.none
+
+            AddBeerLoaded (Err error) ->
+                { model | pageState = Loaded (Errored error) Data.Page.AddBeer } => Cmd.none
+
             BeerListMsg subMsg ->
                 case getPage model.pageState of
                     BeerList subModel ->
                         delegateToPage BeerList Data.Page.BeerList BeerListMsg Page.BeerList.Update.update subMsg model.appState subModel
+
+                    _ ->
+                        -- Disregard BeerListMsg for other pages
+                        model => Cmd.none
+
+            BeerFormMsg subMsg ->
+                case getPage model.pageState of
+                    BeerForm subModel ->
+                        delegateToPage BeerForm (getActivePage model.pageState) BeerFormMsg Page.BeerForm.Update.update subMsg model.appState subModel
 
                     _ ->
                         -- Disregard BeerListMsg for other pages
@@ -187,6 +209,10 @@ setRoute maybeRoute model =
                 pageErrored Data.Page.BeerList "You need to log in to see this page." model
                     => Cmd.none
 
+            ( Route.AddBeer, Data.Auth.LoggedOut ) ->
+                pageErrored Data.Page.AddBeer "You need to log in to see this page." model
+                    => Cmd.none
+
             ( Route.Unknown, _ ) ->
                 { model | pageState = Loaded NotFound Data.Page.Other } => Cmd.none
 
@@ -195,6 +221,9 @@ setRoute maybeRoute model =
 
             ( Route.BeerList, _ ) ->
                 transition BeerListLoaded (Page.BeerList.Model.init model.appState) Data.Page.BeerList
+
+            ( Route.AddBeer, _ ) ->
+                transition AddBeerLoaded (Page.BeerForm.Model.initEmpty model.appState) Data.Page.AddBeer
 
             ( Route.AccessTokenRoute callBackInfo, _ ) ->
                 let
@@ -251,4 +280,9 @@ viewPage appState isLoading page activePage =
             BeerList subModel ->
                 Page.BeerList.View.view subModel
                     |> Html.map BeerListMsg
+                    |> frame
+
+            BeerForm subModel ->
+                Page.BeerForm.View.view subModel
+                    |> Html.map BeerFormMsg
                     |> frame

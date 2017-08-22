@@ -20,6 +20,7 @@ import Auth0.UrlParser
 type Route
     = Home
     | BeerList
+    | AddBeer
     | Json
     | Help
     | AccessTokenRoute Auth0CallbackInfo
@@ -32,6 +33,7 @@ route =
     oneOf
         [ Url.map Home (s "")
         , Url.map BeerList (s "beers")
+        , Url.map AddBeer (s "beers" </> s "add")
         , Url.map Json (s "json")
         , Url.map Help (s "help")
         , Url.map AccessTokenRoute accessTokenUrlParser
@@ -53,6 +55,9 @@ routeToString page =
 
                 BeerList ->
                     [ "beers" ]
+
+                AddBeer ->
+                    [ "beers", "add" ]
 
                 Json ->
                     [ "json" ]
@@ -76,6 +81,7 @@ names : List ( String, Route )
 names =
     [ ( "home", Home )
     , ( "beer-list", BeerList )
+    , ( "add-beer", AddBeer )
     , ( "json", Json )
     ]
 
@@ -132,6 +138,9 @@ fromActivePage activePage =
 
         Data.Page.BeerList ->
             BeerList
+
+        Data.Page.AddBeer ->
+            AddBeer
 
         Data.Page.Json ->
             Json

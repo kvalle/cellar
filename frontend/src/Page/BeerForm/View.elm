@@ -1,10 +1,7 @@
-module Page.BeerList.View.BeerForm exposing (viewBeerForm)
+module Page.BeerForm.View exposing (view)
 
-import Page.BeerList.Messages as Msg exposing (Msg)
-import Page.BeerList.Messages.BeerForm exposing (Field(..), SuggestionMsg(..))
-import Page.BeerList.Model
-import Page.BeerList.Model.State exposing (DisplayState(..))
-import Page.BeerList.Model.BeerForm exposing (BeerForm)
+import Page.BeerForm.Messages as Msg exposing (Msg, Field(..), SuggestionMsg(..))
+import Page.BeerForm.Model exposing (Model)
 import Data.KeyEvent exposing (keys)
 import Views.HtmlAttributes exposing (onClickNoPropagation, onKeysWithOptions)
 import Html exposing (..)
@@ -12,36 +9,25 @@ import Html.Events exposing (onClick, on, onWithOptions, onInput, defaultOptions
 import Html.Attributes exposing (id, class, type_, for, src, title, value, autocomplete, classList)
 
 
-viewBeerForm : Page.BeerList.Model.Model -> Html Msg
-viewBeerForm model =
-    case model.state.beerForm of
-        Hidden ->
-            text ""
-
-        Visible ->
-            let
-                form =
-                    model.beerForm
-            in
-                div [ class "modal", onClick Msg.HideForm ]
-                    [ div [ class "beer-form", onClickNoPropagation Msg.Noop ]
-                        [ formTitle form
-                        , fieldwithLabel "Brewery" "brewery" Brewery form True
-                        , fieldwithLabel "Beer Name" "name" Name form True
-                        , fieldwithLabel "Beer Style" "style" Style form True
-                        , fieldwithLabel "Production year" "year" Year form False
-                        , fieldwithLabel "Volume (in liters)" "volume" Volume form False
-                        , fieldwithLabel "Alcohol by volume (ABV)" "abv" Abv form False
-                        , fieldwithLabel "Number of bottles (or cans)" "count" Count form False
-                        , fieldwithLabel "Location" "location" Location form True
-                        , fieldwithLabel "Shelf" "shelf" Shelf form True
-                        , br [] []
-                        , formControlButtons model.beerForm
-                        ]
-                    ]
+view : Model -> Html Msg
+view form =
+    div [ class "beer-form" ]
+        [ formTitle form
+        , fieldwithLabel "Brewery" "brewery" Brewery form True
+        , fieldwithLabel "Beer Name" "name" Name form True
+        , fieldwithLabel "Beer Style" "style" Style form True
+        , fieldwithLabel "Production year" "year" Year form False
+        , fieldwithLabel "Volume (in liters)" "volume" Volume form False
+        , fieldwithLabel "Alcohol by volume (ABV)" "abv" Abv form False
+        , fieldwithLabel "Number of bottles (or cans)" "count" Count form False
+        , fieldwithLabel "Location" "location" Location form True
+        , fieldwithLabel "Shelf" "shelf" Shelf form True
+        , br [] []
+        , formControlButtons form
+        ]
 
 
-formTitle : Page.BeerList.Model.BeerForm.BeerForm -> Html Msg
+formTitle : Model -> Html Msg
 formTitle form =
     h3 []
         [ case form.id of
@@ -53,7 +39,7 @@ formTitle form =
         ]
 
 
-formControlButtons : BeerForm -> Html Msg
+formControlButtons : Model -> Html Msg
 formControlButtons form =
     let
         name =
@@ -65,7 +51,7 @@ formControlButtons form =
                     "Save"
 
         attributes =
-            if Page.BeerList.Model.BeerForm.isValid form then
+            if Page.BeerForm.Model.isValid form then
                 [ onClickNoPropagation Msg.SubmitForm, class "button-primary" ]
             else
                 [ class "button-disabled" ]
@@ -75,14 +61,14 @@ formControlButtons form =
                 [ text name
                 , i [ class "icon-beer" ] []
                 ]
-            , button [ onClickNoPropagation Msg.HideForm, class "" ]
+            , button []
                 [ text "Cancel"
                 , i [ class "icon-cancel" ] []
                 ]
             ]
 
 
-fieldwithLabel : String -> String -> Field -> BeerForm -> Bool -> Html Msg
+fieldwithLabel : String -> String -> Field -> Model -> Bool -> Html Msg
 fieldwithLabel labelText tag field form suggestionsEnabled =
     div [ class "fieldset" ]
         [ label [ for <| tag ++ "-input" ]
@@ -93,7 +79,7 @@ fieldwithLabel labelText tag field form suggestionsEnabled =
             , autocomplete False
             , id <| tag ++ "-input"
             , onInput <| Msg.UpdateFormField field
-            , value <| Page.BeerList.Model.BeerForm.show field form
+            , value <| Page.BeerForm.Model.show field form
             , onBlur <| Msg.UpdateFormSuggestions field Clear
             , onKeysWithOptions
                 { defaultOptions | preventDefault = True }
@@ -111,14 +97,14 @@ fieldwithLabel labelText tag field form suggestionsEnabled =
         ]
 
 
-suggestions : Field -> BeerForm -> Html Msg
+suggestions : Field -> Model -> Html Msg
 suggestions field form =
     let
         selectedIndex =
-            Page.BeerList.Model.BeerForm.selectedSuggestion field form
+            Page.BeerForm.Model.selectedSuggestion field form
 
         values =
-            Page.BeerList.Model.BeerForm.suggestions field form
+            Page.BeerForm.Model.suggestions field form
     in
         if List.isEmpty values then
             text ""
