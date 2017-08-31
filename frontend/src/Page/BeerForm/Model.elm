@@ -1,4 +1,4 @@
-module Page.BeerForm.Model exposing (Model, initEmpty, empty, init, from, updateField, updateSuggestions, suggestions, selectedSuggestion, isValid, show, toBeer)
+module Page.BeerForm.Model exposing (Model, initEmpty, updateField, updateSuggestions, suggestions, selectedSuggestion, isValid, show, toBeer)
 
 import Page.BeerForm.Messages exposing (Field(..), SuggestionMsg(..))
 import Data.Beer exposing (Beer)
@@ -41,11 +41,6 @@ initEmpty appState =
 
             LoggedOut ->
                 Task.fail <| "Need to be logged in to add beers"
-
-
-init : Model
-init =
-    empty []
 
 
 empty : List Beer -> Model
