@@ -1,12 +1,12 @@
 module Page.BeerList.View.BeerList exposing (viewBeerList)
 
+import Data.Beer exposing (Beer)
+import Html exposing (..)
+import Html.Attributes exposing (class, colspan, placeholder, title, type_, value)
+import Html.Events exposing (onClick, onInput)
 import Page.BeerList.Messages exposing (Msg(..))
 import Page.BeerList.Model exposing (Model)
-import Data.Beer exposing (Beer)
 import Page.BeerList.Model.BeerList as BeerList
-import Html exposing (..)
-import Html.Attributes exposing (class, placeholder, type_, value, colspan, title)
-import Html.Events exposing (onClick, onInput)
 import Table
 
 
@@ -138,7 +138,7 @@ viewEditAction beer =
     i [ onClick (ShowForm beer), class "action icon-pencil", title "Edit" ] []
 
 
-tableFooter : ( Int, Int ) -> Maybe (Table.HtmlDetails msg)
+tableFooter : ( Int, Int ) -> Maybe (Table.HtmlDetails Msg)
 tableFooter ( showing, total ) =
     if showing == total then
         Nothing
@@ -146,17 +146,21 @@ tableFooter ( showing, total ) =
         let
             message =
                 if showing == 0 then
-                    "All beers are hidden by filters…"
+                    "All beers are hidden by filters… "
                 else
                     "Filter active, showing "
                         ++ (toString showing)
                         ++ " of "
                         ++ (toString total)
-                        ++ " beers"
+                        ++ " beers "
         in
             Just <|
                 Table.HtmlDetails
                     [ class "filtered-beer-list" ]
                     [ tr []
-                        [ td [ colspan 6 ] [ text message ] ]
+                        [ td [ colspan 6 ]
+                            [ text message
+                            , a [ class "action", onClick ClearFilters ] [ text "(clear)" ]
+                            ]
+                        ]
                     ]
