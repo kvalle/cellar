@@ -7,7 +7,7 @@ import Html.Events exposing (onClick, onInput)
 import Page.BeerList.Messages exposing (Msg(..))
 import Page.BeerList.Model exposing (Model)
 import Page.BeerList.Model.BeerList as BeerList
-import Table
+import Table exposing (defaultCustomizations)
 
 
 viewBeerList : Model -> Html Msg
@@ -29,29 +29,25 @@ viewBeerList model =
 
 tableConfig : ( Int, Int ) -> Table.Config Beer Msg
 tableConfig showCount =
-    let
-        default =
-            Table.defaultCustomizations
-    in
-        Table.customConfig
-            { toId = .id >> (Maybe.withDefault 0) >> toString
-            , toMsg = SetTableState
-            , columns =
-                [ intColumnWithClasses "count" "#" .count
-                , stringColumnWithClasses "brewery" "Brewery" .brewery
-                , stringColumnWithClasses "name" "Name" .name
-                , floatColumnWithClasses "abv" "ABV" .abv
-                , intColumnWithClasses "year" "Year" .year
-                , stringColumnWithClasses "style" "Style" .style
-                , actionColumn
-                ]
-            , customizations =
-                { default
-                    | tableAttrs = [ class "beer-list" ]
-                    , rowAttrs = beerRowAttributes
-                    , tfoot = tableFooter showCount
-                }
+    Table.customConfig
+        { toId = .id >> (Maybe.withDefault 0) >> toString
+        , toMsg = SetTableState
+        , columns =
+            [ intColumnWithClasses "count" "#" .count
+            , stringColumnWithClasses "brewery" "Brewery" .brewery
+            , stringColumnWithClasses "name" "Name" .name
+            , floatColumnWithClasses "abv" "ABV" .abv
+            , intColumnWithClasses "year" "Year" .year
+            , stringColumnWithClasses "style" "Style" .style
+            , actionColumn
+            ]
+        , customizations =
+            { defaultCustomizations
+                | tableAttrs = [ class "beer-list" ]
+                , rowAttrs = beerRowAttributes
+                , tfoot = tableFooter showCount
             }
+        }
 
 
 columnWithClasses : String -> String -> (a -> comparable) -> (a -> String) -> Table.Column a Msg
