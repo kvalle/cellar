@@ -21,10 +21,8 @@ viewBeerList model =
                 (tableConfig ( List.length filteredBeers, List.length model.beers ))
                 model.tableState
                 filteredBeers
-    else if model.state.error == Nothing then
-        viewEmptyMessage
     else
-        text ""
+        viewCellarIsEmptyMessage
 
 
 tableConfig : ( Int, Int ) -> Table.Config Beer Msg
@@ -102,8 +100,8 @@ beerRowAttributes beer =
     ]
 
 
-viewEmptyMessage : Html Msg
-viewEmptyMessage =
+viewCellarIsEmptyMessage : Html Msg
+viewCellarIsEmptyMessage =
     span [ class "empty-beer-list" ]
         [ text "Your cellar appears to be empty. Try "
         , span [ onClick <| ShowForm Data.Beer.empty, class "action" ] [ text "adding" ]

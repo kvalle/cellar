@@ -1,6 +1,5 @@
 module Page.BeerList.View exposing (view)
 
-import Data.Beer
 import Html exposing (..)
 import Html.Attributes exposing (class, for, id, src, style, title, type_, value)
 import Html.Events exposing (defaultOptions, onClick, onInput, onWithOptions)
