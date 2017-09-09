@@ -19,7 +19,7 @@ view form =
         , fieldwithLabel "Production year" "year" Year form False
         , fieldwithLabel "Volume (in liters)" "volume" Volume form False
         , fieldwithLabel "Alcohol by volume (ABV)" "abv" Abv form False
-        , fieldwithLabel "Number of bottles (or cans)" "count" Count form False
+        , fieldwithLabel "Number of bottles or cans" "count" Count form False
         , fieldwithLabel "Location" "location" Location form True
         , fieldwithLabel "Shelf" "shelf" Shelf form True
         , br [] []
@@ -32,7 +32,7 @@ formTitle form =
     h3 []
         [ case form.id of
             Nothing ->
-                text "Add beer"
+                text "Add new beer"
 
             Just _ ->
                 text "Edit beer"
@@ -45,10 +45,10 @@ formControlButtons form =
         name =
             case form.id of
                 Nothing ->
-                    "Add"
+                    "Add beer"
 
                 Just _ ->
-                    "Save"
+                    "Save changes"
 
         attributes =
             if Page.BeerForm.Model.isValid form then
