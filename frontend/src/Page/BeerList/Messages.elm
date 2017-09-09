@@ -23,7 +23,5 @@ type Msg
     | SavedBeerList (Result Http.Error (List Beer))
     | LoadBeers
     | LoadedBeerList (Result Http.Error (List Beer))
-    | IncrementBeer Beer
-    | DecrementBeer Beer
     | DeleteBeer Beer
     | SetTableState Table.State

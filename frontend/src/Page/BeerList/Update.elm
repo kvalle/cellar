@@ -103,32 +103,6 @@ update msg appState model =
         HideFilters ->
             ( { model | state = model.state |> State.withFilters State.Hidden }, Cmd.none )
 
-        DecrementBeer beer ->
-            let
-                newBeers =
-                    Page.BeerList.Model.BeerList.decrement beer model.beers
-            in
-                ( { model
-                    | beers = newBeers
-                    , state = model.state |> State.withChanges
-                    , filters = model.filters |> Filter.setContext newBeers
-                  }
-                , Cmd.none
-                )
-
-        IncrementBeer beer ->
-            let
-                newBeers =
-                    Page.BeerList.Model.BeerList.increment beer model.beers
-            in
-                ( { model
-                    | beers = newBeers
-                    , state = model.state |> State.withChanges
-                    , filters = model.filters |> Filter.setContext newBeers
-                  }
-                , Cmd.none
-                )
-
         DeleteBeer beer ->
             let
                 newBeers =

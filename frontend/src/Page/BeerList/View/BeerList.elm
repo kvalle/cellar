@@ -110,19 +110,6 @@ viewCellarIsEmptyMessage =
         ]
 
 
-viewIncrementAction : Beer -> Html Msg
-viewIncrementAction beer =
-    i [ onClick (IncrementBeer beer), class "action icon-plus", title "Add 1" ] []
-
-
-viewDecrementAction : Beer -> Html Msg
-viewDecrementAction beer =
-    if beer.count < 1 then
-        i [ class "action icon-minus disabled" ] []
-    else
-        i [ onClick (DecrementBeer beer), class "action icon-minus", title "Remove 1" ] []
-
-
 viewDeleteAction : Beer -> Html Msg
 viewDeleteAction beer =
     i [ onClick (DeleteBeer beer), class "action icon-trash", title "Delete" ] []
