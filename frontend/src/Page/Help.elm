@@ -13,8 +13,6 @@ the beer list page:
 
 - `a` will show the form for adding new beers
 - `f` will show the filters dialog
-- `Esc` will close open dialog
+- `Esc` will close the filters dialog
 - `c` will clear the filters
-- `s` will save the current changes
-- `r` will reset the current changes
 """

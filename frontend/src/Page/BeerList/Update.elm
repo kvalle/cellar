@@ -3,14 +3,15 @@ module Page.BeerList.Update exposing (update)
 import Backend.Beers
 import Data.AppState exposing (AppState)
 import Data.Auth exposing (AuthStatus(LoggedIn))
+import Data.BeerList
 import Data.KeyEvent exposing (keys)
 import Dom
 import Http
-import Data.BeerList
-import Page.BeerList.Messages exposing (Msg(..))
+import Page.BeerList.Messages exposing (Msg(HideFilters), Msg(..), Msg(ClearFilters))
 import Page.BeerList.Model exposing (Model)
 import Page.BeerList.Model.Filters as Filter
-import Page.BeerList.Model.State as State exposing (Network(..))
+import Page.BeerList.Model.State as State exposing (DisplayState(Visible), Network(..))
+import Route
 import Task
 
 
@@ -85,17 +86,12 @@ update msg appState model =
                     ( model, Cmd.none )
 
                 Ok key ->
-                    if key == keys.a && State.isClearOfModals model.state then
-                        -- FIXME show 'add beer' form
-                        ( model, Cmd.none )
+                    if key == keys.escape && model.state.filters == Visible then
+                        update HideFilters appState model
+                    else if key == keys.a && State.isClearOfModals model.state then
+                        ( model, Route.modifyUrl Route.AddBeer )
                     else if key == keys.f && State.isClearOfModals model.state then
                         update ShowFilters appState model
-                    else if key == keys.r && model.state.changes == State.Changed && State.isClearOfModals model.state then
-                        -- FIXME update LoadBeers appState model
-                        ( model, Cmd.none )
-                    else if key == keys.s && model.state.changes == State.Changed && State.isClearOfModals model.state then
-                        -- FIXME update SaveBeers appState model
-                        ( model, Cmd.none )
                     else if key == keys.c && model.filters.active && State.isClearOfModals model.state then
                         update ClearFilters appState model
                     else

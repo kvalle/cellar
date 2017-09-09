@@ -106,9 +106,12 @@ getActivePage pageState =
 
 subscriptions : Model -> Sub Msg
 subscriptions model =
-    Sub.batch
-        [ Sub.map BeerListMsg Page.BeerList.Subscriptions.subscriptions
-        ]
+    case getPage model.pageState of
+        BeerList _ ->
+            Sub.map BeerListMsg Page.BeerList.Subscriptions.subscriptions
+
+        _ ->
+            Sub.none
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
