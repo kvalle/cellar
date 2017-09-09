@@ -6,7 +6,6 @@ import Html.Events exposing (defaultOptions, onClick, onInput, onWithOptions)
 import Page.BeerList.Messages as Msg exposing (Msg)
 import Page.BeerList.Model exposing (Model)
 import Page.BeerList.Model.State as State
-import Page.BeerList.View.BeerForm exposing (viewBeerForm)
 import Page.BeerList.View.BeerList exposing (viewBeerList)
 import Page.BeerList.View.Filters exposing (viewFilters)
 import Route
@@ -15,8 +14,7 @@ import Route
 view : Model -> Html Msg
 view model =
     div []
-        [ viewBeerForm model
-        , div [ class "row" ]
+        [ div [ class "row" ]
             [ div [ class "main twelve columns" ]
                 []
             ]

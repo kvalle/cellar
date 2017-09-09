@@ -6,7 +6,6 @@ type alias State =
     , network : Network
     , error : Maybe String
     , filters : DisplayState
-    , beerForm : DisplayState
     }
 
 
@@ -32,25 +31,17 @@ init =
     , network = Idle
     , error = Nothing
     , filters = Hidden
-    , beerForm = Hidden
     }
 
 
 clearModals : State -> State
 clearModals state =
-    state
-        |> withBeerForm Hidden
-        |> withFilters Hidden
+    { state | filters = Hidden }
 
 
 isClearOfModals : State -> Bool
 isClearOfModals state =
-    List.all ((==) Hidden) [ state.filters, state.beerForm ]
-
-
-withBeerForm : DisplayState -> State -> State
-withBeerForm displayState state =
-    { state | beerForm = displayState }
+    state.filters == Hidden
 
 
 withFilters : DisplayState -> State -> State

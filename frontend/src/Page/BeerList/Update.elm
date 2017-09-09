@@ -3,14 +3,11 @@ module Page.BeerList.Update exposing (update)
 import Backend.Beers
 import Data.AppState exposing (AppState)
 import Data.Auth exposing (AuthStatus(LoggedIn))
-import Data.Beer as Beer
 import Data.KeyEvent exposing (keys)
 import Dom
 import Http
 import Page.BeerList.Messages exposing (Msg(..))
-import Page.BeerList.Messages.BeerForm exposing (SuggestionMsg(..))
 import Page.BeerList.Model exposing (Model)
-import Page.BeerList.Model.BeerForm as BeerForm
 import Page.BeerList.Model.BeerList
 import Page.BeerList.Model.Filters as Filter
 import Page.BeerList.Model.State as State exposing (Network(..))
@@ -145,52 +142,6 @@ update msg appState model =
                 , Cmd.none
                 )
 
-        ShowForm beer ->
-            ( { model
-                | beerForm = BeerForm.from beer model.beers
-                , state = model.state |> State.withBeerForm State.Visible
-              }
-            , Dom.focus "brewery-input" |> Task.attempt FocusResult
-            )
-
-        HideForm ->
-            ( { model
-                | state = model.state |> State.withBeerForm State.Hidden
-              }
-            , Cmd.none
-            )
-
-        UpdateFormField field input ->
-            ( { model
-                | beerForm =
-                    model.beerForm
-                        |> BeerForm.updateField field input
-                        |> BeerForm.updateSuggestions field Refresh
-              }
-            , Cmd.none
-            )
-
-        UpdateFormSuggestions field msg ->
-            ( { model
-                | beerForm = model.beerForm |> BeerForm.updateSuggestions field msg
-              }
-            , Cmd.none
-            )
-
-        SubmitForm ->
-            let
-                newBeers =
-                    Page.BeerList.Model.BeerList.addOrUpdate (BeerForm.toBeer model.beerForm) model.beers
-            in
-                ( { model
-                    | beers = newBeers
-                    , beerForm = BeerForm.empty model.beers
-                    , state = model.state |> State.withChanges |> State.withBeerForm State.Hidden
-                    , filters = model.filters |> Filter.setContext newBeers
-                  }
-                , Cmd.none
-                )
-
         ClearModals ->
             ( { model | state = model.state |> State.clearModals }, Cmd.none )
 
@@ -203,7 +154,8 @@ update msg appState model =
                     if key == keys.escape then
                         update ClearModals appState model
                     else if key == keys.a && State.isClearOfModals model.state then
-                        update (ShowForm Beer.empty) appState model
+                        -- TODO: show 'add beer' form
+                        ( model, Cmd.none )
                     else if key == keys.f && State.isClearOfModals model.state then
                         update ShowFilters appState model
                     else if key == keys.r && model.state.changes == State.Changed && State.isClearOfModals model.state then

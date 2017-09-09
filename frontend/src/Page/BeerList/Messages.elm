@@ -1,6 +1,5 @@
 module Page.BeerList.Messages exposing (Msg(..))
 
-import Page.BeerList.Messages.BeerForm exposing (Field, SuggestionMsg)
 import Page.BeerList.Model.Filters exposing (FilterValue)
 import Data.Beer exposing (Beer)
 import Data.KeyEvent exposing (KeyEvent)
@@ -28,9 +27,3 @@ type Msg
     | DecrementBeer Beer
     | DeleteBeer Beer
     | SetTableState Table.State
-      -- Beer form
-    | ShowForm Beer
-    | HideForm
-    | UpdateFormField Field String
-    | UpdateFormSuggestions Field SuggestionMsg
-    | SubmitForm

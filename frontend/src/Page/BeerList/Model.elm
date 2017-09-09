@@ -6,7 +6,6 @@ import Page.BeerList.Model.State
 import Page.BeerList.Model.Filters
 import Page.BeerList.Model.BeerList
 import Page.BeerList.Model.Table
-import Page.BeerList.Model.BeerForm
 import Table
 import Task
 import Page.Errored
@@ -17,7 +16,6 @@ import Page.BeerList.Model.Filters as Filters
 
 type alias Model =
     { tableState : Table.State
-    , beerForm : Page.BeerList.Model.BeerForm.BeerForm
     , filters : Page.BeerList.Model.Filters.Filters
     , state : Page.BeerList.Model.State.State
     , beers : Page.BeerList.Model.BeerList.BeerList
@@ -30,7 +28,6 @@ init appState =
         model =
             Model
                 Page.BeerList.Model.Table.init
-                Page.BeerList.Model.BeerForm.init
                 Page.BeerList.Model.Filters.init
                 Page.BeerList.Model.State.init
 

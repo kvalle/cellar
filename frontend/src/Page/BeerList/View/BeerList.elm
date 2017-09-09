@@ -105,7 +105,7 @@ viewCellarIsEmptyMessage : Html Msg
 viewCellarIsEmptyMessage =
     span [ class "empty-beer-list" ]
         [ text "Your cellar appears to be empty. Try "
-        , span [ onClick <| ShowForm Data.Beer.empty, class "action" ] [ text "adding" ]
+        , a [ Route.href Route.AddBeer ] [ span [ class "action" ] [ text "adding" ] ]
         , text " a few beers!"
         ]
 
