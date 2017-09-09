@@ -29,6 +29,7 @@ type Msg
     | DeleteBeer Beer
     | SetTableState Table.State
       -- Beer form
+    | AddBeer
     | ShowForm Beer
     | HideForm
     | UpdateFormField Field String

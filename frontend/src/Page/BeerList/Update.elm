@@ -4,6 +4,7 @@ import Backend.Beers
 import Data.AppState exposing (AppState)
 import Data.Auth exposing (AuthStatus(LoggedIn))
 import Data.Beer as Beer
+import Data.KeyEvent exposing (keys)
 import Dom
 import Http
 import Page.BeerList.Messages exposing (Msg(..))
@@ -12,8 +13,8 @@ import Page.BeerList.Model exposing (Model)
 import Page.BeerList.Model.BeerForm as BeerForm
 import Page.BeerList.Model.BeerList
 import Page.BeerList.Model.Filters as Filter
-import Data.KeyEvent exposing (keys)
 import Page.BeerList.Model.State as State exposing (Network(..))
+import Route
 import Task
 
 
@@ -144,6 +145,9 @@ update msg appState model =
                   }
                 , Cmd.none
                 )
+
+        AddBeer ->
+            ( model, Route.modifyUrl Route.AddBeer )
 
         ShowForm beer ->
             ( { model
