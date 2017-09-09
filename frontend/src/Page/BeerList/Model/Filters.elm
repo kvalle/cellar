@@ -116,8 +116,8 @@ setYearContext beers filters =
     }
 
 
-matches : Beer -> Filters -> Bool
-matches beer filters =
+matches : Filters -> Beer -> Bool
+matches filters beer =
     let
         textMatch =
             List.any

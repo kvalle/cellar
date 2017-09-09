@@ -2,9 +2,9 @@ module Page.BeerList.Model exposing (Model, init)
 
 import Data.AppState exposing (AppState)
 import Data.Auth exposing (AuthStatus(..))
+import Data.Beer exposing (Beer)
 import Page.BeerList.Model.State
 import Page.BeerList.Model.Filters
-import Page.BeerList.Model.BeerList
 import Page.BeerList.Model.Table
 import Table
 import Task
@@ -18,7 +18,7 @@ type alias Model =
     { tableState : Table.State
     , filters : Page.BeerList.Model.Filters.Filters
     , state : Page.BeerList.Model.State.State
-    , beers : Page.BeerList.Model.BeerList.BeerList
+    , beers : List Beer
     }
 
 

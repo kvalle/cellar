@@ -6,7 +6,7 @@ import Html.Attributes exposing (class, colspan, placeholder, title, type_, valu
 import Html.Events exposing (onClick, onInput)
 import Page.BeerList.Messages exposing (Msg(..))
 import Page.BeerList.Model exposing (Model)
-import Page.BeerList.Model.BeerList as BeerList
+import Page.BeerList.Model.Filters exposing (Filters)
 import Route
 import Table exposing (defaultCustomizations)
 
@@ -16,7 +16,7 @@ viewBeerList model =
     if model.beers |> not << List.isEmpty then
         let
             filteredBeers =
-                BeerList.filtered model.filters model.beers
+                List.filter (Page.BeerList.Model.Filters.matches model.filters) model.beers
         in
             Table.view
                 (tableConfig ( List.length filteredBeers, List.length model.beers ))
