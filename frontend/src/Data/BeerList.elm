@@ -1,4 +1,4 @@
-module Data.BeerList exposing (addOrUpdate, getById, nextAvailableId)
+module Data.BeerList exposing (addOrUpdate, getById, nextAvailableId, delete)
 
 import Data.Beer exposing (Beer)
 
@@ -21,6 +21,11 @@ getById beerId beerList =
 
         _ ->
             Nothing
+
+
+delete : Beer -> List Beer -> List Beer
+delete beer =
+    List.filter (\b -> b.id /= beer.id)
 
 
 nextAvailableId : List Beer -> Int

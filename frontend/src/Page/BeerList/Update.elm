@@ -6,9 +6,9 @@ import Data.Auth exposing (AuthStatus(LoggedIn))
 import Data.KeyEvent exposing (keys)
 import Dom
 import Http
+import Data.BeerList
 import Page.BeerList.Messages exposing (Msg(..))
 import Page.BeerList.Model exposing (Model)
-import Page.BeerList.Model.BeerList
 import Page.BeerList.Model.Filters as Filter
 import Page.BeerList.Model.State as State exposing (Network(..))
 import Task
@@ -19,28 +19,6 @@ update msg appState model =
     case msg of
         SetTableState state ->
             ( { model | tableState = state }, Cmd.none )
-
-        LoadedBeerList (Err err) ->
-            ( { model
-                | state =
-                    model.state
-                        |> State.withError ("Failed to load beer list :(" ++ (toString err))
-                        |> State.withNetwork Idle
-              }
-            , Cmd.none
-            )
-
-        LoadedBeerList (Ok beers) ->
-            ( { model
-                | beers = beers
-                , filters = model.filters |> Filter.setContext beers
-                , state =
-                    model.state
-                        |> State.withNetwork Idle
-                        |> State.withNoChanges
-              }
-            , Cmd.none
-            )
 
         SavedBeerList (Ok _) ->
             ( { model
@@ -60,28 +38,6 @@ update msg appState model =
                         |> State.withNetwork Idle
               }
             , Cmd.none
-            )
-
-        SaveBeers ->
-            ( { model | state = State.withNetwork Saving model.state }
-            , case appState.auth of
-                LoggedIn userData ->
-                    Http.send SavedBeerList <|
-                        Backend.Beers.save appState.environment userData model.beers
-
-                _ ->
-                    Cmd.none
-            )
-
-        LoadBeers ->
-            ( { model | state = State.withNetwork Loading model.state }
-            , case appState.auth of
-                LoggedIn userData ->
-                    Http.send LoadedBeerList <|
-                        Backend.Beers.get appState.environment userData
-
-                _ ->
-                    Cmd.none
             )
 
         ClearFilters ->
@@ -104,17 +60,24 @@ update msg appState model =
             ( { model | state = model.state |> State.withFilters State.Hidden }, Cmd.none )
 
         DeleteBeer beer ->
-            let
-                newBeers =
-                    Page.BeerList.Model.BeerList.delete beer model.beers
-            in
-                ( { model
-                    | beers = newBeers
-                    , state = model.state |> State.withChanges
-                    , filters = model.filters |> Filter.setContext newBeers
-                  }
-                , Cmd.none
-                )
+            case appState.auth of
+                LoggedIn userData ->
+                    let
+                        newBeers =
+                            Data.BeerList.delete beer model.beers
+                    in
+                        ( { model
+                            | beers = newBeers
+                            , state = model.state |> State.withNetwork Saving
+                            , filters = model.filters |> Filter.setContext newBeers
+                          }
+                        , Http.send SavedBeerList <|
+                            Backend.Beers.save appState.environment userData newBeers
+                        )
+
+                _ ->
+                    -- FIXME : not really a possible state
+                    ( { model | state = model.state |> State.withError "You need to log in" }, Cmd.none )
 
         ClearModals ->
             ( { model | state = model.state |> State.clearModals }, Cmd.none )
@@ -128,14 +91,16 @@ update msg appState model =
                     if key == keys.escape then
                         update ClearModals appState model
                     else if key == keys.a && State.isClearOfModals model.state then
-                        -- TODO: show 'add beer' form
+                        -- FIXME show 'add beer' form
                         ( model, Cmd.none )
                     else if key == keys.f && State.isClearOfModals model.state then
                         update ShowFilters appState model
                     else if key == keys.r && model.state.changes == State.Changed && State.isClearOfModals model.state then
-                        update LoadBeers appState model
+                        -- FIXME update LoadBeers appState model
+                        ( model, Cmd.none )
                     else if key == keys.s && model.state.changes == State.Changed && State.isClearOfModals model.state then
-                        update SaveBeers appState model
+                        -- FIXME update SaveBeers appState model
+                        ( model, Cmd.none )
                     else if key == keys.c && model.filters.active && State.isClearOfModals model.state then
                         update ClearFilters appState model
                     else

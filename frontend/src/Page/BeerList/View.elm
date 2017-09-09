@@ -22,8 +22,6 @@ view model =
             [ div [ class "main twelve columns" ]
                 [ div [ class "menu-actions" ]
                     [ viewLink "Add beer" "beer" Route.AddBeer True
-                    , viewButton "Save" "floppy" Msg.SaveBeers (model.state.changes == State.Changed)
-                    , viewButton "Reset" "ccw" Msg.LoadBeers (model.state.changes == State.Changed)
                     , viewButton "Clear filters" "cancel" Msg.ClearFilters model.filters.active
                     , viewFilterAction model
                     , viewFilters model

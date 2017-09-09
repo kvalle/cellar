@@ -19,9 +19,9 @@ type Msg
     | ShowFilters
     | HideFilters
       -- Beer list
-    | SaveBeers
     | SavedBeerList (Result Http.Error (List Beer))
-    | LoadBeers
-    | LoadedBeerList (Result Http.Error (List Beer))
+      -- | SaveBeers
+      -- | LoadBeers
+      -- | LoadedBeerList (Result Http.Error (List Beer))
     | DeleteBeer Beer
     | SetTableState Table.State
