@@ -197,7 +197,7 @@ update msg model =
 
 
 setRoute : Route -> Model -> ( Model, Cmd Msg )
-setRoute maybeRoute model =
+setRoute route model =
     let
         transition toMsg task activePage =
             { model | pageState = TransitioningFrom (getPage model.pageState) activePage }
@@ -207,45 +207,55 @@ setRoute maybeRoute model =
         pageErrored activePage errorMessage model =
             { model | pageState = Loaded (Errored errorMessage) activePage }
     in
-        case ( maybeRoute, model.appState.auth ) of
-            ( Route.BeerList, Data.Auth.LoggedOut ) ->
-                pageErrored Data.Page.BeerList "You need to log in to see this page." model
-                    => Cmd.none
-
-            ( Route.AddBeer, Data.Auth.LoggedOut ) ->
-                pageErrored Data.Page.AddBeer "You need to log in to see this page." model
-                    => Cmd.none
-
-            ( Route.Unknown, _ ) ->
-                { model | pageState = Loaded NotFound Data.Page.Other } => Cmd.none
-
-            ( Route.Home, _ ) ->
+        case route of
+            Route.Home ->
                 { model | pageState = Loaded Home Data.Page.Home } => Cmd.none
 
-            ( Route.BeerList, _ ) ->
-                transition BeerListLoaded (Page.BeerList.Model.init model.appState) Data.Page.BeerList
+            Route.BeerList ->
+                case model.appState.auth of
+                    Data.Auth.LoggedOut ->
+                        pageErrored Data.Page.BeerList "You need to log in to see this page." model
+                            => Cmd.none
 
-            ( Route.AddBeer, _ ) ->
-                transition BeerFormLoaded (Page.BeerForm.Model.initEmpty model.appState) Data.Page.AddBeer
+                    Data.Auth.LoggedIn session ->
+                        transition BeerListLoaded (Page.BeerList.Model.init model.appState) Data.Page.BeerList
 
-            ( Route.EditBeer id, _ ) ->
-                transition BeerFormLoaded (Page.BeerForm.Model.initWith id model.appState) (Data.Page.EditBeer id)
+            Route.AddBeer ->
+                case model.appState.auth of
+                    Data.Auth.LoggedOut ->
+                        pageErrored Data.Page.AddBeer "You need to log in to see this page." model
+                            => Cmd.none
 
-            ( Route.AccessTokenRoute callBackInfo, _ ) ->
+                    Data.Auth.LoggedIn session ->
+                        transition BeerFormLoaded (Page.BeerForm.Model.initEmpty model.appState) Data.Page.AddBeer
+
+            Route.EditBeer id ->
+                case model.appState.auth of
+                    Data.Auth.LoggedOut ->
+                        pageErrored (Data.Page.EditBeer id) "You need to log in to see this page." model
+                            => Cmd.none
+
+                    Data.Auth.LoggedIn session ->
+                        transition BeerFormLoaded (Page.BeerForm.Model.initWith id model.appState) (Data.Page.EditBeer id)
+
+            Route.AccessTokenRoute callBackInfo ->
                 let
                     redirect =
                         Route.fromName callBackInfo.state
                 in
                     model => Task.attempt LoginResult (Backend.Auth.login callBackInfo.idToken redirect)
 
-            ( Route.UnauthorizedRoute x, _ ) ->
+            Route.UnauthorizedRoute x ->
                 model |> pageErrored Data.Page.Other "Login failed" => Cmd.none
 
-            ( Route.Json, _ ) ->
+            Route.Json ->
                 transition JsonLoaded (Page.Json.init model.appState) Data.Page.Json
 
-            ( Route.Help, _ ) ->
+            Route.Help ->
                 { model | pageState = Loaded Help Data.Page.Help } => Cmd.none
+
+            Route.Unknown ->
+                { model | pageState = Loaded NotFound Data.Page.Other } => Cmd.none
 
 
 view : Model -> Html Msg
