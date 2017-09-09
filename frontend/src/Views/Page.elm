@@ -63,8 +63,6 @@ viewMenu loginMsg logoutMsg auth activePage =
                 viewMenuItem (activePage == BeerList) Route.BeerList "Beer list"
             , ifLoggedIn <|
                 viewMenuItem (activePage == Json) Route.Json "Raw data"
-            , ifLoggedIn <|
-                viewMenuItem (activePage == Help) Route.Help "?"
             , span [] userInfo
             ]
 

@@ -23,6 +23,7 @@ view model =
                 [ div [ class "menu-actions" ]
                     [ viewLink "Add beer" "beer" Route.AddBeer True
                     , viewButton "Clear filters" "cancel" Msg.ClearFilters model.filters.active
+                    , viewLink "" "help-circled" Route.Help True
                     , viewFilterAction model
                     , viewFilters model
                     ]
