@@ -36,6 +36,7 @@ type FormState
 type alias Model =
     { id : Maybe Int
     , state : FormState
+    , error : Maybe String
     , fields : Dict Field String
     , possibleSuggestions : Dict Field (List String)
     , suggestions : Dict Field (List String)
@@ -78,6 +79,7 @@ from beer context =
     in
         { id = beer.id
         , state = Editing
+        , error = Nothing
         , fields =
             [ ( Brewery, beer.brewery )
             , ( Name, beer.name )

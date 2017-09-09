@@ -28,7 +28,7 @@ update msg appState model =
             )
 
         SubmitForm ->
-            ( { model | state = Saving }
+            ( { model | state = Saving, error = Nothing }
             , Task.attempt FormSaved <| saveBeer appState (toBeer model)
             )
 
@@ -38,8 +38,8 @@ update msg appState model =
         FormSaved (Ok beers) ->
             ( empty beers, Cmd.none )
 
-        FormSaved (Err error) ->
-            ( model, Cmd.none )
+        FormSaved (Err err) ->
+            ( { model | state = Editing, error = Just err }, Cmd.none )
 
 
 saveBeer : AppState -> Beer -> Task.Task String (List Beer)

@@ -21,7 +21,7 @@ save : Environment -> Session -> List Beer -> Request (List Beer)
 save env userData beers =
     request
         "POST"
-        (url env)
+        ((url env) ++ "ssasdfas")
         (Http.jsonBody <| listEncoder beers)
         listDecoder
         userData.token

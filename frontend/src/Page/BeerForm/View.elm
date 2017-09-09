@@ -68,6 +68,14 @@ formControlButtons form =
                 [ text "Cancel"
                 , i [ class "icon-cancel" ] []
                 ]
+            , span []
+                [ case form.error of
+                    Nothing ->
+                        text ""
+
+                    Just err ->
+                        text <| "Error: " ++ err
+                ]
             ]
 
 
