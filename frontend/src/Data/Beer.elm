@@ -1,4 +1,4 @@
-module Data.Beer exposing (Beer, empty, encoder, decoder)
+module Data.Beer exposing (Beer, encoder, decoder)
 
 import Json.Decode as Decode
 import Json.Encode as Encode
@@ -9,7 +9,7 @@ import Json.Decode.Pipeline as Pipeline
 
 
 type alias Beer =
-    { id : Maybe Int
+    { id : Int
     , brewery : String
     , name : String
     , style : String
@@ -19,21 +19,6 @@ type alias Beer =
     , abv : Float
     , location : Maybe String
     , shelf : Maybe String
-    }
-
-
-empty : Beer
-empty =
-    { id = Nothing
-    , brewery = ""
-    , name = ""
-    , style = ""
-    , year = 2017
-    , count = 1
-    , volume = 0.0
-    , abv = 0.0
-    , location = Nothing
-    , shelf = Nothing
     }
 
 
@@ -53,7 +38,7 @@ encoder beer =
                     encoder val
     in
         Encode.object
-            [ ( "id", maybeEncoder Encode.int beer.id )
+            [ ( "id", Encode.int beer.id )
             , ( "brewery", Encode.string beer.brewery )
             , ( "name", Encode.string beer.name )
             , ( "style", Encode.string beer.style )
@@ -74,7 +59,7 @@ listEncoder beers =
 decoder : Decode.Decoder Beer
 decoder =
     Pipeline.decode Beer
-        |> Pipeline.required "id" (Decode.nullable Decode.int)
+        |> Pipeline.required "id" Decode.int
         |> Pipeline.required "brewery" Decode.string
         |> Pipeline.required "name" Decode.string
         |> Pipeline.required "style" Decode.string

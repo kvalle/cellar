@@ -1,4 +1,4 @@
-module Page.BeerList.Model.BeerList exposing (BeerList, init, filtered, decrement, increment, delete, addOrUpdate)
+module Page.BeerList.Model.BeerList exposing (BeerList, init, filtered, decrement, increment, delete)
 
 import Page.BeerList.Model.Filters exposing (Filters)
 import Data.Beer exposing (Beer)
@@ -38,28 +38,8 @@ delete beer =
     List.filter (\b -> b.id /= beer.id)
 
 
-addOrUpdate : Beer -> BeerList -> BeerList
-addOrUpdate beer beers =
-    case beer.id of
-        Nothing ->
-            { beer | id = Just <| nextAvailableId beers } :: beers
-
-        Just _ ->
-            updateBeer (\_ -> beer) beer beers
-
-
 
 -- UNEXPOSED FUNCTIONS
-
-
-nextAvailableId : BeerList -> Int
-nextAvailableId beers =
-    case List.filterMap .id beers |> List.maximum of
-        Nothing ->
-            1
-
-        Just n ->
-            n + 1
 
 
 updateBeer : (Beer -> Beer) -> Beer -> BeerList -> BeerList

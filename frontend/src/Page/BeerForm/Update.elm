@@ -29,7 +29,7 @@ update msg appState model =
 
         SubmitForm ->
             ( { model | state = Saving, error = Nothing }
-            , Task.attempt FormSaved <| saveBeer appState (toBeer model)
+            , Task.attempt FormSaved <| saveBeer appState model
             )
 
         CancelForm ->
@@ -42,11 +42,14 @@ update msg appState model =
             ( { model | state = Editing, error = Just err }, Cmd.none )
 
 
-saveBeer : AppState -> Beer -> Task.Task String (List Beer)
-saveBeer appState beer =
+saveBeer : AppState -> Model -> Task.Task String (List Beer)
+saveBeer appState model =
     let
         loadBeers userData =
             Backend.Beers.get appState.environment userData |> Http.toTask
+
+        updateWithBeerFromForm beers =
+            Data.BeerList.addOrUpdate (toBeer model beers) beers
 
         saveBeers userData beers =
             Backend.Beers.save appState.environment userData beers |> Http.toTask
@@ -54,7 +57,7 @@ saveBeer appState beer =
         case appState.auth of
             LoggedIn userData ->
                 loadBeers userData
-                    |> Task.map (Data.BeerList.addOrUpdate beer)
+                    |> Task.map updateWithBeerFromForm
                     |> Task.andThen (saveBeers userData)
                     |> Task.mapError (\_ -> "Unable to save beer :(")
 

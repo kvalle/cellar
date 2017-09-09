@@ -29,7 +29,7 @@ viewBeerList model =
 tableConfig : ( Int, Int ) -> Table.Config Beer Msg
 tableConfig showCount =
     Table.customConfig
-        { toId = .id >> (Maybe.withDefault 0) >> toString
+        { toId = .id >> toString
         , toMsg = SetTableState
         , columns =
             [ intColumnWithClasses "count" "#" .count
@@ -130,13 +130,7 @@ viewDeleteAction beer =
 
 viewEditAction : Beer -> Html Msg
 viewEditAction beer =
-    case beer.id of
-        Just beerId ->
-            a [ Route.href <| Route.EditBeer beerId ] [ i [ class "action icon-pencil", title "Edit" ] [] ]
-
-        Nothing ->
-            -- FIXME: make this case unrepresentable
-            text ""
+    a [ Route.href <| Route.EditBeer beer.id ] [ i [ class "action icon-pencil", title "Edit" ] [] ]
 
 
 tableFooter : ( Int, Int ) -> Maybe (Table.HtmlDetails Msg)

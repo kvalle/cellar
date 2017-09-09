@@ -1,13 +1,13 @@
-module Data.BeerList exposing (addOrUpdate, getById)
+module Data.BeerList exposing (addOrUpdate, getById, nextAvailableId)
 
 import Data.Beer exposing (Beer)
 
 
 addOrUpdate : Beer -> List Beer -> List Beer
 addOrUpdate beer beers =
-    case beer.id of
+    case getById beer.id beers of
         Nothing ->
-            { beer | id = Just <| nextAvailableId beers } :: beers
+            beer :: beers
 
         Just _ ->
             updateBeer (\_ -> beer) beer beers
@@ -15,7 +15,7 @@ addOrUpdate beer beers =
 
 getById : Int -> List Beer -> Maybe Beer
 getById beerId beerList =
-    case List.filter (.id >> (==) (Just beerId)) beerList of
+    case List.filter (.id >> (==) beerId) beerList of
         [ beer ] ->
             Just beer
 
@@ -23,18 +23,18 @@ getById beerId beerList =
             Nothing
 
 
-
--- Helper functions
-
-
 nextAvailableId : List Beer -> Int
 nextAvailableId beers =
-    case List.filterMap .id beers |> List.maximum of
+    case List.map .id beers |> List.maximum of
         Nothing ->
             1
 
         Just n ->
             n + 1
+
+
+
+-- Helper functions
 
 
 updateBeer : (Beer -> Beer) -> Beer -> List Beer -> List Beer

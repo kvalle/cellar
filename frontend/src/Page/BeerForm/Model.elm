@@ -131,7 +131,7 @@ from beer context =
             empty context
     in
         { emptyForm
-            | id = beer.id
+            | id = Just beer.id
             , fields =
                 [ ( Brewery, beer.brewery )
                 , ( Name, beer.name )
@@ -198,13 +198,9 @@ updateSuggestions field msg form =
                 }
 
 
-
-{- Getters -}
-
-
-toBeer : Model -> Beer
-toBeer form =
-    { id = form.id
+toBeer : Model -> List Beer -> Beer
+toBeer form context =
+    { id = form.id |> Maybe.withDefault (Data.BeerList.nextAvailableId context)
     , brewery = form |> show Brewery
     , name = form |> show Name
     , style = form |> show Style
@@ -229,19 +225,21 @@ selectedSuggestion field form =
 
 isValid : Model -> Bool
 isValid form =
-    let
-        beer =
-            toBeer form
-
-        notEmpty =
-            not << String.isEmpty
-    in
-        notEmpty beer.brewery
-            && notEmpty beer.name
-            && notEmpty beer.style
-            && (beer.year > 0)
-            && (beer.count > 0)
-            && (beer.volume > 0.0)
+    -- TODO: Find a way to validate without converting to beer type
+    -- let
+    --     beer =
+    --         toBeer form
+    --
+    --     notEmpty =
+    --         not << String.isEmpty
+    -- in
+    --     notEmpty beer.brewery
+    --         && notEmpty beer.name
+    --         && notEmpty beer.style
+    --         && (beer.year > 0)
+    --         && (beer.count > 0)
+    --         && (beer.volume > 0.0)
+    True
 
 
 show : Field -> Model -> String
