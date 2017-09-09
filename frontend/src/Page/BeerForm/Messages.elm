@@ -7,6 +7,7 @@ type Msg
     = UpdateFormField Field String
     | UpdateFormSuggestions Field SuggestionMsg
     | SubmitForm
+    | CancelForm
     | FormSaved (Result String (List Beer))
 
 

@@ -55,7 +55,7 @@ formControlButtons form =
 
         attributes =
             if Page.BeerForm.Model.isValid form then
-                [ onClickNoPropagation Msg.SubmitForm, class "button-primary" ]
+                [ onClick Msg.SubmitForm, class "button-primary" ]
             else
                 [ class "button-disabled" ]
     in
@@ -64,7 +64,7 @@ formControlButtons form =
                 [ text name
                 , i [ class "icon-beer" ] []
                 ]
-            , button []
+            , button [ onClick Msg.CancelForm ]
                 [ text "Cancel"
                 , i [ class "icon-cancel" ] []
                 ]
