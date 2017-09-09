@@ -284,6 +284,7 @@ tr.zero-row {
 .action {
 	color: #222;
 	cursor: pointer;
+	text-decoration: none;
 }
 
 .action.disabled {

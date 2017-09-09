@@ -1,15 +1,16 @@
 module Page.BeerList.View exposing (view)
 
+import Data.Beer
+import Html exposing (..)
+import Html.Attributes exposing (class, for, id, src, style, title, type_, value)
+import Html.Events exposing (defaultOptions, onClick, onInput, onWithOptions)
 import Page.BeerList.Messages as Msg exposing (Msg)
 import Page.BeerList.Model exposing (Model)
 import Page.BeerList.Model.State as State
-import Data.Beer
+import Page.BeerList.View.BeerForm exposing (viewBeerForm)
 import Page.BeerList.View.BeerList exposing (viewBeerList)
 import Page.BeerList.View.Filters exposing (viewFilters)
-import Page.BeerList.View.BeerForm exposing (viewBeerForm)
-import Html exposing (..)
-import Html.Events exposing (onClick, onInput, onWithOptions, defaultOptions)
-import Html.Attributes exposing (id, class, type_, for, src, title, value, style)
+import Route
 
 
 view : Model -> Html Msg
@@ -23,7 +24,7 @@ view model =
         , div [ class "row" ]
             [ div [ class "main twelve columns" ]
                 [ div [ class "menu-actions" ]
-                    [ viewButton "Add beer" "beer" Msg.AddBeer True
+                    [ viewLink "Add beer" "beer" Route.AddBeer True
                     , viewButton "Save" "floppy" Msg.SaveBeers (model.state.changes == State.Changed)
                     , viewButton "Reset" "ccw" Msg.LoadBeers (model.state.changes == State.Changed)
                     , viewButton "Clear filters" "cancel" Msg.ClearFilters model.filters.active
@@ -67,6 +68,23 @@ viewButton name icon msg active =
         span attributes
             [ i [ class <| "icon-" ++ icon ] []
             , text name
+            ]
+
+
+viewLink : String -> String -> Route.Route -> Bool -> Html Msg
+viewLink name icon route active =
+    let
+        attributes =
+            if active then
+                [ class "action", Route.href route ]
+            else
+                [ class "action disabled" ]
+    in
+        a attributes
+            [ span []
+                [ i [ class <| "icon-" ++ icon ] []
+                , text name
+                ]
             ]
 
 

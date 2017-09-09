@@ -14,7 +14,6 @@ import Page.BeerList.Model.BeerForm as BeerForm
 import Page.BeerList.Model.BeerList
 import Page.BeerList.Model.Filters as Filter
 import Page.BeerList.Model.State as State exposing (Network(..))
-import Route
 import Task
 
 
@@ -145,9 +144,6 @@ update msg appState model =
                   }
                 , Cmd.none
                 )
-
-        AddBeer ->
-            ( model, Route.modifyUrl Route.AddBeer )
 
         ShowForm beer ->
             ( { model
