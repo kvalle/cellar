@@ -156,7 +156,7 @@ update msg model =
                 { model | appState = model.appState |> Data.AppState.setAuth Data.Auth.LoggedOut }
                     => Cmd.batch
                         [ Ports.clearSessionStorage ()
-                        , Route.modifyUrl Route.Home
+                        , Route.newUrl Route.Home
                         ]
 
             JsonLoaded (Ok subModel) ->

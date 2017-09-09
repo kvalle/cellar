@@ -33,10 +33,10 @@ update msg appState model =
             )
 
         CancelForm ->
-            ( model, Route.modifyUrl Route.BeerList )
+            ( model, Route.newUrl Route.BeerList )
 
         FormSaved (Ok beers) ->
-            ( empty beers, Route.modifyUrl Route.BeerList )
+            ( empty beers, Route.newUrl Route.BeerList )
 
         FormSaved (Err err) ->
             ( { model | state = Editing, error = Just err }, Cmd.none )

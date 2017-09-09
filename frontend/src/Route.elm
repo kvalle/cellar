@@ -1,4 +1,14 @@
-module Route exposing (Route(..), fromLocation, href, modifyUrl, fromName, toName, fromActivePage)
+module Route
+    exposing
+        ( Route(..)
+        , fromLocation
+        , href
+        , modifyUrl
+        , newUrl
+        , fromName
+        , toName
+        , fromActivePage
+        )
 
 import Html exposing (Attribute)
 import Html.Attributes as Attr
@@ -103,6 +113,11 @@ href route =
 modifyUrl : Route -> Cmd msg
 modifyUrl =
     routeToString >> Navigation.modifyUrl
+
+
+newUrl : Route -> Cmd msg
+newUrl =
+    routeToString >> Navigation.newUrl
 
 
 fromLocation : Location -> Route

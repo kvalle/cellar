@@ -89,7 +89,7 @@ update msg appState model =
                     if key == keys.escape && model.state.filters == Visible then
                         update HideFilters appState model
                     else if key == keys.a && State.isClearOfModals model.state then
-                        ( model, Route.modifyUrl Route.AddBeer )
+                        ( model, Route.newUrl Route.AddBeer )
                     else if key == keys.f && State.isClearOfModals model.state then
                         update ShowFilters appState model
                     else if key == keys.c && model.filters.active && State.isClearOfModals model.state then
