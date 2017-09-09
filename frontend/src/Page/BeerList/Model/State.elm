@@ -34,11 +34,6 @@ init =
     }
 
 
-clearModals : State -> State
-clearModals state =
-    { state | filters = Hidden }
-
-
 isClearOfModals : State -> Bool
 isClearOfModals state =
     state.filters == Hidden

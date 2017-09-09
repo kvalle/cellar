@@ -12,7 +12,6 @@ type Msg
     = Noop
     | KeyPressed (Result String KeyEvent)
     | FocusResult (Result Dom.Error ())
-    | ClearModals
       -- Filter
     | ClearFilters
     | UpdateFilters FilterValue

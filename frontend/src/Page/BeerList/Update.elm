@@ -79,18 +79,13 @@ update msg appState model =
                     -- FIXME : not really a possible state
                     ( { model | state = model.state |> State.withError "You need to log in" }, Cmd.none )
 
-        ClearModals ->
-            ( { model | state = model.state |> State.clearModals }, Cmd.none )
-
         KeyPressed keyResult ->
             case keyResult of
                 Err _ ->
                     ( model, Cmd.none )
 
                 Ok key ->
-                    if key == keys.escape then
-                        update ClearModals appState model
-                    else if key == keys.a && State.isClearOfModals model.state then
+                    if key == keys.a && State.isClearOfModals model.state then
                         -- FIXME show 'add beer' form
                         ( model, Cmd.none )
                     else if key == keys.f && State.isClearOfModals model.state then
