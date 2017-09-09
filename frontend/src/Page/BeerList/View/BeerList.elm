@@ -7,6 +7,7 @@ import Html.Events exposing (onClick, onInput)
 import Page.BeerList.Messages exposing (Msg(..))
 import Page.BeerList.Model exposing (Model)
 import Page.BeerList.Model.BeerList as BeerList
+import Route
 import Table exposing (defaultCustomizations)
 
 
@@ -129,7 +130,13 @@ viewDeleteAction beer =
 
 viewEditAction : Beer -> Html Msg
 viewEditAction beer =
-    i [ onClick (ShowForm beer), class "action icon-pencil", title "Edit" ] []
+    case beer.id of
+        Just beerId ->
+            a [ Route.href <| Route.EditBeer beerId ] [ i [ class "action icon-pencil", title "Edit" ] [] ]
+
+        Nothing ->
+            -- FIXME: make this case unrepresentable
+            text ""
 
 
 tableFooter : ( Int, Int ) -> Maybe (Table.HtmlDetails Msg)
