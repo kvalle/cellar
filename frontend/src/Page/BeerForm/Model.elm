@@ -225,21 +225,14 @@ selectedSuggestion field form =
 
 isValid : Model -> Bool
 isValid form =
-    -- TODO: Find a way to validate without converting to beer type
-    -- let
-    --     beer =
-    --         toBeer form
-    --
-    --     notEmpty =
-    --         not << String.isEmpty
-    -- in
-    --     notEmpty beer.brewery
-    --         && notEmpty beer.name
-    --         && notEmpty beer.style
-    --         && (beer.year > 0)
-    --         && (beer.count > 0)
-    --         && (beer.volume > 0.0)
-    True
+    List.all identity
+        [ show Brewery form |> not << String.isEmpty
+        , show Name form |> not << String.isEmpty
+        , show Style form |> not << String.isEmpty
+        , show Count form |> String.toInt |> Result.map (\n -> n > 0) |> Result.withDefault False
+        , show Volume form |> String.toFloat |> Result.map (\n -> n > 0) |> Result.withDefault False
+        , show Year form |> String.toInt |> Result.map (\n -> n > 0) |> Result.withDefault False
+        ]
 
 
 show : Field -> Model -> String
