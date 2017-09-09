@@ -1,7 +1,7 @@
 module Page.BeerForm.View exposing (view)
 
 import Page.BeerForm.Messages as Msg exposing (Msg, Field(..), SuggestionMsg(..))
-import Page.BeerForm.Model exposing (Model)
+import Page.BeerForm.Model exposing (Model, FormState(..))
 import Data.KeyEvent exposing (keys)
 import Views.HtmlAttributes exposing (onClickNoPropagation, onKeysWithOptions)
 import Html exposing (..)
@@ -43,11 +43,14 @@ formControlButtons : Model -> Html Msg
 formControlButtons form =
     let
         name =
-            case form.id of
-                Nothing ->
+            case ( form.state, form.id ) of
+                ( Saving, _ ) ->
+                    "Saving..."
+
+                ( Editing, Nothing ) ->
                     "Add beer"
 
-                Just _ ->
+                ( Editing, Just _ ) ->
                     "Save changes"
 
         attributes =

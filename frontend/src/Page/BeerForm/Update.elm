@@ -3,7 +3,7 @@ module Page.BeerForm.Update exposing (update)
 import Data.Auth exposing (AuthStatus(..))
 import Data.AppState exposing (AppState)
 import Page.BeerForm.Messages exposing (Msg(..), SuggestionMsg(..))
-import Page.BeerForm.Model exposing (Model, empty, toBeer, updateField, updateSuggestions)
+import Page.BeerForm.Model exposing (Model, FormState(..), empty, toBeer, updateField, updateSuggestions)
 import Data.Beer exposing (Beer)
 import Backend.Beers
 import Task
@@ -26,7 +26,7 @@ update msg appState model =
             )
 
         SubmitForm ->
-            ( model
+            ( { model | state = Saving }
             , Task.attempt FormSaved <| saveBeer appState (toBeer model)
             )
 

@@ -1,6 +1,7 @@
 module Page.BeerForm.Model
     exposing
         ( Model
+        , FormState(..)
         , initEmpty
         , empty
         , updateField
@@ -27,8 +28,14 @@ type alias Dict k v =
     List ( k, v )
 
 
+type FormState
+    = Editing
+    | Saving
+
+
 type alias Model =
     { id : Maybe Int
+    , state : FormState
     , fields : Dict Field String
     , possibleSuggestions : Dict Field (List String)
     , suggestions : Dict Field (List String)
@@ -70,6 +77,7 @@ from beer context =
             context |> List.filterMap field |> Set.fromList |> Set.toList
     in
         { id = beer.id
+        , state = Editing
         , fields =
             [ ( Brewery, beer.brewery )
             , ( Name, beer.name )
