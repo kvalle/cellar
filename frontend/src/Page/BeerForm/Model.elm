@@ -91,11 +91,6 @@ initWith beerId appState =
 
 empty : List Beer -> Model
 empty context =
-    from Data.Beer.empty context
-
-
-from : Beer -> List Beer -> Model
-from beer context =
     let
         unique field =
             context |> List.map field |> Set.fromList |> Set.toList
@@ -103,19 +98,19 @@ from beer context =
         uniqueMaybe field =
             context |> List.filterMap field |> Set.fromList |> Set.toList
     in
-        { id = beer.id
+        { id = Nothing
         , state = Editing
         , error = Nothing
         , fields =
-            [ ( Brewery, beer.brewery )
-            , ( Name, beer.name )
-            , ( Style, beer.style )
-            , ( Year, toString beer.year )
-            , ( Count, toString beer.count )
-            , ( Volume, toString beer.volume )
-            , ( Abv, toString beer.abv )
-            , ( Location, beer.location |> Maybe.withDefault "" )
-            , ( Shelf, beer.shelf |> Maybe.withDefault "" )
+            [ ( Brewery, "" )
+            , ( Name, "" )
+            , ( Style, "" )
+            , ( Year, "" )
+            , ( Count, "" )
+            , ( Volume, "" )
+            , ( Abv, "" )
+            , ( Location, "" )
+            , ( Shelf, "" )
             ]
         , possibleSuggestions =
             [ ( Brewery, unique .brewery )
@@ -126,6 +121,28 @@ from beer context =
             ]
         , suggestions = dictInit [] [ Brewery, Name, Style, Location, Shelf ]
         , selectedSuggestions = dictInit 0 [ Brewery, Name, Style, Location, Shelf ]
+        }
+
+
+from : Beer -> List Beer -> Model
+from beer context =
+    let
+        emptyForm =
+            empty context
+    in
+        { emptyForm
+            | id = beer.id
+            , fields =
+                [ ( Brewery, beer.brewery )
+                , ( Name, beer.name )
+                , ( Style, beer.style )
+                , ( Year, toString beer.year )
+                , ( Count, toString beer.count )
+                , ( Volume, toString beer.volume )
+                , ( Abv, toString beer.abv )
+                , ( Location, beer.location |> Maybe.withDefault "" )
+                , ( Shelf, beer.shelf |> Maybe.withDefault "" )
+                ]
         }
 
 
