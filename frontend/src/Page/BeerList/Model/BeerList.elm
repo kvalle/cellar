@@ -4,6 +4,11 @@ import Page.BeerList.Model.Filters exposing (Filters)
 import Data.Beer exposing (Beer)
 
 
+{--
+  Module deprecated, use Data.BeerList instead
+--}
+
+
 type alias BeerList =
     List Beer
 

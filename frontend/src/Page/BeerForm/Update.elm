@@ -5,6 +5,7 @@ import Data.AppState exposing (AppState)
 import Page.BeerForm.Messages exposing (Msg(..), SuggestionMsg(..))
 import Page.BeerForm.Model exposing (Model, FormState(..), empty, toBeer, updateField, updateSuggestions)
 import Data.Beer exposing (Beer)
+import Data.BeerList
 import Backend.Beers
 import Task
 import Http
@@ -49,7 +50,7 @@ saveBeer appState beer =
         case appState.auth of
             LoggedIn userData ->
                 loadBeers userData
-                    |> Task.map ((::) beer)
+                    |> Task.map (Data.BeerList.addOrUpdate beer)
                     |> Task.andThen (saveBeers userData)
                     |> Task.mapError (\_ -> "Unable to save beer :(")
 
