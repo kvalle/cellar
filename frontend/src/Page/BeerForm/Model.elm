@@ -1,4 +1,16 @@
-module Page.BeerForm.Model exposing (Model, initEmpty, updateField, updateSuggestions, suggestions, selectedSuggestion, isValid, show, toBeer)
+module Page.BeerForm.Model
+    exposing
+        ( Model
+        , initEmpty
+        , empty
+        , updateField
+        , updateSuggestions
+        , suggestions
+        , selectedSuggestion
+        , isValid
+        , show
+        , toBeer
+        )
 
 import Page.BeerForm.Messages exposing (Field(..), SuggestionMsg(..))
 import Data.Beer exposing (Beer)

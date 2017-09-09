@@ -1,10 +1,13 @@
 module Page.BeerForm.Messages exposing (..)
 
+import Data.Beer exposing (Beer)
+
 
 type Msg
     = UpdateFormField Field String
     | UpdateFormSuggestions Field SuggestionMsg
     | SubmitForm
+    | FormSaved (Result String (List Beer))
 
 
 type SuggestionMsg

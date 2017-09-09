@@ -50,5 +50,5 @@ init appState =
                     |> Task.map calibrateFilters
                     |> Task.mapError handleLoadError
 
-            _ ->
+            LoggedOut ->
                 Task.fail <| handleLoadError "Need to be logged in to fetch beer list"
