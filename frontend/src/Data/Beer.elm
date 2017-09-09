@@ -1,4 +1,4 @@
-module Data.Beer exposing (..)
+module Data.Beer exposing (Beer, empty, encoder, decoder)
 
 import Json.Decode as Decode
 import Json.Encode as Encode
@@ -84,8 +84,3 @@ decoder =
         |> Pipeline.optional "abv" Decode.float 0.0
         |> Pipeline.optional "location" (Decode.nullable Decode.string) Nothing
         |> Pipeline.optional "shelf" (Decode.nullable Decode.string) Nothing
-
-
-listDecoder : Decode.Decoder (List Beer)
-listDecoder =
-    Decode.list decoder

@@ -32,7 +32,7 @@ view : Model -> Html msg
 view model =
     let
         json =
-            Data.Beer.listEncoder model
+            Json.Encode.list <| List.map Data.Beer.encoder model
 
         jsonString =
             Json.Encode.encode 4 json
