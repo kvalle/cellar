@@ -5,6 +5,7 @@ type ActivePage
     = Home
     | BeerList
     | AddBeer
+    | EditBeer Int
     | Json
     | Help
     | Other

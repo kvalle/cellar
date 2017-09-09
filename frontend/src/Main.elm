@@ -75,7 +75,7 @@ init flags location =
 type Msg
     = SetRoute Route
     | BeerListLoaded (Result Page.Errored.Model Page.BeerList.Model.Model)
-    | AddBeerLoaded (Result Page.Errored.Model Page.BeerForm.Model.Model)
+    | BeerFormLoaded (Result Page.Errored.Model Page.BeerForm.Model.Model)
     | JsonLoaded (Result Page.Errored.Model Page.Json.Model)
     | BeerListMsg Page.BeerList.Messages.Msg
     | BeerFormMsg Page.BeerForm.Messages.Msg
@@ -168,11 +168,11 @@ update msg model =
             BeerListLoaded (Err error) ->
                 { model | pageState = Loaded (Errored error) Data.Page.BeerList } => Cmd.none
 
-            AddBeerLoaded (Ok subModel) ->
-                { model | pageState = Loaded (BeerForm subModel) Data.Page.AddBeer } => Cmd.none
+            BeerFormLoaded (Ok subModel) ->
+                { model | pageState = Loaded (BeerForm subModel) (getActivePage model.pageState) } => Cmd.none
 
-            AddBeerLoaded (Err error) ->
-                { model | pageState = Loaded (Errored error) Data.Page.AddBeer } => Cmd.none
+            BeerFormLoaded (Err error) ->
+                { model | pageState = Loaded (Errored error) (getActivePage model.pageState) } => Cmd.none
 
             BeerListMsg subMsg ->
                 case getPage model.pageState of
@@ -223,7 +223,10 @@ setRoute maybeRoute model =
                 transition BeerListLoaded (Page.BeerList.Model.init model.appState) Data.Page.BeerList
 
             ( Route.AddBeer, _ ) ->
-                transition AddBeerLoaded (Page.BeerForm.Model.initEmpty model.appState) Data.Page.AddBeer
+                transition BeerFormLoaded (Page.BeerForm.Model.initEmpty model.appState) Data.Page.AddBeer
+
+            ( Route.EditBeer id, _ ) ->
+                transition BeerFormLoaded (Page.BeerForm.Model.initWith id model.appState) (Data.Page.EditBeer id)
 
             ( Route.AccessTokenRoute callBackInfo, _ ) ->
                 let

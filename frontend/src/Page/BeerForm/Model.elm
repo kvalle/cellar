@@ -3,6 +3,7 @@ module Page.BeerForm.Model
         ( Model
         , FormState(..)
         , initEmpty
+        , initWith
         , empty
         , updateField
         , updateSuggestions
@@ -13,13 +14,14 @@ module Page.BeerForm.Model
         , toBeer
         )
 
-import Page.BeerForm.Messages exposing (Field(..), SuggestionMsg(..))
-import Data.Beer exposing (Beer)
+import Backend.Beers
 import Data.AppState exposing (AppState)
 import Data.Auth exposing (AuthStatus(..))
-import Page.Errored
-import Backend.Beers
+import Data.Beer exposing (Beer)
+import Data.BeerList
 import Http
+import Page.BeerForm.Messages exposing (Field(..), SuggestionMsg(..))
+import Page.Errored
 import Set
 import Task
 
@@ -58,6 +60,30 @@ initEmpty appState =
             LoggedIn userData ->
                 Task.map empty (loadBeers userData)
                     |> Task.mapError (\_ -> "Unable to load beer list :(")
+
+            LoggedOut ->
+                Task.fail <| "Need to be logged in to add beers"
+
+
+initWith : Int -> AppState -> Task.Task Page.Errored.Model Model
+initWith beerId appState =
+    let
+        loadBeers userData =
+            Backend.Beers.get appState.environment userData |> Http.toTask
+
+        initForm beers =
+            case Data.BeerList.getById beerId beers of
+                Nothing ->
+                    Task.fail <| "Couldn't find any beers with id " ++ (toString beerId)
+
+                Just beer ->
+                    Task.succeed <| from beer beers
+    in
+        case appState.auth of
+            LoggedIn userData ->
+                loadBeers userData
+                    |> Task.mapError (\_ -> "Unable to load beer list :(")
+                    |> Task.andThen initForm
 
             LoggedOut ->
                 Task.fail <| "Need to be logged in to add beers"

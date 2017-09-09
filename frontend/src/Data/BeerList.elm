@@ -1,4 +1,4 @@
-module Data.BeerList exposing (addOrUpdate)
+module Data.BeerList exposing (addOrUpdate, getById)
 
 import Data.Beer exposing (Beer)
 
@@ -11,6 +11,16 @@ addOrUpdate beer beers =
 
         Just _ ->
             updateBeer (\_ -> beer) beer beers
+
+
+getById : Int -> List Beer -> Maybe Beer
+getById beerId beerList =
+    case List.filter (.id >> (==) (Just beerId)) beerList of
+        [ beer ] ->
+            Just beer
+
+        _ ->
+            Nothing
 
 
 

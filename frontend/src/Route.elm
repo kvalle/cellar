@@ -3,7 +3,7 @@ module Route exposing (Route(..), fromLocation, href, modifyUrl, fromName, toNam
 import Html exposing (Attribute)
 import Html.Attributes as Attr
 import Navigation exposing (Location)
-import UrlParser as Url exposing ((</>), Parser, oneOf, parseHash, s, string)
+import UrlParser as Url exposing ((</>), Parser, oneOf, parseHash, s, string, int)
 import Data.Page
 import Auth0.UrlParser
     exposing
@@ -21,6 +21,7 @@ type Route
     = Home
     | BeerList
     | AddBeer
+    | EditBeer Int
     | Json
     | Help
     | AccessTokenRoute Auth0CallbackInfo
@@ -34,6 +35,7 @@ route =
         [ Url.map Home (s "")
         , Url.map BeerList (s "beers")
         , Url.map AddBeer (s "beers" </> s "add")
+        , Url.map EditBeer (s "beers" </> s "edit" </> int)
         , Url.map Json (s "json")
         , Url.map Help (s "help")
         , Url.map AccessTokenRoute accessTokenUrlParser
@@ -58,6 +60,9 @@ routeToString page =
 
                 AddBeer ->
                     [ "beers", "add" ]
+
+                EditBeer id ->
+                    [ "beers", "edit", toString id ]
 
                 Json ->
                     [ "json" ]
@@ -141,6 +146,9 @@ fromActivePage activePage =
 
         Data.Page.AddBeer ->
             AddBeer
+
+        Data.Page.EditBeer id ->
+            EditBeer id
 
         Data.Page.Json ->
             Json
