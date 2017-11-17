@@ -1,0 +1,62 @@
+[
+    {
+        "abv": 17.2,
+        "brewery": "BrewDog",
+        "count": 1,
+        "id": 39,
+        "location": "Løren",
+        "name": "Black Tokyo* Horizon",
+        "shelf": null,
+        "style": "Imperial Stout",
+        "volume": 0.33,
+        "year": 2013
+    },
+    {
+        "abv": 7,
+        "brewery": "Rodenbach",
+        "count": 1,
+        "id": 37,
+        "location": "Løren",
+        "name": "Rodenbach Vintage",
+        "shelf": null,
+        "style": "Sour Red/Brown",
+        "volume": 0.375,
+        "year": 2012
+    },
+    {
+        "abv": 12,
+        "brewery": "AleSmith",
+        "count": 1,
+        "id": 25,
+        "location": "Øysang",
+        "name": "Speedway",
+        "shelf": null,
+        "style": "Imperial Stout",
+        "volume": 0.75,
+        "year": 2015
+    },
+    {
+        "abv": 12,
+        "brewery": "AleSmith",
+        "count": 1,
+        "id": 24,
+        "location": "Løren",
+        "name": "Speedway",
+        "shelf": "2",
+        "style": "Imperial Stout",
+        "volume": 0.75,
+        "year": 2013
+    },
+    {
+        "abv": 12,
+        "brewery": "AleSmith",
+        "count": 1,
+        "id": 23,
+        "location": "Løren",
+        "name": "Speedway",
+        "shelf": "2",
+        "style": "Imperial Stout",
+        "volume": 0.75,
+        "year": 2014
+    }
+]

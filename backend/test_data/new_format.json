@@ -1,0 +1,97 @@
+[
+    {
+        "abv": 17.2,
+        "brewery": "BrewDog",
+        "id": 39,
+        "name": "Black Tokyo* Horizon",
+        "style": "Imperial Stout",
+        "units": [
+            {
+                "location": "Løren",
+                "shelf": "5",
+                "volume": 0.33
+            },
+            {
+                "location": "Løren",
+                "shelf": "5",
+                "volume": 0.33
+            }
+        ],
+        "year": 2013
+    },
+    {
+        "abv": 7,
+        "brewery": "Rodenbach",
+        "id": 37,
+        "name": "Rodenbach Vintage",
+        "style": "Sour Red/Brown",
+        "units": [
+            {
+                "location": "Løren",
+                "shelf": null,
+                "volume": 0.375
+            },
+            {
+                "location": "Løren",
+                "shelf": null,
+                "volume": 0.375
+            },
+            {
+                "location": "Øysang",
+                "shelf": "3",
+                "volume": 0.75
+            }
+        ],
+        "year": 2012
+    },
+    {
+        "abv": 12,
+        "brewery": "AleSmith",
+        "id": 25,
+        "name": "Speedway",
+        "style": "Imperial Stout",
+        "units": [
+            {
+                "location": "Øysang",
+                "shelf": "2",
+                "volume": 0.75
+            }
+        ],
+        "year": 2015
+    },
+    {
+        "abv": 12,
+        "brewery": "AleSmith",
+        "id": 24,
+        "name": "Speedway",
+        "style": "Imperial Stout",
+        "units": [
+            {
+                "location": "Øysang",
+                "shelf": "2",
+                "volume": 0.75
+            }
+        ],
+        "year": 2014
+    },
+    {
+        "abv": 12,
+        "brewery": "AleSmith",
+        "id": 23,
+        "name": "Speedway",
+        "style": "Imperial Stout",
+        "units": [
+            {
+                "location": "Øysang",
+                "shelf": "2",
+                "volume": 0.75
+            },
+            {
+                "location": "Øysang",
+                "shelf": "2",
+                "volume": 0.75
+            }
+        ],
+        "year": 2013
+    }
+]
